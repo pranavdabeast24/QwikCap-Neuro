@@ -1,0 +1,11 @@
+record_id,visit_date,age,consent,symptom_score,notes
+DEMO-001,2026-01-12,34,1,3,Practice entry alpha. No follow-up requested.
+DEMO-002,2026-01-13,58,1,6,Practice entry beta. Review next visit.
+DEMO-003,2026-01-14,27,0,0,Fictional participant declined consent.
+DEMO-004,2026-01-15,71,1,10,Practice entry delta. Check score carefully.
+DEMO-005,2026-01-16,42,1,4,
+DEMO-006,2026-01-19,39,1,2,Image-only practice entry zeta.
+DEMO-007,2026-01-20,63,0,7,Image-only practice entry eta.
+DEMO-008,2026-01-21,19,1,1,Image-only practice entry theta.
+DEMO-009,2026-01-22,46,1,5,Image-only practice entry iota.
+DEMO-010,2026-01-23,82,1,9,Image-only practice entry kappa.

@@ -1,0 +1,41 @@
+{
+  "redcap": {
+    "filename": "redcap-template.xlsx",
+    "sheet": "Data import",
+    "headerRow": 1,
+    "mappings": {
+      "record_id": "record_id",
+      "visit_date": "visit_date",
+      "age": "age",
+      "consent": "consent",
+      "symptom_score": "symptom_score",
+      "notes": "notes"
+    }
+  },
+  "friendly": {
+    "filename": "friendly-template.xlsx",
+    "sheet": "Intake",
+    "headerRow": 3,
+    "mappings": {
+      "Participant ID": "record_id",
+      "Age (years)": "age",
+      "Consent code": "consent",
+      "Visit date": "visit_date",
+      "Score": "symptom_score",
+      "Research notes": "notes"
+    }
+  },
+  "csv": {
+    "filename": "redcap-template.csv",
+    "sheet": null,
+    "headerRow": 1,
+    "mappings": {
+      "record_id": "record_id",
+      "visit_date": "visit_date",
+      "age": "age",
+      "consent": "consent",
+      "symptom_score": "symptom_score",
+      "notes": "notes"
+    }
+  }
+}

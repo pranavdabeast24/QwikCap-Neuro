@@ -1,0 +1,125 @@
+{
+  "warning": "FICTIONAL PRACTICE DATA - NOT A PATIENT RECORD",
+  "records": [
+    {
+      "file": "practice-01-text.pdf",
+      "mode": "text-layer",
+      "expected": {
+        "record_id": "DEMO-001",
+        "visit_date": "2026-01-12",
+        "age": 34,
+        "consent": "1",
+        "symptom_score": 3,
+        "notes": "Practice entry alpha. No follow-up requested."
+      }
+    },
+    {
+      "file": "practice-02-text.pdf",
+      "mode": "text-layer",
+      "expected": {
+        "record_id": "DEMO-002",
+        "visit_date": "2026-01-13",
+        "age": 58,
+        "consent": "1",
+        "symptom_score": 6,
+        "notes": "Practice entry beta. Review next visit."
+      }
+    },
+    {
+      "file": "practice-03-text.pdf",
+      "mode": "text-layer",
+      "expected": {
+        "record_id": "DEMO-003",
+        "visit_date": "2026-01-14",
+        "age": 27,
+        "consent": "0",
+        "symptom_score": 0,
+        "notes": "Fictional participant declined consent."
+      }
+    },
+    {
+      "file": "practice-04-text.pdf",
+      "mode": "text-layer",
+      "expected": {
+        "record_id": "DEMO-004",
+        "visit_date": "2026-01-15",
+        "age": 71,
+        "consent": "1",
+        "symptom_score": 10,
+        "notes": "Practice entry delta. Check score carefully."
+      }
+    },
+    {
+      "file": "practice-05-text.pdf",
+      "mode": "text-layer",
+      "expected": {
+        "record_id": "DEMO-005",
+        "visit_date": "2026-01-16",
+        "age": 42,
+        "consent": "1",
+        "symptom_score": 4,
+        "notes": ""
+      }
+    },
+    {
+      "file": "practice-06-scan.pdf",
+      "mode": "image-only",
+      "expected": {
+        "record_id": "DEMO-006",
+        "visit_date": "2026-01-19",
+        "age": 39,
+        "consent": "1",
+        "symptom_score": 2,
+        "notes": "Image-only practice entry zeta."
+      }
+    },
+    {
+      "file": "practice-07-scan.pdf",
+      "mode": "image-only",
+      "expected": {
+        "record_id": "DEMO-007",
+        "visit_date": "2026-01-20",
+        "age": 63,
+        "consent": "0",
+        "symptom_score": 7,
+        "notes": "Image-only practice entry eta."
+      }
+    },
+    {
+      "file": "practice-08-scan.pdf",
+      "mode": "image-only",
+      "expected": {
+        "record_id": "DEMO-008",
+        "visit_date": "2026-01-21",
+        "age": 19,
+        "consent": "1",
+        "symptom_score": 1,
+        "notes": "Image-only practice entry theta."
+      }
+    },
+    {
+      "file": "practice-09-scan.pdf",
+      "mode": "image-only",
+      "expected": {
+        "record_id": "DEMO-009",
+        "visit_date": "2026-01-22",
+        "age": 46,
+        "consent": "1",
+        "symptom_score": 5,
+        "notes": "Image-only practice entry iota."
+      }
+    },
+    {
+      "file": "practice-10-scan.pdf",
+      "mode": "image-only",
+      "expected": {
+        "record_id": "DEMO-010",
+        "visit_date": "2026-01-23",
+        "age": 82,
+        "consent": "1",
+        "symptom_score": 9,
+        "notes": "Image-only practice entry kappa."
+      }
+    }
+  ]
+}

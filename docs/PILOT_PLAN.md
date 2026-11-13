@@ -1,0 +1,13 @@
+# Proposed bounded pilot
+
+Start with one form version, one blank destination template, and one site. The customer identifies a workflow owner and reviewer, supplies the agreed form and template through an approved channel, and defines success before configuration begins. Start with fictional examples; do not place real study records in this repository or feedback channel.
+
+The developer configures reusable masks and field types, provides a versioned desktop build and instructions, and resolves reproducible defects within the agreed scope. Customer participation provides builds and an agreed feedback channel; it does not include core source access by default. A separately authorized developer role may receive the minimum source access needed under agreed confidentiality and contribution terms.
+
+Demonstrate import, mask alignment, correction, field confirmation, record approval, template assignment, preview, export, save, and reopen. Check empty and zero values, identifiers, dates, choice codes, rejected inputs, and changed form dimensions. Independently compare every pilot output with its fictional source and the destination headers. Test a REDCap-shaped CSV only in an authorized test project; no live REDCap compatibility claim is made today.
+
+Record the build, OS, OCR engine, form version, template version, expected results, observed errors, reviewer steps, and go/no-go criteria in an approved location. Windows and desktop drag behavior require explicit target-platform validation. A Mac result does not validate Windows. Stop on silent value changes, incorrect source alignment, approval bypass, or unexpected data disclosure.
+
+The current prototype lacks encryption at rest, managed access controls, managed retention, and tamper-evident audit trails. Broader or sensitive-data use requires institutional review, validated controls and accuracy, and a separate approval decision. This pilot is a workflow and feasibility evaluation, not a production or compliance certification.
+
+Before any paid or expanded pilot, take scope, acceptance, fees, support, data roles, permitted research use, confidentiality, security responsibilities, background intellectual property and assignments, licensing, liability, termination, and publication to appropriate counsel. Include product-name clearance, institution procurement and conflict-of-interest review where relevant, instrument and scoring rights, and release-specific third-party notices. Formbridge is a provisional name; no clearance conclusion is implied. This list is a discussion agenda, not a contract or legal advice.

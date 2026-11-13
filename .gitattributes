@@ -1,0 +1,15 @@
+* text=auto
+*.py text eol=lf
+*.swift text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.command text eol=lf
+*.bat text eol=crlf
+*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+*.pdf binary
+*.png binary
+*.xlsx binary

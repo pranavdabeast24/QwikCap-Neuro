@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Formbridge · Research workspace</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/regions.css">
+  <link rel="stylesheet" href="/template-ui.css">
+</head>
+<body>
+  <aside>
+    <a class="brand" aria-label="Formbridge home" href="/">▦ <span>Formbridge<small>RESEARCH WORKSPACE</small></span></a>
+    <div class="workspace">STUDY WORKSPACE<strong>Clinical intake pilot</strong><small>Local prototype · v0.2</small></div>
+    <nav aria-label="Workspace">
+      <button data-nav="queue" aria-label="Review queue" class="active">▤ <span>Review queue</span><b id="navCount">0</b></button>
+      <button data-nav="spreadsheet" aria-label="Spreadsheet preview">▦ <span>Spreadsheet preview</span></button>
+      <button data-nav="mapping" aria-label="Source field setup">⌘ <span>Source field setup</span></button>
+      <button data-nav="activity" aria-label="Activity">◷ <span>Activity</span></button>
+    </nav>
+    <div class="sidebar-bottom"><span class="dot"></span> Private local session<p>Documents stay on this computer.<br>Use fictional data only.</p></div>
+  </aside>
+  <main>
+    <header>
+      <div><div class="eyebrow">WORKSPACE / INTAKE FORMS</div><h1 id="pageTitle">Review queue</h1><p>From source document to research-ready data.</p></div>
+      <div class="header-actions"><button id="loadProject">Open project</button><a class="button" href="/api/project" download>Save project</a><button id="uploadBtn" class="primary">＋ Import documents</button></div>
+    </header>
+    <div class="notice"><strong>DEMO WORKSPACE</strong><span>Fictional data only. Review every extracted value before exporting.</span><span class="local-badge">● Local processing</span></div>
+    <div id="message" role="status" aria-live="polite"></div>
+    <section class="pipeline" aria-label="Document workflow"><span>01 <b>Import</b></span><i>→</i><span>02 <b>Extract</b></span><i>→</i><span>03 <b>Review & approve</b></span><i>→</i><span>04 <b>Map spreadsheet</b></span><i>→</i><span>05 <b>Export XLSX / CSV</b></span></section>
+    <div id="content"></div>
+    <footer>Formbridge prototype · Windows, macOS & Linux · Camera capture planned for a future version</footer>
+  </main>
+  <input id="files" type="file" multiple accept=".pdf,.png,.jpg,.jpeg,.txt" hidden>
+  <input id="projectFile" type="file" accept=".json" hidden>
+  <input id="schemaFile" type="file" accept=".json,.csv" hidden>
+  <input id="templateFile" type="file" accept=".xlsx,.csv" hidden>
+  <script src="/template-ui.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

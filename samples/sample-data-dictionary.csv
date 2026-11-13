@@ -1,0 +1,7 @@
+Variable / Field Name,Form Name,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Required Field?
+record_id,fictional_intake,text,Record ID,,,,,y
+visit_date,fictional_intake,text,Visit date,,date_ymd,,,y
+age,fictional_intake,text,Age,,integer,18,120,y
+consent,fictional_intake,radio,Consent,"1, Yes | 0, No",,,,y
+symptom_score,fictional_intake,text,Symptom score,,integer,0,10,y
+notes,fictional_intake,notes,Notes,,,,,

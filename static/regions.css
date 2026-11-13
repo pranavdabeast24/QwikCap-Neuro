@@ -1,0 +1,11 @@
+.region-designer{max-width:780px;margin:24px 0}
+.region-controls{display:flex;gap:16px;margin-bottom:12px}
+.region-controls label{flex:1;font-size:12px;line-height:2}
+#regionSurface{position:relative;max-width:620px;background:#eef1ed;cursor:crosshair;touch-action:none;user-select:none;border:1px solid #d7e1dc}
+#regionImage{width:100%;height:auto;display:block;pointer-events:none}
+#regionBox{position:absolute;border:2px solid #147c76;background:#147c762b;pointer-events:none}
+#regionStatus{min-height:2em}
+.advanced-schema{margin:24px 0;border-top:1px solid #e0e6e3;padding-top:18px}
+.advanced-schema summary{cursor:pointer;margin-bottom:16px}
+.field-row textarea{resize:vertical;line-height:1.5}
+@media(max-width:600px){.region-controls{display:block}}

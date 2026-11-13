@@ -1,0 +1,125 @@
+{
+  "name": "Fictional Research Intake",
+  "version": 1,
+  "description": "Synthetic practice schema; replace it with your approved REDCap dictionary before research use.",
+  "region_coordinates": "normalized-top-left",
+  "page_size_points": {
+    "width": 612,
+    "height": 792
+  },
+  "fields": [
+    {
+      "name": "record_id",
+      "label": "Record ID",
+      "type": "text",
+      "required": true,
+      "aliases": [
+        "Record ID",
+        "Record identifier",
+        "Study ID"
+      ],
+      "region": {
+        "page": 1,
+        "x": 0.321895,
+        "y": 0.253788,
+        "width": 0.583333,
+        "height": 0.065657
+      }
+    },
+    {
+      "name": "visit_date",
+      "label": "Visit date",
+      "type": "date",
+      "required": true,
+      "aliases": [
+        "Visit date",
+        "Date of visit"
+      ],
+      "format": "YYYY-MM-DD",
+      "region": {
+        "page": 1,
+        "x": 0.321895,
+        "y": 0.339646,
+        "width": 0.583333,
+        "height": 0.065657
+      }
+    },
+    {
+      "name": "age",
+      "label": "Age",
+      "type": "integer",
+      "required": true,
+      "aliases": [
+        "Age",
+        "Age in years"
+      ],
+      "min": 18,
+      "max": 120,
+      "region": {
+        "page": 1,
+        "x": 0.321895,
+        "y": 0.425505,
+        "width": 0.583333,
+        "height": 0.065657
+      }
+    },
+    {
+      "name": "consent",
+      "label": "Consent",
+      "type": "choice",
+      "required": true,
+      "aliases": [
+        "Consent",
+        "Consent obtained"
+      ],
+      "choices": {
+        "1": "Yes",
+        "0": "No"
+      },
+      "region": {
+        "page": 1,
+        "x": 0.321895,
+        "y": 0.511364,
+        "width": 0.583333,
+        "height": 0.065657
+      }
+    },
+    {
+      "name": "symptom_score",
+      "label": "Symptom score",
+      "type": "integer",
+      "required": true,
+      "aliases": [
+        "Symptom score",
+        "Symptom rating"
+      ],
+      "min": 0,
+      "max": 10,
+      "region": {
+        "page": 1,
+        "x": 0.321895,
+        "y": 0.597222,
+        "width": 0.583333,
+        "height": 0.065657
+      }
+    },
+    {
+      "name": "notes",
+      "label": "Notes",
+      "type": "text",
+      "required": false,
+      "aliases": [
+        "Notes",
+        "Comments"
+      ],
+      "max_length": 1000,
+      "region": {
+        "page": 1,
+        "x": 0.321895,
+        "y": 0.683081,
+        "width": 0.583333,
+        "height": 0.065657
+      }
+    }
+  ]
+}

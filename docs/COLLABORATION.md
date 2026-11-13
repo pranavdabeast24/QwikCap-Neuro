@@ -1,0 +1,11 @@
+# Proposed collaboration model
+
+Keep the first evaluation to one form, one template, and one site. The customer workflow role receives versioned builds, operating instructions, and a private feedback channel. It defines field meanings, reviews source-to-output accuracy, and approves any intended institutional use. It receives no core source access by default.
+
+A developer collaborator has a distinct role. Grant private repository access only when implementation work needs it and the parties have agreed on confidentiality, permitted access, contribution authority, and intellectual-property treatment. Use branches and private pull requests with maintainer review. Do not infer a developer role from customer status, feedback, or a pilot invitation. Do not send repository invitations automatically.
+
+The current owner retains existing rights subject to applicable agreements and third-party licenses. Contribution terms must be agreed before work; a contribution or feedback submission does not automatically transfer ownership. Identify pre-existing materials, employer or institution rights, new work, deliverables, reusable core improvements, and any proposed licenses explicitly with counsel.
+
+Counsel's commercial agreement agenda should cover parties and authority, pilot scope and acceptance, fees, source/build licensing, background and new intellectual property and assignments, feedback rights, confidentiality, customer data control, security responsibilities, research approvals, support boundaries, warranties, liability, termination, and publication or use of names. Include product-name clearance, institution procurement and conflict-of-interest review where relevant, and unresolved instrument/scoring rights. Formbridge is a provisional name pending clearance. This proposal is an agenda for counsel, not a contract, assignment, commercial license, or legal advice.
+
+Use only fictional examples in code and feedback. Agree on a separate approved route before exchanging a real form or record. The prototype's missing encryption at rest, managed audit controls, and production validation must be addressed before sensitive-data use. Windows and drag behavior remain unverified, and REDCap-shaped exports are not currently validated against a live project.
