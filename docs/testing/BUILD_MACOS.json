@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-13",
+  "productName": "QuickCap (CV)",
+  "bundle": "QuickCapCV.app",
+  "platform": "macOS arm64",
+  "command": "python -B build_desktop.py --work-dir work/desktop-build --dist-dir dist/macos",
+  "commandNote": "Work and dist paths shown clone-relative; the verified run used task-local output directories.",
+  "status": "built and opened",
+  "environment": "ENVIRONMENT_MACOS.json",
+  "bundleIdentifier": "org.formbridge.desktop",
+  "guiExecutable": "QuickCapCV",
+  "sha256": {
+    "Contents/MacOS/QuickCapCV": "135c7f5795f54c014dd893702d1e2a1179f611db354fb5298555c5e041af0a4c",
+    "Contents/Frameworks/helpers/FormbridgeWorker": "58b85f351ecb52b7f738243f89401c86049fd1e8b554d0d7be1aebdbf2b5c1ec"
+  },
+  "regularFiles": 284,
+  "symlinks": 45,
+  "symlinksRemainInsideBundle": true,
+  "sourceSHA256": {
+    "branding.py": "d7386cb33ffb85671442ae2b4f473c3722cf251d8171374e10aa24cec5ba9ef3",
+    "build_desktop.py": "a8e3b588e5e84ad6d764b9324a63029a4dedce850fbbcb31e953d09146ba0683",
+    "desktop.py": "ffc5f8f84c9ed46c7588c39183a61ec79549d0bab592636240f4b30bc216f14a",
+    "desktop_model.py": "429ffe579e3050485f8476f73619dcd273164fed3fa1de8a061cf56329c4ed3c",
+    "desktop_worker.py": "be1f318a6a76a1ba71f7303fe730ffa5955b1b9a5fa560b3e774e6db4c72c388",
+    "form_types.py": "e93155371c1c4eaf498e526d3f5fefcab5350cc1d218c9c9dc7ace71b5910cac",
+    "generate_samples.py": "872837ee67a8805b86cb433756d608a5fa253cf2cb8a721a39f37d92b738d36e",
+    "neurology_profile.py": "d5167f215dd279b683adcbb89113bb63038f67d26d76275dcf13f813effe1c02",
+    "pipeline.py": "d7130077b537583f3fdb8c2947f7f143a4bfbffc37c9ae7178b803a219250860",
+    "runtime_paths.py": "f7832a4102c9537448ca3a83533ad8f58ad69cd6a0560a327888f34e4a77b663",
+    "server.py": "070eeb71acd71c1320e236976ba8e8ce058aba14415bac850097cfd3e59ca3c1",
+    "template_worker.py": "808e562f326a9a6e720df9af79ad4dd92eaaa42f95e46cfe8f8b5a0ed6596d2c",
+    "templates.py": "2701bdd43b0a6f8e1912e1fd8427e6bc06416c6934f185c6cfba769ba232b2e8",
+    "verify_desktop_bundle.py": "92b2674493adef80886069f821a37e2da798ea4690a9775390b96d5bac78b3dd",
+    "verify_samples.py": "61dda13f51fdf6d4bbf15c9aa42635b72a1cf9752256e6a8d5a8aa32448edba7",
+    "verify_spreadsheet_flow.py": "241f16ea996fc0ddcd25698d317e2b831eab488e0384a58a1037300a2e596814",
+    "worker.py": "26fa8f2db8b88093439fea95db9d2c5170cd814246f3e91a88ec7e98d5a367be"
+  },
+  "nativeBranding": {
+    "method": "Native app control and screenshot inspection of this final build",
+    "title": "QuickCap (CV) — Local form review",
+    "header": "QuickCap (CV)",
+    "ownership": "Property of Capitolinus Ventures",
+    "emptyStartup": true,
+    "aboutMenu": "About QuickCap (CV)",
+    "screenshots": [
+      "QUICKCAP_CV_EMPTY.jpg",
+      "QUICKCAP_CV_ABOUT.jpg"
+    ]
+  },
+  "sourceCustomMasks": "CUSTOM_MASK_SOURCE_MACOS.json",
+  "bundledCustomMasks": "CUSTOM_MASK_BUNDLE_MACOS.json",
+  "bundledFixtures": "STANDARD_BUNDLE_MACOS.json",
+  "limits": [
+    "Development build, not distribution signed or notarized",
+    "Windows not executed or built",
+    "Branding inspection does not validate native mouse drawing or complete UI workflow",
+    "No live REDCap import, camera, LLM, or patient-data validation",
+    "Third-party binary notice and distribution review remains pending"
+  ]
+}

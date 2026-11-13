@@ -1,4 +1,4 @@
-"""Build a native Formbridge desktop bundle using already-installed tools.
+"""Build a native desktop bundle using already-installed tools.
 
 Run this on the target operating system. This script never installs dependencies,
 downloads tools, deletes earlier builds, or changes application source files.
@@ -13,6 +13,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
+
+from branding import APP_BASENAME
 
 
 ROOT = Path(__file__).resolve().parent
@@ -56,9 +58,9 @@ def preflight(dist_dir: Path) -> str | None:
         __import__("tkinter")
     except ImportError as exc:
         raise BuildError("This Python needs working Tk support before it can build the GUI.") from exc
-    expected_outputs = [dist_dir / "Formbridge"]
+    expected_outputs = [dist_dir / APP_BASENAME]
     if sys.platform == "darwin":
-        expected_outputs.append(dist_dir / "Formbridge.app")
+        expected_outputs.append(dist_dir / f"{APP_BASENAME}.app")
     existing = [str(path) for path in expected_outputs if path.exists()]
     if existing:
         raise BuildError(
@@ -122,7 +124,7 @@ def build(work_dir: Path, dist_dir: Path) -> Path:
         raise BuildError("The worker build did not produce the expected companion executable.")
 
     gui_options = [
-        "--onedir", "--windowed", "--name", "Formbridge",
+        "--onedir", "--windowed", "--name", APP_BASENAME,
         "--distpath", str(dist_dir), "--workpath", str(run_dir / "gui-work"),
         "--add-binary", f"{helper}:helpers",
         "--add-data", f"{ROOT / 'samples'}:samples",
@@ -131,8 +133,8 @@ def build(work_dir: Path, dist_dir: Path) -> Path:
     if sys.platform == "darwin":
         gui_options += ["--osx-bundle-identifier", "org.formbridge.desktop"]
     run(common + gui_options + native_options + [str(ROOT / "desktop.py")], environment)
-    result = dist_dir / ("Formbridge.app" if sys.platform == "darwin" else "Formbridge")
-    executable = result / "Contents/MacOS/Formbridge" if sys.platform == "darwin" else result / "Formbridge.exe"
+    result = dist_dir / (f"{APP_BASENAME}.app" if sys.platform == "darwin" else APP_BASENAME)
+    executable = result / f"Contents/MacOS/{APP_BASENAME}" if sys.platform == "darwin" else result / f"{APP_BASENAME}.exe"
     if not executable.is_file():
         raise BuildError("The GUI build did not produce the expected native application.")
     print(f"Native application: {result}")

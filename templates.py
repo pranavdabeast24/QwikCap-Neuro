@@ -19,6 +19,8 @@ import unicodedata
 from urllib.parse import unquote
 import zipfile
 
+from branding import PRODUCT_NAME
+
 MAX_TEMPLATE_BYTES = 4 * 1024 * 1024
 MAX_EXPANDED_BYTES = 30 * 1024 * 1024
 MAX_ZIP_ENTRIES = 300
@@ -597,7 +599,7 @@ def fill_template(data: bytes, filename: str, spec: dict, mappings: dict, schema
                     cell.comment = Comment(
                         "Display is limited to Excel's maximum row height (409.5 points). "
                         "The full cell value is preserved. Select the cell to review all text in the formula bar.",
-                        "Formbridge",
+                        PRODUCT_NAME,
                     )
             worksheet.row_dimensions[row_index].height = min(MAX_EXCEL_ROW_HEIGHT, height)
         output = io.BytesIO()

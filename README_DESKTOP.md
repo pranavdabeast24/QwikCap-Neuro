@@ -1,10 +1,14 @@
-# Formbridge desktop
+# QuickCap (CV) desktop
 
 **Property of Capitolinus Ventures**
 
-Formbridge has a native Tk desktop interface for macOS and Windows. It runs the document and spreadsheet workers on the same computer. The desktop workflow does not require a browser, a local web server, or a cloud extraction account.
+QuickCap (CV) has a native Tk desktop interface for macOS and Windows. It runs the document and spreadsheet workers on the same computer. The desktop workflow does not require a browser, a local web server, or a cloud extraction account.
 
-Formbridge remains the working product name pending name clearance. See `OWNERSHIP.md` for the scope of the original-code notice and third-party rights.
+The user selected QuickCap (CV) as a working name only. The QuickCap name is already used by MedVision in healthcare software; no affiliation or trademark clearance is asserted. See [docs/COMPETITORS_AND_NAME.md](docs/COMPETITORS_AND_NAME.md) before public naming or distribution, and `OWNERSHIP.md` for the scope of the original-code notice and third-party rights.
+
+The display name and new GUI package basename (`QuickCapCV`) have changed from Formbridge. Saved project/type formats retain their existing `formbridge-*` identifiers, and older projects remain supported. The `FORMBRIDGE_TESSERACT` setting, `FormbridgeWorker` helper name and `org.formbridge.desktop` bundle identifier also remain stable for compatibility. Renaming the app does not migrate saved data or change review requirements. The earlier browser interface and historical verification records retain their original names.
+
+For a new computer, start with [the handoff](docs/HANDOFF.md), follow [source setup](docs/GETTING_STARTED.md), and rerun [the portable checks](docs/TESTING.md). Source, fictional fixtures, and instructions travel through Git. Saved projects and private documents need a separate approved transfer.
 
 The app starts with no fields or preset categories. Create an extraction type for your own form:
 
@@ -28,11 +32,13 @@ The **Form type** menu provides keyboard-accessible commands for drawing, enteri
 
 ## Open a packaged application
 
-On macOS, open `Formbridge.app`. Keep the whole app bundle together. On Windows, open `Formbridge\Formbridge.exe` and retain the entire `Formbridge` folder, including its dependencies and companion worker. Copying only the `.exe` is insufficient. A packaged build includes Python and its runtime dependencies; the source launchers below are not needed.
+On macOS, open `QuickCapCV.app`. Keep the whole app bundle together. On Windows, open `QuickCapCV\QuickCapCV.exe` and retain the entire `QuickCapCV` folder, including its dependencies and companion worker. Copying only the `.exe` is insufficient. A packaged build includes Python and its runtime dependencies; the source launchers below are not needed.
 
-The macOS build compiles the included `native_ocr.swift` adapter into an executable and bundles it with Apple Vision OCR. It does not need Swift on the computer running the packaged app. On Windows, Tesseract is optional and must be installed separately, with English language data. Add it to `PATH`, or set `FORMBRIDGE_TESSERACT` to the full path of `tesseract.exe` before starting Formbridge. Tesseract is not bundled or downloaded by this project. Without a working OCR engine, scans remain available for manual review and entry; text PDFs can still use their text layers.
+The macOS build compiles the included `native_ocr.swift` adapter into an executable and bundles it with Apple Vision OCR. It does not need Swift on the computer running the packaged app. On Windows, Tesseract is optional and must be installed separately, with English language data. Add it to `PATH`, or set `FORMBRIDGE_TESSERACT` to the full path of `tesseract.exe` before starting QuickCap (CV). Tesseract is not bundled or downloaded by this project. Without a working OCR engine, scans remain available for manual review and entry; text PDFs can still use their text layers.
 
 These are development builds without distribution signing or notarization. Windows execution has not been validated in this delivery. Build and test on each target OS before distributing it; a successful Mac build does not validate Windows behavior.
+
+On 2026-11-13, a fresh macOS arm64 environment installed the unchanged runtime and build pins and passed all 156 source tests. The final `QuickCapCV.app` built, and the source and packaged-worker custom-mask checks each passed all ten groups. See [the recorded results and limits](docs/TESTING.md). Mouse drawing, a complete native end-to-end workflow, Windows execution, and real-study REDCap import remain unverified.
 
 ## Run the source on macOS
 
@@ -78,7 +84,7 @@ macOS also requires an already-installed Swift compiler and Apple developer tool
 .venv/bin/python build_desktop.py --work-dir work/desktop-build --dist-dir dist/macos
 ```
 
-The result is `dist/macos/Formbridge.app`. PyInstaller also leaves its supporting `dist/macos/Formbridge` directory. Distribute the complete `.app` bundle. The console worker is built first, then included in the GUI bundle under `helpers`; the compiled OCR helper is included with both processes.
+The result is `dist/macos/QuickCapCV.app`. PyInstaller also leaves its supporting `dist/macos/QuickCapCV` directory. Distribute the complete `.app` bundle. The console worker is built first, then included in the GUI bundle under `helpers`; the compiled OCR helper is included with both processes.
 
 Windows PowerShell:
 
@@ -89,14 +95,16 @@ Windows PowerShell:
 .venv\Scripts\python.exe build_desktop.py --work-dir work\desktop-build --dist-dir dist\windows
 ```
 
-The result is `dist\windows\Formbridge\Formbridge.exe` with its adjacent dependencies. Distribute the complete `Formbridge` directory. Windows packages do not include Apple Vision or Tesseract.
+The result is `dist\windows\QuickCapCV\QuickCapCV.exe` with its adjacent dependencies. Distribute the complete `QuickCapCV` directory. Windows packages do not include Apple Vision or Tesseract.
 
-The builder checks that the GUI, companion worker, source modules, samples, and spreadsheet directory exist before building. It requires the installed PyInstaller version pinned in `requirements-build.txt`. Each run uses a new intermediate directory. If the selected destination already contains `Formbridge` or `Formbridge.app`, choose another `--dist-dir`; the builder preserves existing output. Retained work directories can be inspected or removed manually after review.
+The builder checks that the GUI, companion worker, source modules, samples, and spreadsheet directory exist before building. It requires the installed PyInstaller version pinned in `requirements-build.txt`. Each run uses a new intermediate directory. If the selected destination already contains `QuickCapCV` or `QuickCapCV.app`, choose another `--dist-dir`; the builder preserves existing output. Retained work directories can be inspected or removed manually after review.
 
 `desktop-build.yml` is an inactive GitHub Actions template. It uses separate macOS and Windows runners, Python 3.12, immutable action references, the synthetic tests, a native Tk initialization check, and a packaged-worker check. It has not been run as part of this delivery. Review its paths and copy it to `.github/workflows/` only when you choose to enable CI. Use only fictional fixtures in CI. The template does not sign, notarize, install Tesseract, or publish a release.
 
 ## Local data and review limits
 
 Documents, extracted values, and source pages are processed locally. Workers use private temporary storage; a crash can leave temporary files. Saved projects and exported spreadsheets persist where you save them, and project files include the source documents. The prototype does not provide managed access controls, encryption at rest, tamper-evident audit trails, or a compliance determination. Use fictional data until the full environment and workflow are approved for the intended research use.
+
+LLM extraction, learning from corrections, and camera capture are not implemented. [The LLM privacy proposal](docs/LLM_PRIVACY.md) describes future requirements and does not change the current app.
 
 See `README_BROWSER.md` for field definitions, input limits, spreadsheet restrictions, and the earlier browser workflow. This desktop build kit includes the native launchers; the earlier browser interface is a separate delivery.

@@ -1,0 +1,124 @@
+{
+  "date": "2026-11-13",
+  "scope": "Fresh isolated environment with the declared runtime and build requirements. Source tests on this Mac only.",
+  "python": "3.12.14",
+  "os": "Darwin",
+  "macOSVersion": "27.0.1",
+  "architecture": "arm64",
+  "tk": 9.0,
+  "packages": [
+    {
+      "package": "Pillow",
+      "declared": "12.3.0",
+      "installed": "12.3.0",
+      "matches": true
+    },
+    {
+      "package": "pypdfium2",
+      "declared": "5.14.0",
+      "installed": "5.14.0",
+      "matches": true
+    },
+    {
+      "package": "reportlab",
+      "declared": "4.4.9",
+      "installed": "4.4.9",
+      "matches": true
+    },
+    {
+      "package": "pypdf",
+      "declared": "6.10.0",
+      "installed": "6.10.0",
+      "matches": true
+    },
+    {
+      "package": "openpyxl",
+      "declared": "3.1.5",
+      "installed": "3.1.5",
+      "matches": true
+    },
+    {
+      "package": "defusedxml",
+      "declared": "0.7.1",
+      "installed": "0.7.1",
+      "matches": true
+    },
+    {
+      "package": "pyinstaller",
+      "declared": "6.22.3",
+      "installed": "6.22.3",
+      "matches": true
+    }
+  ],
+  "installedDistributions": [
+    {
+      "name": "altgraph",
+      "version": "0.17.5"
+    },
+    {
+      "name": "charset-normalizer",
+      "version": "3.5.2"
+    },
+    {
+      "name": "defusedxml",
+      "version": "0.7.1"
+    },
+    {
+      "name": "et_xmlfile",
+      "version": "2.0.0"
+    },
+    {
+      "name": "macholib",
+      "version": "1.16.4"
+    },
+    {
+      "name": "openpyxl",
+      "version": "3.1.5"
+    },
+    {
+      "name": "packaging",
+      "version": "26.3"
+    },
+    {
+      "name": "pillow",
+      "version": "12.3.0"
+    },
+    {
+      "name": "pip",
+      "version": "25.0.1"
+    },
+    {
+      "name": "pyinstaller",
+      "version": "6.22.3"
+    },
+    {
+      "name": "pyinstaller-hooks-contrib",
+      "version": "2026.10"
+    },
+    {
+      "name": "pypdf",
+      "version": "6.10.0"
+    },
+    {
+      "name": "pypdfium2",
+      "version": "5.14.0"
+    },
+    {
+      "name": "reportlab",
+      "version": "4.4.9"
+    },
+    {
+      "name": "setuptools",
+      "version": "84.2.1"
+    }
+  ],
+  "unitTests": {
+    "passed": 156,
+    "seconds": 19.425,
+    "log": "UNIT_TEST_RESULTS_MACOS.txt"
+  },
+  "windowsValidated": false,
+  "handwritingOrVisionModelValidated": false,
+  "LLMImplemented": false,
+  "patientDataUsed": false
+}

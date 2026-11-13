@@ -1,0 +1,24 @@
+{
+  "captureDate": "2026-11-13",
+  "scope": "Available user messages and user-visible assistant commentary/final answers from this project chat only.",
+  "completePagesRetrieved": true,
+  "sourceTurnCount": 15,
+  "exportedTurnCount": 15,
+  "exportedMessageCount": 124,
+  "operatingPolicyMessagesOmitted": 0,
+  "messagesWithPathEmailOrCitationRedactions": 11,
+  "nonConversationItemsOmitted": 1935,
+  "exclusions": [
+    "Internal reasoning, system/developer instructions, tool calls/results and raw execution logs",
+    "Operating-policy content, credentials and private workstation paths",
+    "Other chats and the contents of the earlier shared ChatGPT link",
+    "Research documents, source-bearing projects, datasets and train/test evaluation files"
+  ],
+  "limitations": [
+    "Snapshot taken during the current turn, after the user selected QuickCap (CV); later publication results are recorded in HANDOFF.md.",
+    "Local artifact links are replaced with labels; clone-relative setup and testing instructions are provided separately."
+  ],
+  "questionReplyWrappersSimplified": 3,
+  "snapshotIncludesLatestLabel": "QuickCap (CV)",
+  "latestTurnMessagesRefreshed": true
+}

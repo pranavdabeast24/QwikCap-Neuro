@@ -1,4 +1,4 @@
-"""Formbridge native desktop window. Launch: python desktop.py.
+"""Native desktop form-review window. Launch: python desktop.py.
 
 Tk owns widgets and dialogs; one serial background thread owns domain commands.
 There is no webview, browser, HTTP listener, account or network dependency.
@@ -16,7 +16,7 @@ from tkinter import ttk, filedialog, messagebox
 
 from PIL import Image, ImageTk
 
-from branding import OWNERSHIP_NOTICE
+from branding import OWNERSHIP_NOTICE, PRODUCT_NAME
 from desktop_model import DesktopSession, InputError, Cancelled
 from server import ROOT, validate_values
 from form_types import normalized_drag, percentage_region, validate_region
@@ -100,7 +100,7 @@ class DesktopApp:
         self._render(self.snapshot)
 
     def _setup_style(self):
-        self.root.title("Formbridge — Local form review")
+        self.root.title(f"{PRODUCT_NAME} — Local form review")
         self.root.geometry("1320x850")
         self.root.minsize(1024, 700)
         self.root.configure(background="#f2f4f7")
@@ -146,7 +146,7 @@ class DesktopApp:
         header.columnconfigure(1, weight=1)
         brand = ttk.Frame(header)
         brand.grid(row=0, column=0, sticky="w")
-        ttk.Label(brand, text="Formbridge", style="Title.TLabel").grid(row=0, column=0, sticky="w")
+        ttk.Label(brand, text=PRODUCT_NAME, style="Title.TLabel").grid(row=0, column=0, sticky="w")
         ttk.Label(brand, text=OWNERSHIP_NOTICE, style="Small.TLabel").grid(row=1, column=0, sticky="w", pady=(2, 0))
         ttk.Label(header, textvariable=self.mode_label, style="Small.TLabel", width=1).grid(row=0, column=1, sticky="ew", padx=20)
         self.project_label = ttk.Label(header, text="Unsaved project", style="Small.TLabel")
@@ -783,7 +783,7 @@ class DesktopApp:
         self.export_menu_entries.append((spreadsheet_menu, spreadsheet_menu.index("end"), "xlsx"))
         menu.add_cascade(label="Spreadsheet", menu=spreadsheet_menu)
         help_menu = tk.Menu(menu, tearoff=False)
-        help_menu.add_command(label="About Formbridge", command=lambda: messagebox.showinfo("Formbridge", OWNERSHIP_NOTICE + "\n\nNative local form review and spreadsheet mapping.\n\nUpload a PDF or image, draw masks around answer areas and name the fields you need. Save a reusable named extraction type containing only rules and masks.\n\nReview and confirm every answer against its source, then approve records before spreadsheet export. Matching page shapes do not establish that two documents use the same layout.\n\nProjects retain original documents, answers and unfinished type drafts; reopening requires fresh review.", parent=self.root))
+        help_menu.add_command(label=f"About {PRODUCT_NAME}", command=lambda: messagebox.showinfo(PRODUCT_NAME, OWNERSHIP_NOTICE + "\n\nNative local form review and spreadsheet mapping.\n\nUpload a PDF or image, draw masks around answer areas and name the fields you need. Save a reusable named extraction type containing only rules and masks.\n\nReview and confirm every answer against its source, then approve records before spreadsheet export. Matching page shapes do not establish that two documents use the same layout.\n\nProjects retain original documents, answers and unfinished type drafts; reopening requires fresh review.", parent=self.root))
         menu.add_cascade(label="Help", menu=help_menu)
         self.root.configure(menu=menu)
 
@@ -844,7 +844,7 @@ class DesktopApp:
                     continue
                 if kind == "error":
                     self.status.set(result)
-                    messagebox.showerror("Formbridge", result, parent=self.root)
+                    messagebox.showerror(PRODUCT_NAME, result, parent=self.root)
                 else:
                     self.status.set("Ready.")
                     if callback:
@@ -1597,7 +1597,7 @@ class DesktopApp:
         def perform():
             path = None if save_as else self.snapshot.get("projectPath")
             if not path:
-                path = filedialog.asksaveasfilename(parent=self.root, title="Save Formbridge project", defaultextension=".json", initialfile="formbridge-project.json", filetypes=[("Formbridge project", "*.json")])
+                path = filedialog.asksaveasfilename(parent=self.root, title=f"Save {PRODUCT_NAME} project", defaultextension=".json", initialfile="quickcap-project.json", filetypes=[(f"{PRODUCT_NAME} project", "*.json")])
             if not path:
                 return
             self._submit("Saving local project", lambda: self.session.save_project(path), lambda _: callback() if callback else self.status.set("Project saved. Reopening requires fresh field confirmation and approval."))
@@ -1621,7 +1621,7 @@ class DesktopApp:
     def open_project(self):
         if self.busy:
             return
-        path = filedialog.askopenfilename(parent=self.root, title="Open Formbridge project", filetypes=[("Formbridge project", "*.json"), ("All files", "*")])
+        path = filedialog.askopenfilename(parent=self.root, title=f"Open {PRODUCT_NAME} project", filetypes=[(f"{PRODUCT_NAME} project", "*.json"), ("All files", "*")])
         if path:
             self._guard_unsaved(lambda: self._submit("Opening and reprocessing project", lambda: self.session.open_project(path), lambda _: self.status.set("Project opened. All confirmations and approvals require fresh review.")))
 

@@ -1,6 +1,6 @@
 # INACTIVE TEMPLATE: review paths, then copy to .github/workflows/ to enable.
 # This workflow accepts synthetic fixtures only; do not add patient/private data.
-name: Build Formbridge desktop
+name: Build QuickCap (CV) desktop
 
 on:
   workflow_dispatch:
@@ -46,8 +46,9 @@ jobs:
           import subprocess
           import sys
           import tempfile
+          from branding import APP_BASENAME
 
-          package = Path('dist/desktop') / ('Formbridge.app' if sys.platform == 'darwin' else 'Formbridge')
+          package = Path('dist/desktop') / (f'{APP_BASENAME}.app' if sys.platform == 'darwin' else APP_BASENAME)
           name = 'FormbridgeWorker.exe' if sys.platform == 'win32' else 'FormbridgeWorker'
           helpers = [path for path in package.rglob(name) if path.is_file()]
           assert helpers, 'Companion worker is missing from the GUI package'
@@ -76,15 +77,15 @@ jobs:
           PY
       - name: Archive Mac app with bundle permissions and links
         if: runner.os == 'macOS'
-        run: ditto -c -k --sequesterRsrc --keepParent dist/desktop/Formbridge.app dist/Formbridge-macOS.zip
+        run: ditto -c -k --sequesterRsrc --keepParent dist/desktop/QuickCapCV.app dist/QuickCapCV-macOS.zip
       - name: Archive complete Windows application folder
         if: runner.os == 'Windows'
         shell: pwsh
-        run: Compress-Archive -Path dist/desktop/Formbridge -DestinationPath dist/Formbridge-Windows.zip
+        run: Compress-Archive -Path dist/desktop/QuickCapCV -DestinationPath dist/QuickCapCV-Windows.zip
       - name: Retain native build for manual review
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: Formbridge-${{ matrix.os }}
-          path: dist/Formbridge-*.zip
+          name: QuickCapCV-${{ matrix.os }}
+          path: dist/QuickCapCV-*.zip
           if-no-files-found: error
           retention-days: 7

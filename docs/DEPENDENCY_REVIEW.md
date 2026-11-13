@@ -16,11 +16,13 @@ This is a preliminary readiness review dated 2026-11-13. It is not a legal opini
 
 These licenses do not establish ownership of the original application. They generally allow commercial use subject to their conditions. Python, Tcl/Tk, native libraries, transitive packages and any runtime hooks need a build-specific inventory and complete notices. The installed PDFium wheel alone includes multiple third-party build-license files.
 
-## The tested environment differs from the requirement pins
+## Historical environment mismatch and current source validation
+
+The new handoff has now been installed from the unchanged runtime and build requirements in a fresh isolated environment. All declared pins matched and all 156 source tests passed on the recorded Mac. See [the current environment record](testing/ENVIRONMENT_MACOS.json). Windows validation and complete binary-distribution notices remain pending.
 
 The inspected runtime has Pillow 13.0.0, pypdfium2 5.13.0 and pypdf 6.21.4. The requirement file pins 12.3.0, 5.14.0 and 6.10.0 respectively. Other inspected direct pins match. The environment inventory records both versions.
 
-No dependencies were installed or upgraded for the branding change. Test results apply to the recorded installed environment. Before a customer release, select one supported dependency set, reproduce it in an isolated build environment, test it, and inventory the resulting Mac and Windows artifacts. Do not describe the current artifacts as a validated exact-pin build.
+Those differences apply to the earlier branding build. The current source validation resolves the declared-pin installation gap for this Mac configuration. Before a customer release, inventory and review the actual Mac and Windows binary distributions and their notices. Do not extend the Mac source result to untested platforms or configurations.
 
 ## Research instrument and sample provenance
 

@@ -1,6 +1,6 @@
-# Formbridge desktop source
+# Legacy Formbridge browser reference
 
-Start with [README_DESKTOP.md](README_DESKTOP.md) for the native Mac and Windows application, the neurology training profile, build instructions and current limits. Launch `desktop.py` or the packaged Formbridge application. The browser instructions below describe the earlier interface and are retained as reference.
+Start with [README_DESKTOP.md](README_DESKTOP.md) for the current QuickCap (CV) native Mac and Windows application, build instructions and current limits. Launch `desktop.py` or the packaged `QuickCapCV` application. The browser instructions below describe the earlier Formbridge interface and are retained as historical reference; their product name and workflow do not describe the current desktop startup.
 
 Formbridge is a local prototype for fictional research forms. Upload a document, inspect extracted answers against the source, confirm each value, and map the reviewed fields to an Excel or REDCap-like template. Preview every populated row before downloading approved records as XLSX or CSV. The real study form, REDCap dictionary, and import template are still needed.
 

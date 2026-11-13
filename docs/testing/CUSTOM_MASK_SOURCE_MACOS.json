@@ -1,0 +1,108 @@
+{
+  "notice": "Generated fictional shipping data only; no user dataset read.",
+  "method": "Independent DesktopSession acceptance; normalized masks derived from reportlab drawing geometry; exported files reopened independently",
+  "nativeUI": "Not covered by this script; requires separate native-control evidence.",
+  "worker": "source",
+  "checks": [
+    {
+      "check": "blank start and blank project roundtrip",
+      "status": "passed"
+    },
+    {
+      "check": "first PDF renders blank and custom page masks extract exact values",
+      "status": "passed",
+      "fieldsMatched": 4
+    },
+    {
+      "check": "saved reusable type strict structural allowlist and no source or answer leakage",
+      "status": "passed",
+      "rootKeys": [
+        "fields",
+        "format",
+        "identifierField",
+        "name",
+        "pages"
+      ]
+    },
+    {
+      "check": "fresh session type reuse, exact second-form extraction, review and independent exports",
+      "status": "passed",
+      "fieldsMatched": 4,
+      "exportedCellsMatched": 8
+    },
+    {
+      "check": "project restores definitions and source while clearing all review gates",
+      "status": "passed"
+    },
+    {
+      "check": "unfinished setup blocks export and applying edited type reprocesses and clears gates",
+      "status": "passed"
+    },
+    {
+      "check": "invalid type files reject transactionally",
+      "status": "passed",
+      "cases": [
+        {
+          "case": "unknown top-level data",
+          "message": "Choose a rules-only QuickCap (CV) extraction type (formbridge-form-type-v1)."
+        },
+        {
+          "case": "unknown field data",
+          "message": "Extraction types may contain field rules only; source documents and answers are not allowed."
+        },
+        {
+          "case": "duplicate name",
+          "message": "Explicitly choose a text field as the record identifier."
+        },
+        {
+          "case": "invalid field name",
+          "message": "Use unique REDCap field names with lowercase letters, digits and underscores."
+        },
+        {
+          "case": "missing identifier",
+          "message": "Explicitly choose a text field as the record identifier."
+        },
+        {
+          "case": "invalid rectangle",
+          "message": "Region must fit inside the page."
+        },
+        {
+          "case": "missing page definition",
+          "message": "A field mask refers to a page outside this extraction type."
+        },
+        {
+          "case": "malformed JSON"
+        }
+      ]
+    },
+    {
+      "check": "missing page blocks approval and export",
+      "status": "passed",
+      "issues": "['notes: Required field was not found; enter or verify it manually.', 'event_date: Required field was not found; enter or verify it manually.'] {'record_id': 'This field is required.', 'sample_count': 'This field is required.', 'notes': 'This field is required.', 'event_date': 'This field is required.'} ['This document has a different page count from the extraction type. Load or design the correct type before review.']"
+    },
+    {
+      "check": "incompatible aspect ratio blocks approval and export",
+      "status": "passed",
+      "issues": "['record_id: Required field was not found; enter or verify it manually.', 'sample_count: Required field was not found; enter or verify it manually.', 'notes: Required field was not found; enter or verify it manually.', 'event_date: Required field was not found; enter or verify it manually.'] {'record_id': 'This field is required.', 'sample_count': 'This field is required.', 'notes': 'This field is required.', 'event_date': 'This field is required.'} ['This document has a different page shape from the extraction type. Load or design the correct type before review.']"
+    },
+    {
+      "check": "invalid draft apply rejects transactionally and discarding edit preserves applied type",
+      "status": "passed"
+    }
+  ],
+  "exports": [
+    {
+      "file": "custom-mask-export.csv",
+      "records": 1,
+      "cellsMatched": 4,
+      "headersMatched": 4
+    },
+    {
+      "file": "custom-mask-export.xlsx",
+      "records": 1,
+      "cellsMatched": 4,
+      "headersMatched": 4
+    }
+  ],
+  "status": "passed"
+}

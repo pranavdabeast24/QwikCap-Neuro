@@ -19,6 +19,7 @@ import threading
 import uuid
 from typing import Callable
 
+from branding import PRODUCT_NAME
 from server import (Workspace, InputError, ConflictError, MAX_BODY, MAX_FILE,
                     MAX_RECORDS, MAX_VALUE_BYTES, parse_schema, schema_from_csv,
                     strict_json_loads, validate_values, now, ROOT)
@@ -395,7 +396,7 @@ class DesktopSession:
         except (json.JSONDecodeError, UnicodeError) as exc:
             raise InputError("This project is not valid UTF-8 JSON.") from exc
         if not isinstance(body, dict) or body.get("format") not in {"formbridge-project-v1", "formbridge-project-v2"}:
-            raise InputError("Choose a Formbridge project (v1 or v2).")
+            raise InputError(f"Choose a {PRODUCT_NAME} project (v1 or v2).")
         schema = [] if body.get("schema") == [] else parse_schema(body.get("schema"))
         definition, draft = None, None
         if body["format"] == "formbridge-project-v2":

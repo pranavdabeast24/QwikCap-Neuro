@@ -1,0 +1,30 @@
+{
+  "notice": "Generated fictional forms only. No patient data.",
+  "bundle": "QuickCapCV.app",
+  "documents": 10,
+  "extractedMatches": 60,
+  "exports": [
+    {
+      "file": "desktop-filled-redcap.xlsx",
+      "records": 10,
+      "cellsMatched": 60
+    },
+    {
+      "file": "desktop-filled-redcap.csv",
+      "records": 10,
+      "cellsMatched": 60
+    },
+    {
+      "file": "desktop-filled-friendly.xlsx",
+      "records": 10,
+      "cellsMatched": 60
+    },
+    {
+      "file": "desktop-filled-friendly.csv",
+      "records": 10,
+      "cellsMatched": 60
+    }
+  ],
+  "method": "DesktopSession with real packaged companion workers and bundled fixtures",
+  "status": "passed"
+}

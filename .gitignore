@@ -7,6 +7,10 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.tox/
+.nox/
+.coverage
+htmlcov/
 .DS_Store
 Thumbs.db
 /build/
@@ -29,6 +33,7 @@ Thumbs.db
 *.pem
 *.key
 *.formbridge.json
+quickcap-project.json
 *.formtype.json
 *.spec
 *.pdf
@@ -56,3 +61,5 @@ Thumbs.db
 !spreadsheets/friendly-template.xlsx
 !spreadsheets/redcap-template.xlsx
 !spreadsheets/redcap-template.csv
+!docs/testing/QUICKCAP_CV_EMPTY.jpg
+!docs/testing/QUICKCAP_CV_ABOUT.jpg

@@ -5,6 +5,7 @@ import copy
 import math
 import uuid
 
+from branding import PRODUCT_NAME
 from server import InputError, parse_schema
 
 FORMAT = "formbridge-form-type-v1"
@@ -122,7 +123,7 @@ def compile_draft(raw):
 
 def parse_form_type(raw):
     if not isinstance(raw, dict) or set(raw) != {"format", *DRAFT_KEYS} or raw.get("format") != FORMAT:
-        raise InputError("Choose a rules-only Formbridge extraction type (formbridge-form-type-v1).")
+        raise InputError(f"Choose a rules-only {PRODUCT_NAME} extraction type (formbridge-form-type-v1).")
     fields = raw.get("fields")
     if not isinstance(fields, list) or any(not isinstance(f, dict) or set(f) - RULE_KEYS for f in fields):
         raise InputError("Extraction types may contain field rules only; source documents and answers are not allowed.")
