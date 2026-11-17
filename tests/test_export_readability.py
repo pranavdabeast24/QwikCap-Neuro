@@ -23,7 +23,7 @@ class ReadabilityTests(unittest.TestCase):
         app.selected_record = record["id"]
         app._practice_schema = state["schema"]
         for name in ("queue_tree", "mode_label", "queue_label", "reviewer_var", "project_label",
-                     "_render_fields", "_render_page", "_render_spreadsheet", "_render_designer"):
+                     "_render_fields", "_render_page", "_render_spreadsheet", "_render_designer", "_refresh_catalog"):
             setattr(app, name, Mock())
         app.queue_tree.get_children.return_value = ()
         app._record = lambda: record

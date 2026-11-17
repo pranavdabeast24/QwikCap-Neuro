@@ -61,5 +61,9 @@ quickcap-project.json
 !spreadsheets/friendly-template.xlsx
 !spreadsheets/redcap-template.xlsx
 !spreadsheets/redcap-template.csv
+!spreadsheets/pace-import-template.csv
 !docs/testing/QUICKCAP_CV_EMPTY.jpg
 !docs/testing/QUICKCAP_CV_ABOUT.jpg
+!docs/testing/PACE_CATALOG_MACOS.jpg
+!docs/testing/PACE_GROUPING_MACOS.jpg
+!docs/testing/PACE_PATIENT_BUNDLE_MACOS.jpg

@@ -10,6 +10,7 @@ from collections import Counter
 import csv
 from decimal import Decimal, InvalidOperation
 import io
+import json
 import math
 from pathlib import PurePosixPath
 import posixpath
@@ -20,11 +21,11 @@ from urllib.parse import unquote
 import zipfile
 
 from branding import PRODUCT_NAME
+from limits import MAX_COLUMNS, MAX_FIELDS, MAX_SCHEMA_BYTES
 
 MAX_TEMPLATE_BYTES = 4 * 1024 * 1024
 MAX_EXPANDED_BYTES = 30 * 1024 * 1024
 MAX_ZIP_ENTRIES = 300
-MAX_COLUMNS = 100
 MAX_TEMPLATE_ROWS = 2000
 MAX_EXPORT_ROWS = 60
 MAX_VALUE_LENGTH = 4000
@@ -192,7 +193,7 @@ def _preflight_xlsx(data: bytes) -> None:
                             for char in match[1]:
                                 column = column * 26 + ord(char) - 64
                             if column > MAX_COLUMNS or int(match[2]) > MAX_TEMPLATE_ROWS:
-                                raise TemplateError("A worksheet exceeds 100 columns or 2,000 rows.")
+                                raise TemplateError(f"A worksheet exceeds {MAX_COLUMNS} columns or 2,000 rows.")
     except TemplateError:
         raise
     except (zipfile.BadZipFile, RuntimeError, OSError, ValueError, NotImplementedError) as error:
@@ -208,7 +209,7 @@ def _load_xlsx(data: bytes):
         raise TemplateError("The XLSX workbook could not be read safely.") from error
     for worksheet in workbook.worksheets:
         if worksheet.max_row > MAX_TEMPLATE_ROWS or worksheet.max_column > MAX_COLUMNS:
-            raise TemplateError("A worksheet exceeds 100 columns or 2,000 rows.")
+            raise TemplateError(f"A worksheet exceeds {MAX_COLUMNS} columns or 2,000 rows.")
         if any(cell.data_type == "f" for cell in worksheet._cells.values()):
             raise TemplateError("Formula-containing templates are rejected.")
     return workbook
@@ -222,7 +223,7 @@ def _headers(values: list) -> list[dict]:
     while values and not _populated(values[-1]):
         values.pop()
     if not values or len(values) > MAX_COLUMNS:
-        raise TemplateError("The header must contain between 1 and 100 columns.")
+        raise TemplateError(f"The header must contain between 1 and {MAX_COLUMNS} columns.")
     columns = []
     seen = set()
     for index, value in enumerate(values):
@@ -262,7 +263,7 @@ def inspect_template(data: bytes, filename: str, sheet: str | None = None, heade
             columns = _headers(values)
             for index, row in enumerate(reader, start=2):
                 if index > MAX_TEMPLATE_ROWS or len(row) > MAX_COLUMNS:
-                    raise TemplateError("The CSV exceeds 100 columns or 2,000 rows.")
+                    raise TemplateError(f"The CSV exceeds {MAX_COLUMNS} columns or 2,000 rows.")
                 if any(_populated(value) for value in row):
                     raise TemplateError("The template already contains destination data. Upload a blank template.")
         except (UnicodeDecodeError, csv.Error, StopIteration) as error:
@@ -304,8 +305,10 @@ def inspect_template(data: bytes, filename: str, sheet: str | None = None, heade
 
 def _schema_fields(schema) -> list[dict]:
     fields = schema.get("fields") if isinstance(schema, dict) else schema
-    if not isinstance(fields, list) or not fields or len(fields) > 500:
-        raise TemplateError("The source schema must contain between 1 and 500 fields.")
+    if not isinstance(fields, list) or not fields or len(fields) > MAX_FIELDS:
+        raise TemplateError(f"The source schema must contain between 1 and {MAX_FIELDS} fields.")
+    if len(json.dumps(fields, ensure_ascii=True).encode()) > MAX_SCHEMA_BYTES:
+        raise TemplateError("The source schema must be at most 1 MiB.")
     names = set()
     for field in fields:
         if not isinstance(field, dict) or not isinstance(field.get("name"), str) or not field["name"] or field["name"] in names:
@@ -365,6 +368,8 @@ def _normalized(value: str) -> str:
 
 def suggested_mapping(spec: dict, schema) -> dict:
     """Literal normalized name/label/alias matches only; suggestions are not consent."""
+    if schema == []:
+        return {}
     fields = _schema_fields(schema)
     lookup: dict[str, set[str]] = {}
     for field in fields:

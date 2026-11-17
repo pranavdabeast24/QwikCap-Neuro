@@ -1,0 +1,9 @@
+"""Shared bounds for extraction rules and destination columns."""
+
+MAX_FIELDS = 600
+MAX_COLUMNS = 600
+MAX_SCHEMA_BYTES = 1024 * 1024
+MAX_PAGES = 32
+MAX_BUNDLE_DOCUMENTS = 16
+MAX_RENDER_PIXELS = 120_000_000
+MAX_ASSET_BYTES = 128 * 1024 * 1024

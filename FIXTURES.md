@@ -1,5 +1,14 @@
 # Fictional fixtures
 
+The 2026-11-17 study reference assets are separate from the generated fictional record fixtures below. `study_profiles/pace.json` contains bounded field metadata derived from the user-confirmed blank codebook. `spreadsheets/pace-import-template.csv` contains only the 512 named destination headers. Neither contains patient rows. The original references are not shipped. Instrument content and commercial distribution rights still need appropriate review.
+
+| Study reference asset | SHA-256 |
+| --- | --- |
+| `study_profiles/pace.json` | `e8a2c021405da7defead007e9f8e7f5f3852ae926c35f2fb687a474e6f8faf53` |
+| `spreadsheets/pace-import-template.csv` | `cdcd6ba3a0449bcde17cb1049c026572bd1224e55bad32084fc9c579bcb9fd8e` |
+
+`tools/verify_pace_flow.py` generates new fictional forms for patient-bundle acceptance. Its generated source PDFs, source-bearing projects and exports remain ignored verification outputs.
+
 These fixtures were generated for this prototype. They contain fictional practice records, not patient data, and are not an authorized-train or other research dataset. No training, testing split, processed record, or prior verification output is included in this repository.
 
 `generate_samples.py` documents and regenerates the fictional PDF/image samples and their answer key. The included blank spreadsheet templates were authored for this prototype; their source generator is not shipped because it used a workstation-specific path. `spreadsheets/template-manifest.json` records the intended example field associations. SHA-256 below identifies the exact staged files, not a clinical validation claim.

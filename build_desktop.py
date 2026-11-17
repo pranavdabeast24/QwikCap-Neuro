@@ -24,7 +24,8 @@ RUNTIME_MODULES = (
 )
 REQUIRED_FILES = (
     "desktop.py", "branding.py", "desktop_model.py", "desktop_worker.py", "runtime_paths.py", "form_types.py",
-    "pipeline.py", "worker.py", "templates.py", "template_worker.py", "server.py", "neurology_profile.py",
+    "pipeline.py", "worker.py", "templates.py", "template_worker.py", "server.py", "neurology_profile.py", "field_catalog.py", "limits.py",
+    "study_profiles/pace.json", "spreadsheets/pace-import-template.csv", "source_bundle.py", "bundle_worker.py",
     "requirements.txt", "requirements-build.txt",
 )
 
@@ -110,7 +111,7 @@ def build(work_dir: Path, dist_dir: Path) -> Path:
         sys.executable, "-m", "PyInstaller", "--noupx",
         "--specpath", str(spec_dir), "--collect-all", "pypdfium2",
     ]
-    for optional in ("numpy", "pandas", "matplotlib", "scipy", "IPython", "pytest", "reportlab"):
+    for optional in ("numpy", "pandas", "matplotlib", "scipy", "IPython", "pytest"):
         common += ["--exclude-module", optional]
     native_options = ["--add-binary", f"{native_binary}:."] if native_binary else []
     helper_dist = run_dir / "helper-dist"
@@ -118,6 +119,7 @@ def build(work_dir: Path, dist_dir: Path) -> Path:
         "--onefile", "--console", "--name", "FormbridgeWorker",
         "--distpath", str(helper_dist), "--workpath", str(run_dir / "helper-work"),
         "--hidden-import", "worker", "--hidden-import", "template_worker",
+        "--hidden-import", "bundle_worker",
     ] + native_options + [str(ROOT / "desktop_worker.py")], environment)
     helper = helper_dist / ("FormbridgeWorker.exe" if sys.platform == "win32" else "FormbridgeWorker")
     if not helper.is_file():
@@ -129,6 +131,7 @@ def build(work_dir: Path, dist_dir: Path) -> Path:
         "--add-binary", f"{helper}:helpers",
         "--add-data", f"{ROOT / 'samples'}:samples",
         "--add-data", f"{ROOT / 'spreadsheets'}:spreadsheets",
+        "--add-data", f"{ROOT / 'study_profiles'}:study_profiles",
     ]
     if sys.platform == "darwin":
         gui_options += ["--osx-bundle-identifier", "org.formbridge.desktop"]

@@ -5,7 +5,7 @@ import sys
 
 
 ROOT = Path(__file__).resolve().parent
-WORKER_KINDS = frozenset({"document", "template"})
+WORKER_KINDS = frozenset({"document", "template", "bundle"})
 
 
 def worker_command(kind):

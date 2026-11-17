@@ -1,0 +1,113 @@
+{
+  "date": "2026-11-17",
+  "name": "QuickCap (CV)",
+  "platform": "Darwin",
+  "macOSVersion": "27.0.1",
+  "architecture": "arm64",
+  "python": "3.12.14",
+  "tk": 9,
+  "exactRequirementPins": [
+    {
+      "name": "Pillow",
+      "required": "12.3.0",
+      "installed": "12.3.0"
+    },
+    {
+      "name": "pypdfium2",
+      "required": "5.14.0",
+      "installed": "5.14.0"
+    },
+    {
+      "name": "reportlab",
+      "required": "4.4.9",
+      "installed": "4.4.9"
+    },
+    {
+      "name": "pypdf",
+      "required": "6.10.0",
+      "installed": "6.10.0"
+    },
+    {
+      "name": "openpyxl",
+      "required": "3.1.5",
+      "installed": "3.1.5"
+    },
+    {
+      "name": "defusedxml",
+      "required": "0.7.1",
+      "installed": "0.7.1"
+    },
+    {
+      "name": "pyinstaller",
+      "required": "6.22.3",
+      "installed": "6.22.3"
+    }
+  ],
+  "unitTests": {
+    "passed": 208,
+    "seconds": 22.877,
+    "log": "PACE_UNIT_MACOS.txt"
+  },
+  "sourceAcceptance": "PACE_SOURCE_MACOS.json",
+  "packagedAcceptance": "PACE_BUNDLE_MACOS.json",
+  "sourceSHA256": {
+    "branding.py": "d7386cb33ffb85671442ae2b4f473c3722cf251d8171374e10aa24cec5ba9ef3",
+    "build_desktop.py": "c5e635cf76739df74e5a30bc60ce0302f6bf9fff023ef2153f2538833ce708d5",
+    "bundle_worker.py": "8e39db32b7a8161669f04090b5e5b84f1b8fff10d4d37d828983f48b3e5d476f",
+    "desktop.py": "7cf382e5f08908df70f32e2ded17d41663a74a1f0416402fd9eea72528120a52",
+    "desktop_model.py": "7dd1eba8923ab4e59ea34489b758a4a84495e71fa4240c40d11c4c7953da84fd",
+    "desktop_worker.py": "9b3b6f99ac68a25adae7fb946ee0cf849885615b7f59ecb2ccedc549269289e9",
+    "field_catalog.py": "7fd5a71f37e35fff6d64d0004de3ae1073d332dd8ada61600f5c9598c0adc81a",
+    "form_types.py": "f9cc3a17c13954abb9f0450e91f0d56fa1f1d3be3beab335b0d96ced01241bfc",
+    "generate_samples.py": "872837ee67a8805b86cb433756d608a5fa253cf2cb8a721a39f37d92b738d36e",
+    "limits.py": "b1c9e19de0e7e62cb9c937c78570a13530a6b0b81148a2fc5ed5bafac7e9a73d",
+    "neurology_profile.py": "d5167f215dd279b683adcbb89113bb63038f67d26d76275dcf13f813effe1c02",
+    "pipeline.py": "d75d09d0e524d387d212eebca04a545a0e53a22cd1a2e2dea0ee8df7464187f7",
+    "runtime_paths.py": "b16c2023bcffb8e4c5b106d52fa929fbdc49d304adaac4095721a390c19a25d8",
+    "server.py": "761a1ea63eef7afb063a184b11a35dd0c4c325a2c6221482dcc60c9d8e6a4adb",
+    "source_bundle.py": "28f0242792bfcbb1f99e244796fad13856a6113537bd216a5dfc0f1379179909",
+    "template_worker.py": "808e562f326a9a6e720df9af79ad4dd92eaaa42f95e46cfe8f8b5a0ed6596d2c",
+    "templates.py": "99c3d96675fd369f119aa13a704da83d5810ba36b59d595e3188fc3435c37e51",
+    "verify_desktop_bundle.py": "92b2674493adef80886069f821a37e2da798ea4690a9775390b96d5bac78b3dd",
+    "verify_samples.py": "61dda13f51fdf6d4bbf15c9aa42635b72a1cf9752256e6a8d5a8aa32448edba7",
+    "verify_spreadsheet_flow.py": "241f16ea996fc0ddcd25698d317e2b831eab488e0384a58a1037300a2e596814",
+    "worker.py": "26fa8f2db8b88093439fea95db9d2c5170cd814246f3e91a88ec7e98d5a367be"
+  },
+  "resourceSHA256": {
+    "study_profiles/pace.json": "e8a2c021405da7defead007e9f8e7f5f3852ae926c35f2fb687a474e6f8faf53",
+    "spreadsheets/pace-import-template.csv": "cdcd6ba3a0449bcde17cb1049c026572bd1224e55bad32084fc9c579bcb9fd8e"
+  },
+  "bundleExecutables": {
+    "Contents/MacOS/QuickCapCV": "a26eed2fea577d8d3ebf7d6ae550bf6f899171aef9d1c889920eb18d739b95f6",
+    "Contents/Frameworks/helpers/FormbridgeWorker": "a99c0a4d027ffca4277624577e90c7bbe0174711a4a4ebad312f29895f8b5ded"
+  },
+  "nativeChecks": [
+    "512-field catalog load and search, exact choice-code display",
+    "Ordered two-PDF grouping, operator-entered ID and explicit same-patient consent",
+    "One three-page bundle, original source index and operator-cover distinction",
+    "Project reopened with 12 extracted fields, ISO date and all review gates cleared",
+    "Final inspector layout measured in native Tk tests at 1320x850 and 1024x700",
+    "Final app left blank with no demo records"
+  ],
+  "nativeLimits": [
+    "Complete native source-to-export workflow was not verified by desktop automation",
+    "Mouse-drag and coordinate creation remain unverified by this desktop automation"
+  ],
+  "patientDataUsed": false,
+  "heldOutDatasetUsed": false,
+  "windowsExecuted": false,
+  "liveREDCapImportValidated": false,
+  "repeatingInstrumentConversionImplemented": false,
+  "LLMImplemented": false,
+  "distributionSigningOrNotarization": false,
+  "catalogNotes": {
+    "columns": 512,
+    "instruments": 9,
+    "expandedCheckboxColumns": 294,
+    "uncertainOptionLabels": 69,
+    "unlabeledFields": [
+      "hit6_date"
+    ],
+    "originalCodebookIncluded": false
+  }
+}

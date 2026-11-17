@@ -27,6 +27,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit, parse_qs
 
 from pipeline import capabilities
+from limits import MAX_FIELDS, MAX_SCHEMA_BYTES, MAX_PAGES
 from PIL import Image
 from templates import validate_mapping, suggested_mapping
 from runtime_paths import worker_command, process_options
@@ -40,7 +41,7 @@ MAX_RECORDS = 60
 MAX_SESSION_BYTES = 20 * 1024 * 1024
 MAX_VALUE_BYTES = 4 * 1024 * 1024
 FIELD_NAME = re.compile(r"^[a-z][a-z0-9_]{0,99}$")
-ASSET = re.compile(r"^/api/assets/([A-Za-z0-9_-]{1,80})/(page-[1-8]\.png)$")
+ASSET = re.compile(r"^/api/assets/([A-Za-z0-9_-]{1,80})/(page-(?:[1-9]|[12][0-9]|3[0-2])\.png)$")
 TYPES = {"text", "integer", "number", "date", "choice"}
 DECIMAL = re.compile(r"^-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?$")
 
@@ -51,6 +52,27 @@ class InputError(ValueError):
 
 class ConflictError(InputError):
     pass
+
+
+def source_bytes(records):
+    def size(encoded):
+        return len(encoded) // 4 * 3 - (2 if encoded.endswith("==") else 1 if encoded.endswith("=") else 0)
+    return sum(size(record["sourceData"]) + sum(size(source["sourceData"]) for source in record.get("bundleSources", [])) for record in records)
+
+
+def public_record(record):
+    result = {key: value for key, value in record.items() if key != "sourceData"}
+    if "bundleSources" in record:
+        result["bundleSources"] = [{key: value for key, value in source.items() if key != "sourceData"} for source in record["bundleSources"]]
+    return result
+
+
+def project_record(record):
+    result = {key: record[key] for key in ("filename", "sourceData", "sourceHash", "values")}
+    for key in ("bundleSources", "bundleRecordId"):
+        if key in record:
+            result[key] = record[key]
+    return result
 
 
 def strict_json_loads(raw):
@@ -91,11 +113,11 @@ def now():
 
 
 def parse_schema(raw):
-    if len(json.dumps(raw, ensure_ascii=True).encode()) > 200000:
-        raise InputError("Field mapping must be under 200 KB.")
+    if len(json.dumps(raw, ensure_ascii=True).encode()) > MAX_SCHEMA_BYTES:
+        raise InputError("Field mapping must be at most 1 MiB.")
     fields = raw.get("fields", raw.get("schema")) if isinstance(raw, dict) else raw
-    if not isinstance(fields, list) or not 1 <= len(fields) <= 100:
-        raise InputError("A schema must contain 1 to 100 fields.")
+    if not isinstance(fields, list) or not 1 <= len(fields) <= MAX_FIELDS:
+        raise InputError(f"A schema must contain 1 to {MAX_FIELDS} fields.")
     result, names = [], set()
     for index, item in enumerate(fields):
         if not isinstance(item, dict):
@@ -111,6 +133,10 @@ def parse_schema(raw):
         if type(item.get("required", False)) is not bool:
             raise InputError("The required property must be true or false.")
         field = {"name": name, "label": label, "type": kind, "required": item.get("required", False)}
+        if "sourceDateFormat" in item:
+            if kind != "date" or item["sourceDateFormat"] != "mdy":
+                raise InputError("sourceDateFormat supports only mdy on date fields; omit it for ISO dates.")
+            field["sourceDateFormat"] = "mdy"
         if "profile" in item:
             if index != 0 or item["profile"] != PROFILE or name != "document_id":
                 raise InputError("Only the built-in neurology-training-v1 profile is supported, on its document_id field.")
@@ -138,8 +164,8 @@ def parse_schema(raw):
             raise InputError("Minimum cannot exceed maximum.")
         if "region" in item:
             region = item["region"]
-            if not isinstance(region, dict) or type(region.get("page")) is not int or not 1 <= region["page"] <= 8:
-                raise InputError("Regions need a page number from 1 to 8.")
+            if not isinstance(region, dict) or type(region.get("page")) is not int or not 1 <= region["page"] <= MAX_PAGES:
+                raise InputError(f"Regions need a page number from 1 to {MAX_PAGES}.")
             for key in ("x", "y", "width", "height"):
                 n = region.get(key)
                 if isinstance(n, bool) or not isinstance(n, (int, float)) or not math.isfinite(n) or not 0 <= n <= 1:
@@ -172,6 +198,8 @@ def parse_schema(raw):
 
 
 def schema_from_csv(text):
+    if not isinstance(text, str) or len(text.encode("utf-8")) > MAX_SCHEMA_BYTES:
+        raise InputError("Mapping files must be UTF-8 text of at most 1 MiB.")
     try:
         rows = list(csv.DictReader(io.StringIO(text.lstrip("\ufeff"))))
     except csv.Error as exc:
@@ -216,8 +244,10 @@ def schema_from_csv(text):
             field["type"] = "integer"
         elif validation.startswith("number") or kind == "slider":
             field["type"] = "number"
-        elif validation == "date_ymd":
+        elif validation in {"date_ymd", "date_mdy"}:
             field["type"] = "date"
+            if validation == "date_mdy":
+                field["sourceDateFormat"] = "mdy"
         elif validation:
             warnings.append(f"Validation {validation} for {name} uses text. Verify its format manually.")
         for bound, col in (("min", "Text Validation Min"), ("max", "Text Validation Max")):
@@ -300,14 +330,14 @@ class Workspace:
 
     def local_job(self, script, payload, timeout):
         options = process_options()
-        kind = {"template_worker.py": "template"}[script]
+        kind = {"template_worker.py": "template", "bundle_worker.py": "bundle"}[script]
         process = subprocess.Popen(worker_command(kind), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, **options)
         with self.jobs_lock:
             self.jobs.add(process)
         try:
             stdout, _ = process.communicate(json.dumps(payload), timeout=timeout)
             if process.returncode:
-                raise InputError("The local template worker failed. Check the file and installed requirements.")
+                raise InputError(f"The local {kind} worker failed. Check the file and installed requirements.")
             result = strict_json_loads(stdout)
             if "error" in result:
                 raise InputError(result["error"])
@@ -315,18 +345,20 @@ class Workspace:
         except subprocess.TimeoutExpired as exc:
             terminate_tree(process)
             process.communicate()
-            raise InputError("Template processing exceeded its 30-second limit.") from exc
+            raise InputError(f"Local {kind} processing exceeded its {timeout}-second limit.") from exc
         finally:
             with self.jobs_lock:
                 self.jobs.discard(process)
 
-    def import_template(self, data, filename, sheet=None, header_row=None):
+    def import_template(self, data, filename, sheet=None, header_row=None, spec_validator=None):
         if not isinstance(filename, str) or len(filename) > 200 or any(c in filename for c in "\x00\r\n"):
             raise InputError("Invalid template filename.")
         filename = filename.replace("\\", "/").split("/")[-1]
         if not data or len(data) > 4 * 1024 * 1024:
             raise InputError("Templates must be nonempty files up to 4 MB.")
         spec = self.local_job("template_worker.py", {"operation": "inspect", "data": base64.b64encode(data).decode(), "filename": filename, "sheet": sheet, "headerRow": header_row}, 30)
+        if spec_validator is not None:
+            spec_validator(spec)
         self.template_revision += 1
         self.template = {**spec, "id": secrets.token_hex(12), "name": filename, "mappings": {}, "confirmed": False, "revision": self.template_revision, "suggestions": suggested_mapping(spec, self.schema)}
         self.template_data = data
@@ -384,7 +416,7 @@ class Workspace:
         for record in self.records:
             values = {column["name"]: record["values"].get(self.template["mappings"].get(column["name"]), "") for column in self.template["columns"]}
             record_errors = [f"{name}: {error}" for name, error in validate_values(self.schema, record["values"]).items()]
-            rows.append({"id": record["id"], "status": record["status"], "values": values, "errors": record_errors, "recordId": record["values"].get(self.schema[0]["name"], "")})
+            rows.append({"id": record["id"], "status": record["status"], "values": values, "errors": record_errors, "recordId": record["values"].get(self.schema[0]["name"], "") if self.schema else ""})
         if not self.template["confirmed"]:
             errors.append("Review and confirm the column mapping before export.")
         try:
@@ -460,7 +492,7 @@ class Workspace:
         source_hash = hashlib.sha256(data).hexdigest()
         if is_profile(self.schema) and any(r["sourceHash"] == source_hash for r in self.records):
             raise InputError("This exact source document is already in the queue; duplicate files are not added.")
-        if sum(len(r["sourceData"]) * 3 // 4 for r in self.records) + len(data) > MAX_SESSION_BYTES:
+        if source_bytes(self.records) + len(data) > MAX_SESSION_BYTES:
             raise InputError("This session is limited to 20 MB of source documents. Save this project before starting another batch.")
         rid = secrets.token_hex(12)
         output = self.process(data, filename, self.schema, rid)
@@ -690,7 +722,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def state(self):
         state = self.server.workspace.state()
-        state = {**state, "records": [{k: v for k, v in r.items() if k != "sourceData"} for r in state["records"]], "csrfToken": self.server.csrf}
+        state = {**state, "records": [public_record(r) for r in state["records"]], "csrfToken": self.server.csrf}
         return state
 
     def do_GET(self):
@@ -721,7 +753,7 @@ class Handler(BaseHTTPRequestHandler):
                         raise InputError("Load a spreadsheet template first.")
                     return self.respond(ws.template_data, content_type="application/octet-stream", filename=f"blank-template.{ws.template['format']}")
                 if path == "/api/project":
-                    records = [{k: r[k] for k in ("filename", "sourceData", "sourceHash", "values")} for r in ws.records]
+                    records = [project_record(r) for r in ws.records]
                     project = {"format": "formbridge-project-v1", "schema": ws.schema, "records": records, "exportedAt": now()}
                     if ws.template:
                         project["template"] = {"filename": ws.template["name"], "sourceData": base64.b64encode(ws.template_data).decode(), "sheet": ws.template["sheet"], "headerRow": ws.template["headerRow"], "mappings": ws.template["mappings"]}
@@ -847,8 +879,8 @@ class Handler(BaseHTTPRequestHandler):
                     ws.set_schema(parse_schema(body.get("schema", body)))
                 elif path == "/api/schema/import":
                     text, filename = body.get("text"), body.get("filename", "")
-                    if not isinstance(text, str) or len(text) > 200000:
-                        raise InputError("Mapping files must be text under 200 KB.")
+                    if not isinstance(text, str) or len(text.encode("utf-8")) > MAX_SCHEMA_BYTES:
+                        raise InputError("Mapping files must be UTF-8 text of at most 1 MiB.")
                     if filename.lower().endswith(".csv"):
                         fields, warnings = schema_from_csv(text)
                     else:
@@ -884,6 +916,8 @@ class Handler(BaseHTTPRequestHandler):
             for record in records:
                 if not isinstance(record, dict) or not isinstance(record.get("sourceData"), str):
                     raise InputError("Each project document needs its original source.")
+                if "bundleSources" in record or "bundleRecordId" in record:
+                    raise InputError("Open patient source bundle projects in the native desktop app.")
                 added = staged.add(base64.b64decode(record["sourceData"], validate=True), record.get("filename", ""))
                 values = record.get("values", {})
                 if not isinstance(values, dict) or set(values) != {f["name"] for f in schema} or any(not isinstance(v, str) or len(v) > 4000 for v in values.values()):

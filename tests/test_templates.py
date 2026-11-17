@@ -422,13 +422,13 @@ class TemplateTests(unittest.TestCase):
             templates.inspect_template(bytes(encrypted), "practice.xlsx")
 
     def test_row_and_column_bounds_apply_before_openpyxl_loads(self):
-        for configure in [lambda workbook, sheet: setattr(sheet["CW1"], "value", "too wide"), lambda workbook, sheet: setattr(sheet["A2001"], "value", "too tall")]:
+        for configure in [lambda workbook, sheet: setattr(sheet["WC1"], "value", "too wide"), lambda workbook, sheet: setattr(sheet["A2001"], "value", "too tall")]:
             data = workbook_bytes(configure=configure)
             with patch.object(openpyxl, "load_workbook", side_effect=AssertionError("must not load")):
-                with self.assertRaisesRegex(templates.TemplateError, "100 columns|2,000"):
+                with self.assertRaisesRegex(templates.TemplateError, "600 columns|2,000"):
                     templates.inspect_template(data, "practice.xlsx")
         with self.assertRaises(templates.TemplateError):
-            templates.inspect_template((",".join(f"column_{n}" for n in range(101)) + "\n").encode(), "practice.csv")
+            templates.inspect_template((",".join(f"column_{n}" for n in range(601)) + "\n").encode(), "practice.csv")
 
 
 if __name__ == "__main__":

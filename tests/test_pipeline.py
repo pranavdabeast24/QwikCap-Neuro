@@ -146,8 +146,8 @@ class PipelineTests(unittest.TestCase):
             self.process(b"\x89PNG\r\n\x1a\ninvalid", [], filename="fictional.png")
 
     def test_excess_pages_are_rejected(self):
-        with self.assertRaisesRegex(pipeline.DocumentError, "eight"):
-            self.process(fictional_pdf(["Synthetic"], page_count=9), [])
+        with self.assertRaisesRegex(pipeline.DocumentError, "32"):
+            self.process(fictional_pdf(["Synthetic"], page_count=33), [])
 
     def test_encrypted_pdf_is_rejected(self):
         reader = PdfReader(io.BytesIO(fictional_pdf(["Synthetic"])))

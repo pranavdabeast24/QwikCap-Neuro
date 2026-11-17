@@ -182,7 +182,7 @@ class MixedPdfTests(unittest.TestCase):
         self.assertTrue(0.2 <= evidence["region"]["y"] < 0.25)
         self.assertTrue(any(stage["stage"] == "Retry field regions" for stage in result["pipeline"]))
 
-    def test_full_page_fallback_is_bounded_by_eight_pdf_pages(self):
+    def test_full_page_fallback_is_bounded_by_document_page_limit(self):
         output = io.BytesIO()
         document = canvas.Canvas(output, pagesize=(612, 792))
         raster = Image.new("RGB", (100, 40), "white")

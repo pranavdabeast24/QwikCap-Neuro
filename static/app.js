@@ -268,7 +268,7 @@ $('#projectFile').onchange=async event=>{
 $('#schemaFile').onchange=async event=>{
   const file=event.target.files[0];event.target.value='';
   if(!file||busy)return;
-  if(file.size>200*1024){message('The field dictionary exceeds the 200 KB limit.','error');return;}
+  if(file.size>1024*1024){message('The field dictionary exceeds the 1 MiB limit.','error');return;}
   try{
     setBusy(true);
     const text=await file.text();

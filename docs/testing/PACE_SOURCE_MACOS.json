@@ -1,0 +1,61 @@
+{
+  "notice": "Generated fictional software acceptance data only; no user dataset read.",
+  "method": "Independent physical PDF geometry and literal answer key; CSV/XLSX reopened independently.",
+  "nativeUI": "Not covered; requires separate native app verification.",
+  "worker": "source",
+  "checks": [
+    {
+      "check": "blank startup, explicit 512-field catalog and empty-project roundtrip",
+      "status": "passed",
+      "destinationColumns": 512
+    },
+    {
+      "check": "ordered patient source bundle with explicit record identifier and grouping consent",
+      "status": "passed",
+      "originalForms": 2,
+      "patientRecords": 1
+    },
+    {
+      "check": "selected masks, original date evidence and instrument-specific choice codes",
+      "status": "passed",
+      "fieldsMatched": 12
+    },
+    {
+      "check": "field approval, explicit blank decisions and stale mapping gates",
+      "status": "passed",
+      "explicitlyBlankColumns": 500
+    },
+    {
+      "check": "independently reopened exact-width CSV has one patient row from two source forms",
+      "status": "passed",
+      "headersMatched": 512,
+      "cellsMatched": 512
+    },
+    {
+      "check": "independently reopened 512-column XLSX preserves blank, zero and date values",
+      "status": "passed",
+      "headersMatched": 512,
+      "cellsMatched": 512
+    },
+    {
+      "check": "saved reusable type contains only selected rules and masks",
+      "status": "passed",
+      "fields": 12
+    },
+    {
+      "check": "patient project preserves exact original PDFs and clears review gates on reopening",
+      "status": "passed",
+      "originalsPreserved": 2
+    },
+    {
+      "check": "invalid populated template rejects transactionally",
+      "status": "passed"
+    }
+  ],
+  "destinationColumns": 512,
+  "patientRows": 1,
+  "originalForms": 2,
+  "mappedFields": 12,
+  "exportedCellsMatched": 1024,
+  "status": "passed"
+}

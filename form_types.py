@@ -4,12 +4,14 @@ from __future__ import annotations
 import copy
 import math
 import uuid
+import json
 
 from branding import PRODUCT_NAME
+from limits import MAX_FIELDS, MAX_SCHEMA_BYTES, MAX_PAGES
 from server import InputError, parse_schema
 
 FORMAT = "formbridge-form-type-v1"
-RULE_KEYS = {"name", "label", "type", "required", "aliases", "choices", "min", "max", "region"}
+RULE_KEYS = {"name", "label", "type", "required", "aliases", "choices", "min", "max", "region", "sourceDateFormat"}
 DRAFT_KEYS = {"name", "identifierField", "fields", "pages"}
 
 
@@ -38,8 +40,8 @@ def page_geometry(pages):
 
 
 def _pages(raw):
-    if not isinstance(raw, list) or len(raw) > 8:
-        raise InputError("An extraction type supports at most eight pages.")
+    if not isinstance(raw, list) or len(raw) > MAX_PAGES:
+        raise InputError(f"An extraction type supports at most {MAX_PAGES} pages.")
     result = []
     for index, page in enumerate(raw, 1):
         if not isinstance(page, dict) or set(page) != {"page", "aspectRatio"} or type(page["page"]) is not int or page["page"] != index:
@@ -69,8 +71,10 @@ def validate_draft(raw):
         raise InputError("Use an extraction-type name up to 120 characters.")
     if identifier is not None and (not isinstance(identifier, str) or len(identifier) > 80):
         raise InputError("Choose a text field as the record identifier.")
-    if not isinstance(fields, list) or len(fields) > 100:
-        raise InputError("Use at most 100 fields.")
+    if not isinstance(fields, list) or len(fields) > MAX_FIELDS:
+        raise InputError(f"Use at most {MAX_FIELDS} fields.")
+    if len(json.dumps(raw, ensure_ascii=True).encode()) > MAX_SCHEMA_BYTES:
+        raise InputError("An extraction-type draft must be at most 1 MiB.")
     ids = set()
     for field in fields:
         if not isinstance(field, dict) or set(field) - RULE_KEYS - {"id"}:
@@ -84,6 +88,8 @@ def validate_draft(raw):
             raise InputError("Field names, labels and types must be short text.")
         if "required" in field and type(field["required"]) is not bool:
             raise InputError("Required must be true or false.")
+        if "sourceDateFormat" in field and (field.get("type") != "date" or field["sourceDateFormat"] != "mdy"):
+            raise InputError("sourceDateFormat supports only mdy on date fields; omit it for ISO dates.")
         aliases = field.get("aliases", [])
         if not isinstance(aliases, list) or len(aliases) > 20 or any(not isinstance(a, str) or len(a) > 200 for a in aliases):
             raise InputError("Aliases must be short labels only.")

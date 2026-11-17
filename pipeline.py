@@ -12,6 +12,7 @@ import hashlib
 from decimal import Decimal, InvalidOperation
 import ctypes
 import io
+import json
 import math
 import os
 from pathlib import Path
@@ -23,6 +24,7 @@ from typing import Any
 
 from PIL import Image, ImageOps, UnidentifiedImageError
 from neurology_profile import is_profile, extract as extract_neurology, applicable_fields
+from limits import MAX_FIELDS, MAX_SCHEMA_BYTES, MAX_PAGES, MAX_RENDER_PIXELS, MAX_ASSET_BYTES
 
 try:
     import pypdfium2 as pdfium
@@ -35,7 +37,6 @@ except ImportError:
     PdfReader = None
 
 MAX_BYTES = 12 * 1024 * 1024
-MAX_PAGES = 8
 MAX_PIXELS = 20_000_000
 MAX_DIMENSION = 12_000
 MAX_TEXT = 500_000
@@ -301,17 +302,18 @@ def _make_pdf_pages(data: bytes, folder: Path) -> list[dict[str, Any]]:
         if reader.is_encrypted:
             raise DocumentError("Encrypted PDFs are unsupported. Upload an unencrypted research copy.")
         if len(reader.pages) > MAX_PAGES:
-            raise DocumentError("Documents may contain at most eight pages.")
+            raise DocumentError(f"Documents may contain at most {MAX_PAGES} pages.")
     except DocumentError:
         raise
     except Exception as exc:
         raise DocumentError("The PDF is damaged or could not be opened.") from exc
     pages = []
+    render_pixels = 0
     try:
         document = pdfium.PdfDocument(data)
         try:
             if not 1 <= len(document) <= MAX_PAGES:
-                raise DocumentError("Documents must contain between one and eight pages.")
+                raise DocumentError(f"Documents must contain between 1 and {MAX_PAGES} pages.")
             for index in range(len(document)):
                 page = document[index]
                 try:
@@ -319,6 +321,9 @@ def _make_pdf_pages(data: bytes, folder: Path) -> list[dict[str, Any]]:
                     if not all(math.isfinite(v) and v > 0 for v in (pw, ph)) or max(pw, ph) > 14400:
                         raise DocumentError("A PDF page has unsupported dimensions.")
                     scale = min(2.0, math.sqrt(MAX_PIXELS / (pw * ph)) * 0.99, MAX_DIMENSION / max(pw, ph))
+                    render_pixels += math.ceil(pw * scale) * math.ceil(ph * scale)
+                    if render_pixels > MAX_RENDER_PIXELS:
+                        raise DocumentError("Document rendering exceeds the aggregate 120-megapixel limit.")
                     bitmap = page.render(scale=scale, may_draw_forms=False)
                     try:
                         rendered = bitmap.to_pil().convert("RGB")
@@ -329,6 +334,7 @@ def _make_pdf_pages(data: bytes, folder: Path) -> list[dict[str, Any]]:
                         rendered.save(path, "PNG")
                         os.chmod(path, 0o600)
                         rendered.close()
+                        _check_asset_bytes(folder)
                     finally:
                         bitmap.close()
                     # PDFium exposes images nested in Form XObjects without
@@ -355,28 +361,38 @@ def _make_pdf_pages(data: bytes, folder: Path) -> list[dict[str, Any]]:
 
 def _make_image_pages(data: bytes, folder: Path) -> list[dict[str, Any]]:
     pages = []
+    render_pixels = 0
     try:
         with Image.open(io.BytesIO(data)) as source:
             count = getattr(source, "n_frames", 1)
             if not 1 <= count <= MAX_PAGES:
-                raise DocumentError("Image documents may contain at most eight frames.")
+                raise DocumentError(f"Image documents may contain at most {MAX_PAGES} frames.")
             for index in range(count):
                 source.seek(index)
                 width, height = source.size
                 if width * height > MAX_PIXELS or max(width, height) > MAX_DIMENSION:
                     raise DocumentError("Images must be at most 20 megapixels and 12,000 pixels per side.")
+                render_pixels += width * height
+                if render_pixels > MAX_RENDER_PIXELS:
+                    raise DocumentError("Document rendering exceeds the aggregate 120-megapixel limit.")
                 frame = ImageOps.exif_transpose(source).convert("RGB")
                 width, height = frame.size
                 path = folder / f"page-{index + 1}.png"
                 frame.save(path, "PNG")
                 os.chmod(path, 0o600)
                 frame.close()
+                _check_asset_bytes(folder)
                 pages.append({"page": index + 1, "width": width, "height": height, "path": path, "lines": [], "method": None})
     except DocumentError:
         raise
     except (UnidentifiedImageError, OSError, ValueError, EOFError, Image.DecompressionBombError) as exc:
         raise DocumentError("The image is damaged or could not be decoded safely.") from exc
     return pages
+
+
+def _check_asset_bytes(folder):
+    if sum(path.stat().st_size for path in folder.glob("*.png")) > MAX_ASSET_BYTES:
+        raise DocumentError("Rendered page assets exceed the aggregate 128 MiB limit.")
 
 
 def _labels(field: dict[str, Any]) -> list[str]:
@@ -418,9 +434,10 @@ def _in_region(word: dict[str, Any], region: dict[str, Any]) -> bool:
     return region["x"] <= center_x <= region["x"] + region["width"] and region["y"] <= center_y <= region["y"] + region["height"]
 
 
-def _retry_empty_regions(schema: list, pages: list[dict[str, Any]], folder: Path) -> tuple[int, int, list[str]]:
+def _retry_empty_regions(schema: list, pages: list[dict[str, Any]], folder: Path, rendered_pixels=None) -> tuple[int, int, list[str]]:
     """Retry at most eight empty boxes; isolated digits can evade full-page OCR."""
     attempts, recovered = 0, 0
+    render_pixels = rendered_pixels if rendered_pixels is not None else sum(page["width"] * page["height"] for page in pages)
     issues = []
     for field in schema:
         if attempts >= MAX_REGION_RETRIES:
@@ -451,9 +468,14 @@ def _retry_empty_regions(schema: list, pages: list[dict[str, Any]], folder: Path
             padded = ImageOps.expand(enlarged, border=border, fill="white")
             enlarged.close()
             crop_width, crop_height = padded.size
+            render_pixels += crop_width * crop_height
+            if render_pixels > MAX_RENDER_PIXELS:
+                padded.close()
+                raise DocumentError("Document rendering exceeds the aggregate 120-megapixel limit.")
             padded.save(path, "PNG")
             os.chmod(path, 0o600)
             padded.close()
+            _check_asset_bytes(folder)
             lines, method, issue = _ocr(path, crop_width, crop_height)
             if issue:
                 issues.append(f"Field region {field.get('name', '')}: {issue}")
@@ -550,7 +572,10 @@ def _validate_value(raw: str, field: dict[str, Any]) -> tuple[str, str | None]:
     elif kind in {"date", "date_ymd"}:
         from datetime import date
         try:
-            if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", value):
+            if field.get("sourceDateFormat") == "mdy" and re.fullmatch(r"[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}", value):
+                month, day, year = map(int, value.split("/"))
+                value = date(year, month, day).isoformat()
+            elif not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", value):
                 raise ValueError("Non-ISO date")
             date.fromisoformat(value)
         except ValueError:
@@ -650,8 +675,10 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
     """
     if not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", record_id):
         raise DocumentError("Invalid local record identifier.")
-    if not isinstance(schema, list) or len(schema) > 500:
-        raise DocumentError("The form schema must contain at most 500 fields.")
+    if not isinstance(schema, list) or len(schema) > MAX_FIELDS:
+        raise DocumentError(f"The form schema must contain at most {MAX_FIELDS} fields.")
+    if len(json.dumps(schema, ensure_ascii=True).encode()) > MAX_SCHEMA_BYTES:
+        raise DocumentError("The form schema must be at most 1 MiB.")
     kind = _identify(data, filename)
     root = Path(asset_dir)
     root.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -696,7 +723,8 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
             pipeline.append({"stage": "Read mixed-content pages", "status": "complete" if any(page["lines"] for page in mapping_pages[len(pages):]) else "needs-review", "detail": f"Retried {len(fallback_pages)} native-text page(s) with local OCR because schema fields remained unresolved; native and OCR candidates are compared independently."})
         methods = sorted({page["method"] for page in mapping_pages})
         pipeline.append({"stage": "Extract text", "status": "complete" if any(p["lines"] for p in mapping_pages) else "needs-review", "detail": "Local extraction method(s): " + ", ".join(methods) + "."})
-        attempts, recovered, retry_issues = _retry_empty_regions(schema, [page for page in mapping_pages if page["method"] in {"tesseract", "apple-vision"}], folder)
+        attempts, recovered, retry_issues = _retry_empty_regions(schema, [page for page in mapping_pages if page["method"] in {"tesseract", "apple-vision"}], folder,
+                                                              sum(page["width"] * page["height"] for page in pages))
         issues.extend(retry_issues)
         if attempts:
             pipeline.append({"stage": "Retry field regions", "status": "complete" if recovered else "needs-review", "detail": f"Retried {attempts} empty configured region(s) with local OCR; recovered text in {recovered}."})

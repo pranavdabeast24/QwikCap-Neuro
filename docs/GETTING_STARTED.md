@@ -54,6 +54,8 @@ Exact-pin installation and execution on Windows remain unverified.
 
 ## First fictional workflow
 
+For the PACE study references, follow [the patient-bundle workflow](PACE_WORKFLOW.md). It loads the optional expected-field catalog and combines ordered patient PDFs into one review row. The general custom-field route below remains available.
+
 1. Start with a practice PDF from `samples/`. The initial workspace has no
    fields. Name a form type, create answer masks, give each field a unique
    lowercase variable name, choose value types, and select one text identifier.

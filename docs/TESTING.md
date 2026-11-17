@@ -1,5 +1,9 @@
 # Testing and portable evidence
 
+The 2026-11-17 PACE update adds [patient-bundle acceptance](../tools/verify_pace_flow.py). It generates two fictional forms, combines them as one patient record, verifies instrument-specific codes and date normalization, and independently reopens all 512 CSV and XLSX destination cells. The reference codebook and any train/test dataset are not read by the acceptance tool. See [PACE_WORKFLOW.md](PACE_WORKFLOW.md) for the workflow and the repeating-instrument import restriction. Current PACE results are recorded separately from the historical checks below.
+
+The final Mac source suite passed 208 tests. Both [source acceptance](testing/PACE_SOURCE_MACOS.json) and [packaged-worker acceptance](testing/PACE_BUNDLE_MACOS.json) passed nine groups. The [current build record](testing/PACE_BUILD_MACOS.json) records exact pins, source/resource hashes, native coverage and remaining limits. [The full unit output](testing/PACE_UNIT_MACOS.txt) is retained. Native checks covered catalog search, patient grouping, source display and project reopening. Desktop automation did not establish the complete native source-to-export path or mask drawing/coordinate entry. Those remain manual target-platform checks.
+
 Run commands from the repository root using the Python 3.12 environment described
 in [GETTING_STARTED.md](GETTING_STARTED.md). Use fictional fixtures. Tests and
 verifiers do not establish suitability for patient data or a live REDCap

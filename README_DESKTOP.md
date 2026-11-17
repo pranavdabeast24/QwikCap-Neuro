@@ -10,6 +10,8 @@ The display name and new GUI package basename (`QuickCapCV`) have changed from F
 
 For a new computer, start with [the handoff](docs/HANDOFF.md), follow [source setup](docs/GETTING_STARTED.md), and rerun [the portable checks](docs/TESTING.md). Source, fictional fixtures, and instructions travel through Git. Saved projects and private documents need a separate approved transfer.
 
+For the supplied PACE study, use [the patient-bundle workflow](docs/PACE_WORKFLOW.md). The optional catalog provides all 512 exact destination fields, instrument-specific codes and date rules. Combine ordered PDFs under an operator-entered study ID, select relevant fields and masks, and review one patient row. The full destination stays intact, with explicit blank-column and mapping confirmation. Repeating-instrument REDCap upload needs a separate validated conversion; this is a patient review export.
+
 The app starts with no fields or preset categories. Create an extraction type for your own form:
 
 1. Import a PDF or supported image. The first upload opens the mask designer on its rendered pages.

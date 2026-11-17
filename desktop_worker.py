@@ -4,14 +4,16 @@ import sys
 
 def main(argv=None):
     args = sys.argv[1:] if argv is None else argv
-    if len(args) != 1 or args[0] not in {"document", "template"}:
+    if len(args) != 1 or args[0] not in {"document", "template", "bundle"}:
         return 2
     if sys.stdin is None or sys.stdout is None:
         return 2
     if args[0] == "document":
         from worker import main as run
-    else:
+    elif args[0] == "template":
         from template_worker import main as run
+    else:
+        from bundle_worker import main as run
     run()
     return 0
 

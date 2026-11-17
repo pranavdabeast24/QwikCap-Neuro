@@ -6,13 +6,15 @@ QuickCap (CV) is the user's selected working label. The owner notice is **Proper
 
 Clone the repository while authenticated to an account with access, then follow [GETTING_STARTED.md](GETTING_STARTED.md). Use [TESTING.md](TESTING.md) to reproduce the source and packaged-worker checks. Read [BUILD_ENVIRONMENT.md](BUILD_ENVIRONMENT.md) before comparing historical builds with current results.
 
-The current Mac handoff was installed from the exact declared dependency pins in a fresh environment. All 156 source tests passed. The portable verifier passed all ten groups through both the source and packaged worker, including independent CSV and XLSX reopen checks. The native title, blank startup header and About ownership notice were inspected separately. See [the current test evidence](TESTING.md); these results do not validate Windows or an entire mouse-driven workflow.
+The current PACE update uses the exact declared dependency pins. All 208 source tests passed. The PACE verifier passed nine groups through both the source and packaged worker, including two original PDFs becoming one patient row and independent 512-column CSV and XLSX reopen checks. Native catalog, grouping, source display and project reopening were inspected separately. See [the current test evidence](TESTING.md); these results do not validate Windows, a complete native source-to-export workflow, or a repeating-instrument REDCap upload.
 
 The native app uses Python and Tk. It starts without documents or predefined fields. The first PDF/image opens a designer. Users select answer regions, name fields, choose their types and record identifier, apply extraction, and save a reusable extraction type. Review and confirm source values before approving records. Then map them to a blank spreadsheet template and export approved records.
 
 An extraction-type JSON contains rules and geometry. A saved project contains original documents and review values. Keep projects, study forms, exports and customer configurations outside Git. The old `formbridge-project-v1/v2` and `formbridge-form-type-v1` format identifiers, helper name and environment variables are intentionally retained for compatibility. A display-name change does not migrate stored data.
 
 ## Current priorities
+
+The 2026-11-17 update adds the supplied PACE reference catalog and exact 512-column destination, with explicit patient PDF bundles producing one review row. The original codebook PDF is not shipped. See [PACE_WORKFLOW.md](PACE_WORKFLOW.md) for operator-entered identifiers, mask selection, preserved originals, coding rules, limits and repeating-instrument import restrictions. The earlier conversation snapshot predates this update.
 
 Functionality comes first. Validate the actual Windows build and OCR setup, check mouse drawing on a real desktop, and run an approved trial with the institution's actual form and REDCap template. Current spreadsheet exports have not been validated against a live study REDCap project. Patient matching, repeating instruments, longitudinal events and direct REDCap submission need explicit design and validation. The app does not automatically infer a study identity from a patient name or handwriting.
 

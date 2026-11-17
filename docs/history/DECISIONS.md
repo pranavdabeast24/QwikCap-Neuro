@@ -21,3 +21,5 @@ This record summarizes the available project conversation. It is not a legal ass
 | Commercial readiness | Existing competitors validate the category but do not establish differentiation, legal clearance or willingness to pay. Prove reviewer time and error reduction in a bounded pilot. |
 
 See [the conversation record](CONVERSATION.md), [the competitor scan](../COMPETITORS_AND_NAME.md), [privacy design](../LLM_PRIVACY.md), and [testing notes](../TESTING.md) for evidence and limits.
+
+On 2026-11-17 the user supplied a blank PACE import template and reference codebook, confirmed both were blank or fictional, and selected combining several forms into one patient row. The app now offers an optional 512-field catalog and an ordered source bundle with an explicitly entered study ID. This does not authorize automatic patient matching, score calculation, or repeat-instance inference. The original references and source-bearing test projects remain outside Git.

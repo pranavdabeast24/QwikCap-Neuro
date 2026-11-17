@@ -14,6 +14,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import tempfile
 import threading
 import uuid
@@ -21,11 +22,13 @@ from typing import Callable
 
 from branding import PRODUCT_NAME
 from server import (Workspace, InputError, ConflictError, MAX_BODY, MAX_FILE,
-                    MAX_RECORDS, MAX_VALUE_BYTES, parse_schema, schema_from_csv,
-                    strict_json_loads, validate_values, now, ROOT)
+                    MAX_RECORDS, MAX_VALUE_BYTES, MAX_SESSION_BYTES, parse_schema, schema_from_csv,
+                    strict_json_loads, validate_values, now, ROOT, source_bytes, public_record, project_record)
 from neurology_profile import PROFILE, is_profile, profile_schema, applicable_fields, patient_groups
 from form_types import (new_draft, validate_draft, compile_draft, parse_form_type,
                         page_geometry, compatibility_issues, RULE_KEYS)
+from field_catalog import CatalogError, catalog_for_columns, extraction_rule, REPEATING_EXPORT_WARNING
+from limits import MAX_SCHEMA_BYTES, MAX_PAGES, MAX_BUNDLE_DOCUMENTS
 
 
 class Cancelled(InputError):
@@ -152,11 +155,14 @@ class DesktopSession:
         definition = compile_draft(self.draft) if self.draft is not None else self.form_type
         if definition is None:
             raise InputError("Design and name an extraction type first.")
-        atomic_write(path, json.dumps(definition, ensure_ascii=True, indent=2).encode())
+        data = json.dumps(definition, ensure_ascii=True, indent=2).encode()
+        if len(data) > MAX_SCHEMA_BYTES:
+            raise InputError("The saved extraction type would exceed the 1 MiB import limit.")
+        atomic_write(path, data)
 
     def load_form_type(self, path):
         try:
-            definition = parse_form_type(strict_json_loads(bounded_read(path, 200000)))
+            definition = parse_form_type(strict_json_loads(bounded_read(path, MAX_SCHEMA_BYTES)))
         except (json.JSONDecodeError, UnicodeError) as exc:
             raise InputError("Choose a valid UTF-8 extraction-type JSON file.") from exc
         self.workspace.set_schema(definition["fields"], cancel_check=self._check_cancel)
@@ -186,11 +192,22 @@ class DesktopSession:
 
     def snapshot(self) -> dict:
         ws = self.workspace
-        state = {"schema": ws.schema, "records": [{k: v for k, v in r.items() if k != "sourceData"} for r in ws.records],
+        state = {"schema": ws.schema, "records": [public_record(r) for r in ws.records],
                  "reviewer": ws.reviewer, "schemaWarnings": ws.schema_warnings,
                  "template": ws.template, "templatePreview": ws.template_preview(),
                  "generation": self.generation, "dirty": self.dirty, "projectPath": self.project_path}
         state.update(phase=self.phase, draft=self.draft, formType=self.form_type)
+        catalog = self._expected_catalog()
+        selected = {field.get("name") for field in (self.draft["fields"] if self.draft is not None else ws.schema)}
+        repeatable = {instrument["name"] for instrument in catalog["instruments"] if instrument["repeatable"]}
+        repeating_selected = any(field["name"] in selected and field["instrument"] in repeatable for field in catalog["fields"])
+        if repeating_selected:
+            catalog["warnings"] = [*catalog["warnings"], REPEATING_EXPORT_WARNING]
+            if ws.template is not None:
+                state["template"] = {**ws.template, "warnings": [*ws.template.get("warnings", []), REPEATING_EXPORT_WARNING]}
+        state.update(expectedFields=catalog["fields"], expectedInstruments=catalog["instruments"],
+                     expectedWarnings=catalog["warnings"], expectedCatalogName=catalog["name"],
+                     patientRowExportWarning=REPEATING_EXPORT_WARNING if repeating_selected else "")
         state["profile"] = PROFILE if is_profile(ws.schema) else None
         state["patientGroups"] = patient_groups(ws.records) if is_profile(ws.schema) else []
         for record in state["records"]:
@@ -215,7 +232,116 @@ class DesktopSession:
             if not self.draft["pages"]:
                 self.draft["pages"] = page_geometry(record.get("pages", []))
         self.dirty = True
-        return copy.deepcopy({k: v for k, v in record.items() if k != "sourceData"})
+        return copy.deepcopy(public_record(record))
+
+    def _bundle_job(self, workspace, record_id, documents):
+        result = workspace.local_job("bundle_worker.py", {"recordId": record_id, "documents": documents}, 180)
+        if not isinstance(result, dict) or set(result) != {"data", "manifest", "identifierField"} or not isinstance(result["data"], str) or len(result["data"]) > MAX_FILE * 1.4:
+            raise InputError("The local bundle worker returned an invalid result.")
+        try:
+            data = base64.b64decode(result["data"], validate=True)
+        except (ValueError, binascii.Error) as exc:
+            raise InputError("The local bundle worker returned invalid PDF encoding.") from exc
+        if not data.startswith(b"%PDF-") or len(data) > MAX_FILE:
+            raise InputError("The combined patient PDF exceeds the 12 MiB limit or is invalid.")
+        rule = parse_schema([result["identifierField"]])[0]
+        if rule["name"] != "record_id" or rule["type"] != "text" or rule.get("region", {}).get("page") != 1:
+            raise InputError("The patient bundle needs its operator-entered study record ID on the cover.")
+        manifest = result["manifest"]
+        if not isinstance(manifest, list) or len(manifest) != len(documents):
+            raise InputError("The patient bundle source manifest is invalid.")
+        expected_page = 2
+        for source, original in zip(manifest, documents):
+            if not isinstance(source, dict) or set(source) != {"filename", "sha256", "pages", "firstPage", "lastPage"} or source["filename"] != original["filename"] or source["sha256"] != hashlib.sha256(base64.b64decode(original["data"], validate=True)).hexdigest() or type(source["pages"]) is not int or not 1 <= source["pages"] < MAX_PAGES or type(source["firstPage"]) is not int or type(source["lastPage"]) is not int or source["firstPage"] != expected_page or source["lastPage"] != expected_page + source["pages"] - 1 or source["lastPage"] > MAX_PAGES:
+                raise InputError("The patient bundle source order or checksums are invalid.")
+            expected_page = source["lastPage"] + 1
+        return data, manifest, rule
+
+    def add_patient_bundle(self, paths, record_id, confirmed_same_patient=False):
+        if confirmed_same_patient is not True:
+            raise InputError("Explicitly confirm that these ordered PDFs belong to the same patient.")
+        if not isinstance(record_id, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,79}", record_id):
+            raise InputError("Enter a study record ID of 1 to 80 letters, digits, underscores, periods or hyphens, starting with a letter or digit.")
+        ws = self.workspace
+        if len(ws.records) >= MAX_RECORDS:
+            raise InputError("This session supports at most 60 patient rows.")
+        if any("bundleSources" not in record for record in ws.records) or (ws.schema and self.form_type is None) or (ws.records and self.draft is not None):
+            raise InputError("Save this project and start a new project before combining patient PDFs. Reuse an applied patient-bundle extraction type for later patients.")
+        if any(record.get("bundleRecordId") == record_id for record in ws.records):
+            raise InputError("That study record ID already has a patient source bundle in this project.")
+        try:
+            paths = list(paths)
+        except TypeError as exc:
+            raise InputError("Choose an ordered list of patient PDF paths.") from exc
+        if not 1 <= len(paths) <= MAX_BUNDLE_DOCUMENTS:
+            raise InputError(f"Choose 1 to {MAX_BUNDLE_DOCUMENTS} PDFs in the intended source order.")
+        documents, original_bytes = [], 0
+        for path in paths:
+            self._check_cancel()
+            if Path(path).suffix.lower() != ".pdf":
+                raise InputError("Patient source bundles currently accept PDFs only.")
+            data = bounded_read(path, MAX_FILE)
+            original_bytes += len(data)
+            if original_bytes > MAX_FILE:
+                raise InputError("The original patient PDFs together must be at most 12 MiB.")
+            documents.append({"filename": Path(path).name, "data": base64.b64encode(data).decode()})
+        if source_bytes(ws.records) + original_bytes > MAX_SESSION_BYTES:
+            raise InputError("Original and combined patient sources exceed the 20 MiB session limit.")
+        temporary, staged = _new_workspace()
+        self._active_workspace = staged
+        try:
+            data, manifest, cover_rule = self._bundle_job(staged, record_id, documents)
+            self._check_cancel()
+            if source_bytes(ws.records) + original_bytes + len(data) > MAX_SESSION_BYTES:
+                raise InputError("Original and combined patient sources exceed the 20 MiB session limit.")
+            staged.schema = copy.deepcopy(ws.schema)
+            record = staged.add(data, "patient-source-bundle.pdf", origin="patient-bundle")
+            self._check_cancel()
+            pages = page_geometry(record.get("pages", []))
+            if len(pages) != manifest[-1]["lastPage"]:
+                raise InputError("The combined PDF does not match its ordered source manifest.")
+            draft = copy.deepcopy(self.draft)
+            if self.form_type is not None:
+                if self.form_type["identifierField"] != "record_id" or ws.schema[0].get("region") != cover_rule["region"]:
+                    raise InputError("Use a patient-bundle extraction type with its record_id mask on the operator cover, or start a new project.")
+                issues = compatibility_issues(self.form_type, record.get("pages", []))
+                if issues:
+                    raise InputError(issues[0])
+                if record["values"].get("record_id") != record_id:
+                    raise InputError("Review the extraction type's cover identifier mask before adding this bundle.")
+            else:
+                draft = draft if draft is not None else new_draft(pages=pages)
+                if draft["pages"] and compatibility_issues({"pages": draft["pages"]}, record.get("pages", [])):
+                    raise InputError("The combined sources differ from the unfinished draft's page layout. Save this project and start a new project.")
+                draft["pages"] = pages
+                identifier = next((field for field in draft["fields"] if field.get("name") == "record_id"), None)
+                if identifier is None:
+                    identifier = {"id": uuid.uuid4().hex, **cover_rule}
+                    draft["fields"].insert(0, identifier)
+                elif identifier.get("type") != "text" or ("region" in identifier and identifier["region"] != cover_rule["region"]):
+                    raise InputError("The draft record_id must use the operator cover mask for a patient source bundle.")
+                else:
+                    identifier.update(cover_rule)
+                if draft["identifierField"] not in {None, identifier["id"]}:
+                    raise InputError("The patient bundle uses the operator-entered record_id as its explicit identifier. Start a new draft to use that cover.")
+                draft["identifierField"] = identifier["id"]
+                draft = validate_draft(draft)
+            record["bundleSources"] = [{**source, "sourceData": original["data"]} for source, original in zip(manifest, documents)]
+            record["bundleRecordId"] = record_id
+            record["formTypeIssues"] = []
+            if len(json.dumps([r["values"] for r in ws.records] + [record["values"]], ensure_ascii=True).encode()) > MAX_VALUE_BYTES:
+                raise InputError("Extracted review text exceeds the 4 MiB session limit.")
+            shutil.move(str(staged.assets / record["id"]), str(ws.assets / record["id"]))
+            ws.records.append(record)
+            self.draft = draft
+            ws.touch_template_preview()
+            ws.log("Ordered patient PDF sources combined with an operator-entered study record ID. Review required.")
+            self.dirty = True
+            return copy.deepcopy(public_record(record))
+        finally:
+            self._active_workspace = ws
+            staged.stop_jobs()
+            temporary.cleanup()
 
     def import_documents(self, paths, progress: Callable[[int, int], None] | None = None) -> dict:
         added, failed = [], []
@@ -248,7 +374,32 @@ class DesktopSession:
                                "reviewer": reviewer, "approve": approve,
                                "expectedRevision": record["revision"] if expected_revision is None else expected_revision})
         self.dirty = True
-        return copy.deepcopy({k: v for k, v in record.items() if k != "sourceData"})
+        return copy.deepcopy(public_record(record))
+
+    def _restore_bundle_sources(self, record, data, workspace):
+        sources = record.get("bundleSources")
+        record_id = record.get("bundleRecordId")
+        if not isinstance(record_id, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,79}", record_id) or not isinstance(sources, list) or not 1 <= len(sources) <= MAX_BUNDLE_DOCUMENTS:
+            raise InputError("Invalid saved patient source bundle.")
+        documents, original_bytes = [], 0
+        for source in sources:
+            if not isinstance(source, dict) or set(source) != {"filename", "sha256", "pages", "firstPage", "lastPage", "sourceData"} or not isinstance(source["sourceData"], str) or len(source["sourceData"]) > MAX_FILE * 1.4:
+                raise InputError("Each saved patient bundle needs its bounded original PDFs and manifest.")
+            try:
+                original = base64.b64decode(source["sourceData"], validate=True)
+            except (ValueError, binascii.Error) as exc:
+                raise InputError("A saved patient source has invalid encoding.") from exc
+            original_bytes += len(original)
+            if original_bytes > MAX_FILE or hashlib.sha256(original).hexdigest() != source["sha256"]:
+                raise InputError("A saved original patient source exceeds its bound or does not match its checksum.")
+            documents.append({"filename": source["filename"], "data": source["sourceData"]})
+        if source_bytes(workspace.records) + len(data) + original_bytes > MAX_SESSION_BYTES:
+            raise InputError("Original and combined patient sources exceed the 20 MiB session limit.")
+        rebuilt, manifest, _ = self._bundle_job(workspace, record_id, documents)
+        saved_manifest = [{key: value for key, value in source.items() if key != "sourceData"} for source in sources]
+        if manifest != saved_manifest or rebuilt != data:
+            raise InputError("The saved combined PDF does not match its original patient sources and operator ID.")
+        return copy.deepcopy(sources), record_id
 
     def _record(self, record_id):
         record = next((r for r in self.workspace.records if r["id"] == record_id), None)
@@ -290,7 +441,7 @@ class DesktopSession:
         return self.snapshot()
 
     def import_dictionary(self, path: str | Path):
-        raw = bounded_read(path, 200000)
+        raw = bounded_read(path, MAX_SCHEMA_BYTES)
         try:
             text = raw.decode("utf-8-sig")
             raw = None if Path(path).suffix.lower() == ".csv" else strict_json_loads(text)
@@ -301,9 +452,62 @@ class DesktopSession:
         self.workspace.schema_warnings = warnings
 
     def import_template(self, path: str | Path, sheet=None, header_row=None):
-        self._require_review()
-        self.workspace.import_template(bounded_read(path, 4 * 1024 * 1024), Path(path).name, sheet, header_row)
+        self.workspace.import_template(bounded_read(path, 4 * 1024 * 1024), Path(path).name, sheet, header_row,
+                                       spec_validator=self._validate_expected_spec)
         self.dirty = True
+
+    def _validate_expected_spec(self, spec):
+        try:
+            return catalog_for_columns(spec["columns"], ROOT / "study_profiles" / "pace.json")
+        except CatalogError as exc:
+            raise InputError(str(exc)) from exc
+
+    def _expected_catalog(self):
+        if self.workspace.template is None:
+            return {"fields": [], "instruments": [], "warnings": [], "name": "Expected fields"}
+        return self._validate_expected_spec(self.workspace.template)
+
+    def load_expected_fields(self, path: str | Path):
+        """Load a blank destination without adding masks or choosing an identifier."""
+        self.import_template(path)
+        return self.snapshot()
+
+    def use_pace_template(self):
+        return self.load_expected_fields(ROOT / "spreadsheets" / "pace-import-template.csv")
+
+    def add_expected_field(self, export_name, field_id=None):
+        entry = next((field for field in self._expected_catalog()["fields"] if field["name"] == export_name), None)
+        if entry is None:
+            raise InputError("Choose a field from the loaded expected destinations.")
+        if not re.fullmatch(r"[a-z][a-z0-9_]{0,99}", export_name):
+            raise InputError("This destination name cannot be used as an extraction field. Use lowercase REDCap variable names.")
+        if field_id is not None and (self.draft is None or not any(field["id"] == field_id for field in self.draft["fields"])):
+            raise InputError("Choose an existing draft field to assign this destination.")
+        if self.draft is not None and any(field.get("name") == export_name and field["id"] != field_id for field in self.draft["fields"]):
+            raise InputError("That expected field is already selected. Choose its existing mask.")
+        if self.draft is None and any(field["name"] == export_name for field in self.workspace.schema):
+            raise InputError("That expected field is already selected. Open Design masks to edit it.")
+        self.start_design()
+        staged = copy.deepcopy(self.draft)
+        existing = next((field for field in staged["fields"] if field["id"] == field_id), None)
+        field = {"id": existing["id"] if existing else uuid.uuid4().hex, **extraction_rule(entry)}
+        if existing is not None and "region" in existing:
+            field["region"] = copy.deepcopy(existing["region"])
+        if existing is None:
+            staged["fields"].append(field)
+        else:
+            staged["fields"][staged["fields"].index(existing)] = field
+        self.replace_draft(staged)
+        return copy.deepcopy(field)
+
+    def leave_remaining_columns_blank(self, expected_revision):
+        self.workspace.check_template_revision(expected_revision)
+        template = self.workspace.template
+        mappings = {column["name"]: None for column in template["columns"]}
+        mappings.update(template["mappings"])
+        self.workspace.set_template_mapping(mappings, False, expected_revision)
+        self.dirty = True
+        return self.snapshot()
 
     def load_sample_template(self, name: str):
         names = {"friendly": "friendly-template.xlsx", "raw": "redcap-template.xlsx", "csv": "redcap-template.csv"}
@@ -312,10 +516,9 @@ class DesktopSession:
         self.import_template(ROOT / "spreadsheets" / names[name])
 
     def configure_template(self, sheet: str, header_row: int, expected_revision: int):
-        self._require_review()
         self.workspace.check_template_revision(expected_revision)
         ws = self.workspace
-        ws.import_template(ws.template_data, ws.template["name"], sheet, header_row)
+        ws.import_template(ws.template_data, ws.template["name"], sheet, header_row, spec_validator=self._validate_expected_spec)
         self.dirty = True
 
     def use_categories_as_columns(self):
@@ -330,7 +533,7 @@ class DesktopSession:
             output = io.BytesIO()
             workbook.save(output)
             filename = "neurology-staging-columns.xlsx" if is_profile(self.workspace.schema) else "category-columns.xlsx"
-            self.workspace.import_template(output.getvalue(), filename)
+            self.workspace.import_template(output.getvalue(), filename, spec_validator=self._validate_expected_spec)
         finally:
             workbook.close()
         self.set_mapping({f["name"]: f["name"] for f in self.workspace.schema}, False)
@@ -365,7 +568,7 @@ class DesktopSession:
 
     def page_path(self, record_id: str, page: int) -> Path | None:
         record = self._record(record_id)
-        if not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", record_id) or type(page) is not int or not 1 <= page <= 8:
+        if not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", record_id) or type(page) is not int or not 1 <= page <= MAX_PAGES:
             raise InputError("Invalid page selection.")
         if not any(p["page"] == page for p in record.get("pages", [])):
             return None
@@ -376,7 +579,7 @@ class DesktopSession:
         ws = self.workspace
         project = {"format": "formbridge-project-v2", "schema": ws.schema,
                    "formType": self.form_type, "draft": self.draft,
-                   "records": [{k: r[k] for k in ("filename", "sourceData", "sourceHash", "values")} for r in ws.records],
+                   "records": [project_record(r) for r in ws.records],
                    "exportedAt": now()}
         if ws.template:
             project["template"] = {"filename": ws.template["name"], "sourceData": base64.b64encode(ws.template_data).decode(),
@@ -421,10 +624,13 @@ class DesktopSession:
                     raise InputError("A project source has invalid encoding.") from exc
                 if "sourceHash" in record and record["sourceHash"] != hashlib.sha256(data).hexdigest():
                     raise InputError("A project source does not match its saved checksum.")
+                bundle = self._restore_bundle_sources(record, data, staged) if "bundleSources" in record or "bundleRecordId" in record else None
                 values = record.get("values")
                 if not isinstance(values, dict) or set(values) != {f["name"] for f in schema} or any(not isinstance(v, str) or len(v) > 4000 for v in values.values()):
                     raise InputError("Invalid project review values.")
                 added = staged.add(data, record.get("filename", ""))
+                if bundle is not None:
+                    added.update(bundleSources=bundle[0], bundleRecordId=bundle[1], origin="patient-bundle")
                 added.update(values=dict(values), validationErrors=validate_values(schema, values), confirmed=[], status="review", reviewedBy="")
                 if len(json.dumps([r["values"] for r in staged.records], ensure_ascii=True).encode()) > MAX_VALUE_BYTES:
                     raise InputError("Project review text exceeds the 4 MB session limit.")
@@ -437,7 +643,7 @@ class DesktopSession:
                     data = base64.b64decode(template["sourceData"], validate=True)
                 except (ValueError, binascii.Error) as exc:
                     raise InputError("The saved template has invalid encoding.") from exc
-                staged.import_template(data, template.get("filename", ""), template.get("sheet"), template.get("headerRow"))
+                staged.import_template(data, template.get("filename", ""), template.get("sheet"), template.get("headerRow"), spec_validator=self._validate_expected_spec)
                 staged.set_template_mapping(template.get("mappings", {}), False, staged.template["revision"])
             self._check_cancel()
         except BaseException:

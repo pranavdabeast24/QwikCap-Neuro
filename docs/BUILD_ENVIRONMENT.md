@@ -1,6 +1,8 @@
 # Recorded environments and distribution work
 
-The current handoff was installed in a fresh isolated Python 3.12 environment from the unchanged runtime and build requirement files on 2026-11-13. All declared pins matched, and all 156 source tests passed on this Mac. See [the new environment record](testing/ENVIRONMENT_MACOS.json) and [test output](testing/UNIT_TEST_RESULTS_MACOS.txt). This validates the source setup on the recorded Mac configuration. It does not validate Windows, other Python/Tk distributions, a future model, or clinical use.
+The 2026-11-17 PACE update passed 208 source tests and nine patient-bundle acceptance groups through both source and packaged workers. See [the current build and environment record](testing/PACE_BUILD_MACOS.json). The notes below describe the earlier 2026-11-13 handoff.
+
+The earlier handoff was installed in a fresh isolated Python 3.12 environment from the unchanged runtime and build requirement files on 2026-11-13. All declared pins matched, and all 156 source tests passed on this Mac. See [that environment record](testing/ENVIRONMENT_MACOS.json) and [test output](testing/UNIT_TEST_RESULTS_MACOS.txt). This validates the source setup on the recorded Mac configuration. It does not validate Windows, other Python/Tk distributions, a future model, or clinical use.
 
 The final QuickCap (CV) Mac app also built and opened in that environment. Both custom-mask verification paths passed ten groups. The packaged fictional-fixture regression matched 60 extracted fields and 240 reopened export cells. The [build record](testing/BUILD_MACOS.json) links the worker reports, source hashes, and blank startup/About screenshots. Native branding was inspected separately; mouse drawing and the complete native workflow remain unverified for this build.
 
