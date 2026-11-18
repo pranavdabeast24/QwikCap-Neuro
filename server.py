@@ -31,8 +31,11 @@ from limits import MAX_FIELDS, MAX_SCHEMA_BYTES, MAX_PAGES
 from PIL import Image
 from templates import validate_mapping, suggested_mapping
 from runtime_paths import worker_command, process_options
-from neurology_profile import (PROFILE, is_profile, applicable_fields, validate_profile_values,
+from neurology_profile import (is_profile as is_neurology_profile,
                                patient_groups, profile_schema)
+from extraction_profiles import (PROFILES, is_profile, profile_id,
+                                 canonical_schema, applicable_fields, validate_profile_values,
+                                 source_blocking_issues, confirmed_source_blank)
 
 ROOT = Path(__file__).resolve().parent
 MAX_BODY = 40 * 1024 * 1024
@@ -138,9 +141,10 @@ def parse_schema(raw):
                 raise InputError("sourceDateFormat supports only mdy on date fields; omit it for ISO dates.")
             field["sourceDateFormat"] = "mdy"
         if "profile" in item:
-            if index != 0 or item["profile"] != PROFILE or name != "document_id":
-                raise InputError("Only the built-in neurology-training-v1 profile is supported, on its document_id field.")
-            field["profile"] = PROFILE
+            marker = item["profile"]
+            if not isinstance(marker, str) or marker not in PROFILES or index != 0 or name != canonical_schema(marker)[0]["name"]:
+                raise InputError("Only the built-in extraction profiles are supported, on their canonical identifier field.")
+            field["profile"] = marker
         if item.get("pattern"):
             raise InputError("Regular expression mappings are disabled. Use labels, aliases or a page region.")
         aliases = item.get("aliases", [])
@@ -179,16 +183,16 @@ def parse_schema(raw):
         raise InputError("The first field must be the REDCap record identifier with type text.")
     result[0]["required"] = True
     if is_profile(result):
-        canonical = {f["name"]: f for f in profile_schema()}
+        canonical = {f["name"]: f for f in canonical_schema(profile_id(result))}
         if {f["name"]: f["type"] for f in result} != {name: f["type"] for name, f in canonical.items()}:
-            raise InputError("The built-in neurology profile requires its complete canonical field set and types.")
+            raise InputError("The built-in extraction profile requires its complete canonical field set and types.")
         for field in result:
             builtin = canonical[field["name"]]
             field["label"] = builtin["label"]
             field["aliases"] = []
             field.pop("region", None)
             field["required"] = builtin["required"]
-            for key in ("min", "max", "choices"):
+            for key in ("min", "max", "choices", "sourceDateFormat"):
                 field.pop(key, None)
                 if key in builtin:
                     field[key] = builtin[key]
@@ -260,9 +264,9 @@ def schema_from_csv(text):
     return parse_schema(fields), warnings
 
 
-def validate_values(schema, values):
+def validate_values(schema, values, record=None):
     errors = {}
-    active = applicable_fields(schema, values)
+    active = applicable_fields(schema, values, record)
     for field in schema:
         name = field["name"]
         value = values.get(name, "")
@@ -270,7 +274,7 @@ def validate_values(schema, values):
             errors[name] = "Use text with no more than 4,000 characters."
             continue
         if not value.strip():
-            if field["required"] and name in active:
+            if field["required"] and name in active and not confirmed_source_blank(schema, name, record):
                 errors[name] = "This field is required."
             continue
         kind = field["type"]
@@ -298,7 +302,7 @@ def validate_values(schema, values):
             errors[name] = "Use a record ID with letters, numbers, dots, underscores or hyphens."
         if any(ord(c) < 32 and c not in "\n\r\t" for c in value):
             errors[name] = "Control characters are not allowed."
-    errors.update(validate_profile_values(schema, values))
+    errors.update(validate_profile_values(schema, values, record))
     return errors
 
 
@@ -415,7 +419,7 @@ class Workspace:
         rows = []
         for record in self.records:
             values = {column["name"]: record["values"].get(self.template["mappings"].get(column["name"]), "") for column in self.template["columns"]}
-            record_errors = [f"{name}: {error}" for name, error in validate_values(self.schema, record["values"]).items()]
+            record_errors = [f"{name}: {error}" for name, error in validate_values(self.schema, record["values"], record).items()]
             rows.append({"id": record["id"], "status": record["status"], "values": values, "errors": record_errors, "recordId": record["values"].get(self.schema[0]["name"], "") if self.schema else ""})
         if not self.template["confirmed"]:
             errors.append("Review and confirm the column mapping before export.")
@@ -501,7 +505,7 @@ class Workspace:
         if len(json.dumps([r["values"] for r in self.records] + [record["values"]], ensure_ascii=True).encode()) > MAX_VALUE_BYTES:
             shutil.rmtree(self.assets / rid, ignore_errors=True)
             raise InputError("Extracted review text exceeds the 4 MB session limit.")
-        record["validationErrors"] = validate_values(self.schema, record["values"])
+        record["validationErrors"] = validate_values(self.schema, record["values"], record)
         self.records.append(record)
         self.touch_template_preview()
         self.log("Document added for review.")
@@ -528,11 +532,12 @@ class Workspace:
         others = [r["values"] for r in self.records if r["id"] != record["id"]]
         if len(json.dumps(others + [values], ensure_ascii=True).encode()) > MAX_VALUE_BYTES:
             raise InputError("Review text exceeds the 4 MB session limit.")
-        errors = validate_values(self.schema, values)
-        active = applicable_fields(self.schema, values)
-        if is_profile(self.schema) and values.get("document_id") != "DOC" + record["sourceHash"][:24]:
+        active = applicable_fields(self.schema, values, record)
+        review_context = {**record, "confirmed": sorted(set(confirmed) & active)}
+        errors = validate_values(self.schema, values, review_context)
+        if is_neurology_profile(self.schema) and values.get("document_id") != "DOC" + record["sourceHash"][:24]:
             errors["document_id"] = "Keep this source document's derived identifier."
-        if is_profile(self.schema) and values.get("instrument_family") != record.get("sourceInstrumentFamily", ""):
+        if is_neurology_profile(self.schema) and values.get("instrument_family") != record.get("sourceInstrumentFamily", ""):
             errors["instrument_family"] = "Keep the instrument family identified by the source form code; changing it cannot hide required fields."
         reviewer = body.get("reviewer", "")
         if not isinstance(reviewer, str) or len(reviewer) > 100:
@@ -545,11 +550,13 @@ class Workspace:
                 raise InputError("Confirm every field against the source before approval.")
             if not reviewer.strip():
                 raise InputError("Enter a reviewer name before approval.")
-            if is_profile(self.schema):
+            if is_neurology_profile(self.schema):
                 if record.get("profileBlockingIssues"):
                     raise InputError("Conflicting patient identity values occur within this source; resolve the source before approval.")
                 if any(g["conflict"] and record["id"] in g["recordIds"] for g in patient_groups(self.records, (record["id"], values))):
                     raise InputError("This MRN group has conflicting patient names or birth dates. Resolve identity against the sources before approval.")
+            if source_blocking_issues(self.schema, record, values):
+                raise InputError("PACE source identity or instrument issues prevent approval. Review the original sources.")
             identifier = self.schema[0]["name"]
             if any(r["id"] != record["id"] and r["status"] == "approved" and r["values"][identifier] == values[identifier] for r in self.records):
                 raise InputError("Another approved document has this record ID.")
@@ -568,8 +575,9 @@ class Workspace:
                     cancel_check()
                 new_id = secrets.token_hex(12)
                 output = self.process(base64.b64decode(record["sourceData"]), record["filename"], schema, new_id)
-                changed = {**record, **output, "id": new_id, "status": "review", "confirmed": [], "reviewedBy": "", "updatedAt": now()}
-                changed["validationErrors"] = validate_values(schema, changed["values"])
+                changed = {key: value for key, value in record.items() if key not in {"applicableFields", "sourceContext", "sourceInstrumentFamily", "profileBlockingIssues"}}
+                changed.update(output, id=new_id, status="review", confirmed=[], reviewedBy="", updatedAt=now())
+                changed["validationErrors"] = validate_values(schema, changed["values"], changed)
                 staged.append(changed)
             if len(json.dumps([r["values"] for r in staged], ensure_ascii=True).encode()) > MAX_VALUE_BYTES:
                 raise InputError("Remapped review text exceeds the 4 MB session limit.")
@@ -591,15 +599,18 @@ class Workspace:
         if not records:
             raise InputError("Approve at least one record before export.")
         seen = set()
-        if is_profile(self.schema) and any(group["conflict"] for group in patient_groups(self.records)):
+        if is_neurology_profile(self.schema) and any(group["conflict"] for group in patient_groups(self.records)):
             raise InputError("Conflicting patient identities in an MRN group prevent export; resolve them against the sources.")
         source_hashes = set()
         for record in records:
-            if validate_values(self.schema, record["values"]) or set(record["confirmed"]) != applicable_fields(self.schema, record["values"]) or not record["reviewedBy"]:
+            if validate_values(self.schema, record["values"], record) or set(record["confirmed"]) != applicable_fields(self.schema, record["values"], record) or not record["reviewedBy"]:
                 raise InputError("A record no longer satisfies the approval requirements.")
-            if is_profile(self.schema):
+            if is_neurology_profile(self.schema):
                 if record.get("profileBlockingIssues") or record["values"]["document_id"] != "DOC" + record["sourceHash"][:24] or record["values"].get("instrument_family") != record.get("sourceInstrumentFamily", ""):
                     raise InputError("A document no longer satisfies its source identity requirements.")
+            if is_profile(self.schema):
+                if source_blocking_issues(self.schema, record, record["values"]):
+                    raise InputError("A patient no longer satisfies its PACE source identity requirements.")
                 if record["sourceHash"] in source_hashes:
                     raise InputError("Duplicate source documents cannot be exported.")
                 source_hashes.add(record["sourceHash"])
@@ -923,7 +934,7 @@ class Handler(BaseHTTPRequestHandler):
                 if not isinstance(values, dict) or set(values) != {f["name"] for f in schema} or any(not isinstance(v, str) or len(v) > 4000 for v in values.values()):
                     raise InputError("Invalid project values.")
                 added["values"] = values
-                added["validationErrors"] = validate_values(schema, values)
+                added["validationErrors"] = validate_values(schema, values, added)
                 if len(json.dumps([r["values"] for r in staged.records], ensure_ascii=True).encode()) > MAX_VALUE_BYTES:
                     raise InputError("Project review text exceeds the 4 MB session limit.")
             template = body.get("template")

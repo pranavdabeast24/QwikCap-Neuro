@@ -211,6 +211,11 @@ def verify(output, dist, report):
     report["checks"].append(helper_check)
     verify_packaged_helper(extracted, relocation, isolated)
     helper_check["status"] = "passed"
+    run_check("packaged-pace-printed", [python, "-B", str(APP / "tools/verify_pace_printed.py"),
+              "--helper", str(extracted / "_internal/helpers/FormbridgeWorker.exe"),
+              "--output", str(output / "packaged-pace-printed")], report, isolated, relocation, 120)
+    retain_acceptance_summary(output / "packaged-pace-printed/pace-printed-results.json",
+                              output / "reports/packaged-pace-printed-results.json", 6)
     run_check("packaged-fictional-scans-and-exports", [python, "-B", str(APP / "verify_desktop_bundle.py"),
               str(extracted), "--output", str(output / "packaged-fixtures")], report, isolated, relocation)
     fixtures = read_report(output / "packaged-fixtures/desktop-bundle-results.json")

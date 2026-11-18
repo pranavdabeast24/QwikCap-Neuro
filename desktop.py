@@ -65,6 +65,8 @@ class DesktopApp:
         self.bundle_dialog = None
         self.drag_field = None
         self._disabled_states = []
+        self.advanced_var = tk.BooleanVar(value=False)
+        self.task_hint = tk.StringVar(value="Add documents, set up fields, then review answers before mapping and export.")
         self.status = tk.StringVar(value="Import your first PDF or image, then draw and name the fields you need.")
         self.value_var = tk.StringVar()
         self.confirm_var = tk.BooleanVar()
@@ -151,7 +153,7 @@ class DesktopApp:
         return frame, tree
 
     def _build(self):
-        shell = ttk.Frame(self.root, padding=(20, 14, 20, 8))
+        shell = ttk.Frame(self.root, padding=(16, 12, 16, 8))
         shell.pack(fill="both", expand=True)
         shell.columnconfigure(0, weight=1)
         shell.rowconfigure(2, weight=1)
@@ -167,25 +169,21 @@ class DesktopApp:
         self.project_label.grid(row=0, column=3, sticky="e")
         top = ttk.Frame(shell)
         top.grid(row=1, column=0, sticky="ew", pady=(0, 12))
-        source_actions = ttk.Frame(top)
-        source_actions.pack(fill="x")
-        type_actions = ttk.Frame(top)
-        type_actions.pack(fill="x", pady=(6, 0))
-        ttk.Button(source_actions, text="＋ Import forms…", command=self.import_forms).pack(side="left")
-        ttk.Button(source_actions, text="Combine patient PDFs…", command=self.combine_patient_pdfs).pack(side="left", padx=6)
-        ttk.Button(source_actions, text="Open project…", command=self.open_project).pack(side="left", padx=6)
-        ttk.Button(source_actions, text="Save project", command=self.save_project).pack(side="left")
-        ttk.Button(source_actions, text="Study fields…", command=self.show_study_fields).pack(side="right")
-        ttk.Label(type_actions, text="Extraction type", style="Small.TLabel").pack(side="left", padx=(0, 10))
-        ttk.Button(type_actions, text="Design masks", command=self.start_design).pack(side="left")
-        ttk.Button(type_actions, text="Load type…", command=self.load_form_type).pack(side="left", padx=6)
-        ttk.Button(type_actions, text="Save type…", command=self.save_form_type).pack(side="left")
+        self.add_documents_button = ttk.Menubutton(top, text="Add documents…")
+        self.add_documents_button.grid(row=0, column=0, sticky="w")
+        document_menu = tk.Menu(self.add_documents_button, tearoff=False)
+        document_menu.add_command(label="Import separate forms…", command=self.import_forms)
+        document_menu.add_command(label="Combine PDFs for one patient…", command=self.combine_patient_pdfs)
+        self.add_documents_button.configure(menu=document_menu)
+        self.setup_fields_button = ttk.Button(top, text="Set up fields…", command=self.start_design)
+        self.setup_fields_button.grid(row=0, column=1, sticky="w", padx=(6, 0))
         self.notebook = ttk.Notebook(shell)
         self.notebook.grid(row=2, column=0, sticky="nsew")
         review_tab = ttk.Frame(self.notebook, padding=12)
         spreadsheet_tab = ttk.Frame(self.notebook, padding=12)
         self.notebook.add(review_tab, text="1   Design & review")
-        self.notebook.add(spreadsheet_tab, text="2   Fields & spreadsheet")
+        self.notebook.add(spreadsheet_tab, text="2   Map & export")
+        self.notebook.bind("<<NotebookTabChanged>>", self._refresh_presentation)
         self._build_review(review_tab)
         self._build_spreadsheet(spreadsheet_tab)
         footer = ttk.Frame(shell)
@@ -233,7 +231,15 @@ class DesktopApp:
         panes.add(left, weight=2)
         panes.add(center, weight=5)
         panes.add(right, weight=3)
-        panes.bind("<Configure>", lambda _event: self._constrain_panes(panes, 220, 300, 330))
+        positioned = False
+        def position_panes(_event):
+            nonlocal positioned
+            if not positioned and panes.winfo_width() >= 860:
+                positioned = True
+                panes.sashpos(0, 240)
+                panes.sashpos(1, panes.winfo_width() - 360)
+            self._constrain_panes(panes, 220, 300, 330)
+        panes.bind("<Configure>", position_panes)
         for pane in (left, center, right):
             pane.columnconfigure(0, weight=1)
         left.rowconfigure(2, weight=1)
@@ -244,8 +250,9 @@ class DesktopApp:
         frame, self.queue_tree = self._tree(left, ("document", "state"), ("Document", "Review"), (145, 85), 1)
         frame.grid(row=2, column=0, sticky="nsew")
         self.queue_tree.bind("<<TreeviewSelect>>", self._queue_selected)
-        ttk.Button(left, text="Remove selected", command=self.remove_document).grid(row=3, column=0, sticky="w", pady=(8, 0))
-        ttk.Label(left, text="Upload a PDF or image, draw your answer masks, then save a named extraction type for matching forms.", style="Small.TLabel", wraplength=210).grid(row=4, column=0, sticky="w", pady=(8, 0))
+        self.remove_document_button = ttk.Button(left, text="Remove selected", command=self.remove_document)
+        self.remove_document_button.grid(row=3, column=0, sticky="w", pady=(8, 0))
+        ttk.Label(left, textvariable=self.task_hint, style="Small.TLabel", wraplength=210).grid(row=4, column=0, sticky="w", pady=(8, 0))
         source_header = ttk.Frame(center)
         source_header.grid(row=0, column=0, sticky="ew", pady=(0, 5))
         source_header.columnconfigure(0, weight=1)
@@ -257,14 +264,17 @@ class DesktopApp:
         self.record_context_label = ttk.Label(center, textvariable=self.record_context, style="Small.TLabel", width=1)
         self.record_context_label.grid(row=1, column=0, sticky="ew", pady=(0, 5))
         self.record_context_label.bind("<Configure>", lambda event: self.record_context_label.configure(wraplength=max(180, event.width)))
-        tools = ttk.Frame(center)
+        tools = self.source_tools = ttk.Frame(center)
         tools.grid(row=2, column=0, sticky="ew", pady=(0, 7))
-        ttk.Button(tools, text="‹", width=3, command=lambda: self.change_page(-1)).pack(side="left")
-        ttk.Button(tools, text="›", width=3, command=lambda: self.change_page(1)).pack(side="left", padx=3)
-        ttk.Label(tools, textvariable=self.page_label, style="Small.TLabel").pack(side="left", padx=5)
-        ttk.Button(tools, text="−", width=3, command=lambda: self.change_zoom(.8)).pack(side="right")
-        ttk.Button(tools, text="＋", width=3, command=lambda: self.change_zoom(1.25)).pack(side="right", padx=3)
-        ttk.Button(tools, text="Fit width", command=self.fit_page).pack(side="right", padx=3)
+        tools.columnconfigure(2, weight=1)
+        ttk.Button(tools, text="‹", width=3, command=lambda: self.change_page(-1)).grid(row=0, column=0)
+        ttk.Button(tools, text="›", width=3, command=lambda: self.change_page(1)).grid(row=0, column=1, padx=3)
+        ttk.Label(tools, textvariable=self.page_label, style="Small.TLabel").grid(row=0, column=2, sticky="w", padx=5)
+        ttk.Button(tools, text="Fit width", command=self.fit_page).grid(row=0, column=3, padx=3)
+        self.zoom_in_button = ttk.Button(tools, text="＋", width=3, command=lambda: self.change_zoom(1.25))
+        self.zoom_in_button.grid(row=0, column=4, padx=3)
+        self.zoom_out_button = ttk.Button(tools, text="−", width=3, command=lambda: self.change_zoom(.8))
+        self.zoom_out_button.grid(row=0, column=5)
         self.preview_frame = ttk.Frame(center)
         self.preview_frame.grid(row=3, column=0, sticky="nsew")
         self.canvas = tk.Canvas(self.preview_frame, width=1, height=1, background="#dce2e9", highlightthickness=0)
@@ -305,9 +315,13 @@ class DesktopApp:
         self.confirm_check.pack(anchor="w", pady=2)
         review_actions = ttk.Frame(editor)
         review_actions.pack(fill="x", pady=2)
+        review_actions.columnconfigure(0, weight=1)
+        self.confirm_next_button = ttk.Button(review_actions, text="Confirm & next", command=self.confirm_and_next)
+        self.confirm_next_button.grid(row=0, column=0, sticky="ew")
         self.save_review_button = ttk.Button(review_actions, text="Save draft", command=self.save_review)
-        self.save_review_button.pack(side="left", fill="x", expand=True)
-        ttk.Button(review_actions, text="Expand…", command=self.expand_answer).pack(side="right", padx=(6, 0))
+        self.save_review_button.grid(row=1, column=0, sticky="ew", pady=(4, 0))
+        self.expand_answer_button = ttk.Button(review_actions, text="Expand…", command=self.expand_answer)
+        self.expand_answer_button.grid(row=0, column=1, padx=(6, 0))
         ttk.Separator(editor).pack(fill="x", pady=6)
         ttk.Label(editor, text="Reviewer", style="Small.TLabel").pack(anchor="w")
         self.reviewer_entry = ttk.Entry(editor, textvariable=self.reviewer_var)
@@ -315,6 +329,8 @@ class DesktopApp:
         self.approve_button = ttk.Button(editor, text="Approve document", command=self.approve_record)
         self.approve_button.pack(fill="x", pady=(4, 2))
         ttk.Label(editor, text="Approval requires valid values, every field confirmed and your reviewer name.", style="Small.TLabel", wraplength=310).pack(fill="x", pady=(4, 0))
+        self.empty_design_hint = ttk.Label(right, text="Set up fields to name the answers you need. Draw their answer areas, then apply the type to begin review.", style="Small.TLabel", wraplength=310)
+        self.empty_design_hint.grid(row=0, column=0, rowspan=3, sticky="nw", pady=(4, 0))
         self._build_designer(right)
 
     def _build_designer(self, parent):
@@ -349,11 +365,20 @@ class DesktopApp:
         self.mask_tree.bind("<<TreeviewSelect>>", self._mask_selected)
         tools = ttk.Frame(form)
         tools.grid(row=2, column=0, sticky="ew", pady=5)
-        for column, (label, action) in enumerate((("Draw new", lambda: self._set_mask_tool("new")),
+        self.design_study_button = ttk.Button(form, text="Study fields…", command=self.show_study_fields)
+        self.design_study_button.grid(row=5, column=0, sticky="ew", pady=(0, 5))
+        self.advanced_mask_buttons = []
+        for column, (label, action) in enumerate((("Draw field", lambda: self._set_mask_tool("new")),
                                                 ("Redraw", lambda: self._set_mask_tool("redraw")), ("Delete", self.delete_mask))):
-            tools.columnconfigure(column, weight=1, uniform="masktools")
-            ttk.Button(tools, text=label, command=action, width=5, padding=(3, 5)).grid(row=0, column=column, sticky="ew", padx=(0 if column == 0 else 3, 0))
-        ttk.Button(tools, text="Add mask by coordinates…", command=self.add_mask_coordinates).grid(row=1, column=0, columnspan=3, sticky="ew", pady=(4, 0))
+            tools.columnconfigure(column, weight=1)
+            button = ttk.Button(tools, text=label, command=action, width=5, padding=(3, 5))
+            button.grid(row=0, column=column, sticky="ew", padx=(0 if column == 0 else 3, 0))
+            if column:
+                self.advanced_mask_buttons.append(button)
+            else:
+                self.draw_field_button = button
+        self.coordinates_button = ttk.Button(tools, text="Add mask by coordinates…", command=self.add_mask_coordinates)
+        self.coordinates_button.grid(row=1, column=0, columnspan=3, sticky="ew", pady=(4, 0))
         settings = ttk.Frame(form)
         settings.grid(row=3, column=0, sticky="ew")
         settings.columnconfigure(1, weight=1)
@@ -492,9 +517,6 @@ class DesktopApp:
 
     def _render_designer(self):
         design = self.snapshot.get("phase") in {"empty", "design"}
-        for widget in (self.review_heading, self.review_field_frame, self.review_editor):
-            widget.grid_remove() if design else widget.grid()
-        self.design_panel.grid() if design else self.design_panel.grid_remove()
         self.design_draft = copy.deepcopy(self.snapshot.get("draft"))
         self._draft_unsent = False
         self._choices_error = False
@@ -513,13 +535,13 @@ class DesktopApp:
             if not self._record():
                 self.design_help.set("Browse Study fields or load PACE fields. Upload a PDF or image to draw masks for the fields you select.")
             elif self.design_draft is None:
-                self.design_help.set("Choose Design masks to create an extraction type for this source.")
+                self.design_help.set("Choose Set up fields to create an extraction type for this source.")
             elif not (self.design_draft or {}).get("pages"):
                 self.design_help.set("Text-only sources cannot define masks. Upload a PDF or image.")
             else:
                 self.design_help.set("Draw answer areas; choose Study fields to assign exact names. Explicitly select a text identifier. Dates export as YYYY-MM-DD.")
                 if any("region" not in field for field in fields):
-                    self.design_help.set("Selected study fields need masks. Select a field, then use Redraw or Add mask by coordinates. Choose a text identifier explicitly.")
+                    self.design_help.set("Selected study fields need masks. Select a field, then choose Advanced > Form type > Redraw selected field. Choose a text identifier explicitly.")
                 if not fields:
                     self.design_tool = "new"
 
@@ -750,7 +772,6 @@ class DesktopApp:
         toolbar.grid(row=0, column=0, sticky="ew")
         ttk.Label(toolbar, text="Expected study fields", style="Heading.TLabel").pack(side="left")
         ttk.Button(toolbar, text="Load blank CSV / XLSX…", command=self.load_expected_fields).pack(side="right")
-        ttk.Button(toolbar, text="Load PACE fields", command=self.load_pace_fields).pack(side="right", padx=6)
         ttk.Label(frame, text="Choose the fields present on this source. Each selected field needs a mask; choose a text record identifier explicitly.", style="Small.TLabel", wraplength=990).grid(row=1, column=0, sticky="ew", pady=(8, 10))
         filters = ttk.Frame(frame)
         filters.grid(row=2, column=0, sticky="ew", pady=(0, 8))
@@ -876,12 +897,12 @@ class DesktopApp:
         parent.rowconfigure(5, minsize=74)
         toolbar = ttk.Frame(parent)
         toolbar.grid(row=0, column=0, sticky="ew", pady=(0, 8))
-        ttk.Button(toolbar, text="Import XLSX / CSV…", command=self.import_template).pack(side="left")
-        ttk.Button(toolbar, text="Use categories as columns", command=lambda: self._with_draft(lambda: self._submit("Preparing category columns", self.session.use_categories_as_columns))).pack(side="left", padx=6)
-        ttk.Button(toolbar, text="Friendly example", command=lambda: self.load_template_sample("friendly")).pack(side="left", padx=6)
-        ttk.Button(toolbar, text="Raw example", command=lambda: self.load_template_sample("raw")).pack(side="left")
+        self.import_template_button = ttk.Button(toolbar, text="Choose blank spreadsheet…", command=self.import_template)
+        self.import_template_button.grid(row=0, column=0, sticky="w")
+        self.use_fields_button = ttk.Button(toolbar, text="Use fields as columns", command=lambda: self._with_draft(lambda: self._submit("Preparing category columns", self.session.use_categories_as_columns)))
+        self.use_fields_button.grid(row=0, column=1, sticky="w", padx=6)
         ttk.Label(parent, textvariable=self.mapping_label, style="Heading.TLabel", width=1).grid(row=1, column=0, sticky="ew", pady=5)
-        configure = ttk.Frame(parent)
+        configure = self.spreadsheet_options = ttk.Frame(parent)
         configure.grid(row=2, column=0, sticky="ew", pady=(0, 9))
         ttk.Label(configure, text="Worksheet", style="Small.TLabel").pack(side="left")
         self.sheet_combo = ttk.Combobox(configure, textvariable=self.sheet_var, state="readonly", width=20)
@@ -890,7 +911,7 @@ class DesktopApp:
         ttk.Spinbox(configure, from_=1, to=2000, textvariable=self.header_var, width=5).pack(side="left", padx=6)
         ttk.Button(configure, text="Apply sheet / row", command=self.configure_template).pack(side="left")
         ttk.Label(configure, text="Changing these clears column assignments.", style="Small.TLabel").pack(side="left", padx=12)
-        upper_viewport = ttk.Frame(parent)
+        upper_viewport = self.mapping_workspace = ttk.Frame(parent)
         upper_viewport.grid(row=3, column=0, sticky="nsew")
         upper_viewport.rowconfigure(0, weight=1)
         upper_viewport.columnconfigure(0, weight=1)
@@ -943,29 +964,36 @@ class DesktopApp:
         frame, self.destination_tree = self._tree(destinations, ("column", "source", "example"), ("Column", "Assigned category", "Example value"), (160, 150, 130), 1)
         frame.grid(row=2, column=0, sticky="nsew")
         self.destination_tree.bind("<<TreeviewSelect>>", self._destination_selected)
-        ttk.Label(assignment, text="Assign selected column", style="Heading.TLabel").pack(anchor="w", pady=(0, 6))
-        ttk.Label(assignment, textvariable=self.mapping_column, wraplength=250).pack(anchor="w", pady=2)
+        assignment.columnconfigure(0, weight=1)
+        ttk.Label(assignment, text="Assign selected column", style="Heading.TLabel").grid(row=0, column=0, sticky="w", pady=(0, 6))
+        ttk.Label(assignment, textvariable=self.mapping_column, wraplength=250).grid(row=1, column=0, sticky="w", pady=2)
         self.mapping_combo = ttk.Combobox(assignment, textvariable=self.mapping_choice, state="readonly")
-        self.mapping_combo.pack(fill="x", pady=3)
+        self.mapping_combo.grid(row=2, column=0, sticky="ew", pady=3)
         self.mapping_combo.bind("<<ComboboxSelected>>", self.assign_column)
-        ttk.Label(assignment, textvariable=self.example_value, style="Small.TLabel", wraplength=250).pack(fill="x", pady=3)
-        ttk.Button(assignment, text="Use suggested assignments", command=self.suggest_mapping).pack(fill="x", pady=(6, 3))
+        ttk.Label(assignment, textvariable=self.example_value, style="Small.TLabel", wraplength=250).grid(row=3, column=0, sticky="ew", pady=3)
+        self.suggest_mapping_button = ttk.Button(assignment, text="Use suggested assignments", command=self.suggest_mapping)
+        self.suggest_mapping_button.grid(row=4, column=0, sticky="ew", pady=(6, 3))
         self.blank_remaining_button = ttk.Button(assignment, text="Leave remaining columns blank…", command=self.leave_remaining_columns_blank)
-        self.blank_remaining_button.pack(fill="x", pady=3)
-        ttk.Button(assignment, text="Confirm column mapping", command=self.confirm_mapping).pack(fill="x", pady=3)
+        self.blank_remaining_button.grid(row=5, column=0, sticky="ew", pady=3)
+        self.confirm_mapping_button = ttk.Button(assignment, text="Confirm column mapping", command=self.confirm_mapping)
+        self.confirm_mapping_button.grid(row=6, column=0, sticky="ew", pady=3)
         self.mapping_state = ttk.Label(assignment, text="Mapping is unconfirmed", style="Small.TLabel", wraplength=250)
-        self.mapping_state.pack(fill="x", pady=4)
-        preview_toolbar = ttk.Frame(parent)
+        self.mapping_state.grid(row=7, column=0, sticky="ew", pady=4)
+        preview_toolbar = self.preview_toolbar = ttk.Frame(parent)
         preview_toolbar.grid(row=4, column=0, sticky="ew", pady=(8, 5))
-        ttk.Label(preview_toolbar, text="Populated preview", style="Heading.TLabel").pack(side="left")
-        ttk.Label(preview_toolbar, textvariable=self.preview_range, style="Small.TLabel").pack(side="left", padx=12)
-        ttk.Button(preview_toolbar, text="Next columns", command=lambda: self.move_preview_columns(1)).pack(side="right")
-        ttk.Button(preview_toolbar, text="Previous columns", command=lambda: self.move_preview_columns(-1)).pack(side="right", padx=5)
+        preview_toolbar.columnconfigure(1, weight=1)
+        ttk.Label(preview_toolbar, text="Populated preview", style="Heading.TLabel").grid(row=0, column=0, sticky="w")
+        ttk.Label(preview_toolbar, textvariable=self.preview_range, style="Small.TLabel").grid(row=0, column=1, sticky="w", padx=12)
+        self.previous_columns_button = ttk.Button(preview_toolbar, text="Previous columns", command=lambda: self.move_preview_columns(-1))
+        self.previous_columns_button.grid(row=0, column=2, padx=5)
+        self.next_columns_button = ttk.Button(preview_toolbar, text="Next columns", command=lambda: self.move_preview_columns(1))
+        self.next_columns_button.grid(row=0, column=3)
         frame, self.preview_tree = self._tree(parent, ("state",), ("Status",), (120,), 1)
+        self.spreadsheet_preview = frame
         frame.grid(row=5, column=0, sticky="nsew")
         self.preview_tree.bind("<<TreeviewSelect>>", lambda e: self._refresh_destinations())
         self._messages(parent, self.mapping_errors).grid(row=6, column=0, sticky="ew", pady=6)
-        bottom = ttk.Frame(parent)
+        bottom = self.export_bar = ttk.Frame(parent)
         bottom.grid(row=7, column=0, sticky="ew", pady=(4, 0))
         bottom.columnconfigure(0, weight=1)
         ttk.Label(bottom, textvariable=self.export_help, style="Small.TLabel", wraplength=600).grid(row=0, column=0, sticky="w")
@@ -979,10 +1007,13 @@ class DesktopApp:
         modifier = "Control" if os.name == "nt" else "Command"
         prefix = "Ctrl+" if os.name == "nt" else "⌘"
         def add(target, label, command, key=None, display=None):
-            options = {"label": label, "command": command}
+            def guarded():
+                if not self.busy and not self.closing:
+                    command()
+            options = {"label": label, "command": guarded}
             if key:
                 options["accelerator"] = prefix + (display or key.upper())
-                def shortcut(_event, action=command):
+                def shortcut(_event, action=guarded):
                     action()
                     return "break"
                 self.root.bind(f"<{modifier}-{key}>", shortcut)
@@ -993,14 +1024,21 @@ class DesktopApp:
             ("Open project…", self.open_project, None),
             ("Save project", self.save_project, None),
             ("Save project as…", lambda: self.save_project(save_as=True), "Shift-S"),
-            ("Import forms…", self.import_forms, None),
+            ("Import separate forms…", self.import_forms, "i"),
             ("Combine patient PDFs…", self.combine_patient_pdfs, "Shift-I"),
         ]:
-            add(file_menu, label, command, key, "⇧" + key[-1] if key else None)
+            add(file_menu, label, command, key, "⇧" + key[-1] if key and key.startswith("Shift-") else None)
         file_menu.add_separator()
         file_menu.add_command(label="Close", command=self.request_close)
         menu.add_cascade(label="File", menu=file_menu)
-        type_menu = tk.Menu(menu, tearoff=False)
+        advanced_menu = tk.Menu(menu, tearoff=False)
+        advanced_menu.add_checkbutton(label="Show advanced controls", variable=self.advanced_var, command=self._refresh_presentation)
+        advanced_menu.add_separator()
+        documents_menu = tk.Menu(advanced_menu, tearoff=False)
+        add(documents_menu, "Combine PDFs for one patient…", self.combine_patient_pdfs)
+        add(documents_menu, "Remove selected document", self.remove_document)
+        advanced_menu.add_cascade(label="Documents", menu=documents_menu)
+        type_menu = tk.Menu(advanced_menu, tearoff=False)
         for label, action in (("Design masks", self.start_design), ("Draw new field", lambda: self._set_mask_tool("new")),
                               ("Add mask by coordinates…", self.add_mask_coordinates),
                               ("Redraw selected field", lambda: self._set_mask_tool("redraw")), ("Delete selected field", self.delete_mask),
@@ -1018,11 +1056,12 @@ class DesktopApp:
         type_menu.add_separator()
         add(type_menu, "Study fields…", self.show_study_fields)
         add(type_menu, "Load PACE fields", self.load_pace_fields)
+        add(type_menu, "Read PACE printed forms", self.use_pace_profile, "Shift-U", "⇧U")
         add(type_menu, "Load expected fields from blank CSV / XLSX…", self.load_expected_fields)
         add(type_menu, "Use selected study field", self.use_catalog_field)
         add(type_menu, "Assign selected mask to study field", lambda: self.use_catalog_field(replace=True))
-        menu.add_cascade(label="Form type", menu=type_menu)
-        review_menu = tk.Menu(menu, tearoff=False)
+        advanced_menu.add_cascade(label="Form type", menu=type_menu)
+        review_menu = tk.Menu(advanced_menu, tearoff=False)
         add(review_menu, "Show review forms", lambda: self.show_tab(0), "1")
         review_menu.add_separator()
         add(review_menu, "Previous document", lambda: self.move_document(-1), "Shift-P", "⇧P")
@@ -1042,15 +1081,16 @@ class DesktopApp:
         add(review_menu, "Scroll source up", lambda: self.scroll_source(-1))
         add(review_menu, "Scroll source down", lambda: self.scroll_source(1))
         add(review_menu, "Fit source width", self.fit_page)
-        menu.add_cascade(label="Review", menu=review_menu)
-        spreadsheet_menu = tk.Menu(menu, tearoff=False)
+        advanced_menu.add_cascade(label="Review", menu=review_menu)
+        source_menu = tk.Menu(advanced_menu, tearoff=False)
+        add(source_menu, "Zoom in", lambda: self.change_zoom(1.25))
+        add(source_menu, "Zoom out", lambda: self.change_zoom(.8))
+        add(source_menu, "Fit source width", self.fit_page)
+        advanced_menu.add_cascade(label="Source view", menu=source_menu)
+        spreadsheet_menu = tk.Menu(advanced_menu, tearoff=False)
         add(spreadsheet_menu, "Show categories and spreadsheet", lambda: self.show_tab(1), "Shift-B", "⇧B")
         add(spreadsheet_menu, "Import XLSX / CSV…", self.import_template)
         add(spreadsheet_menu, "Use categories as columns", lambda: self._with_draft(lambda: self._submit("Preparing category columns", self.session.use_categories_as_columns)), "Shift-C", "⇧C")
-        sample_menu = tk.Menu(spreadsheet_menu, tearoff=False)
-        add(sample_menu, "Friendly example", lambda: self.load_template_sample("friendly"))
-        add(sample_menu, "Raw example", lambda: self.load_template_sample("raw"))
-        spreadsheet_menu.add_cascade(label="Load fictional sample template", menu=sample_menu)
         spreadsheet_menu.add_separator()
         add(spreadsheet_menu, "Use suggested assignments", self.suggest_mapping)
         add(spreadsheet_menu, "Leave remaining columns blank…", self.leave_remaining_columns_blank)
@@ -1063,8 +1103,13 @@ class DesktopApp:
         self.export_menu_entries.append((spreadsheet_menu, spreadsheet_menu.index("end"), "csv"))
         add(spreadsheet_menu, "Export XLSX…", lambda: self.export("xlsx"), "Shift-E", "⇧E")
         self.export_menu_entries.append((spreadsheet_menu, spreadsheet_menu.index("end"), "xlsx"))
-        menu.add_cascade(label="Spreadsheet", menu=spreadsheet_menu)
+        advanced_menu.add_cascade(label="Spreadsheet", menu=spreadsheet_menu)
+        menu.add_cascade(label="Advanced", menu=advanced_menu)
         help_menu = tk.Menu(menu, tearoff=False)
+        sample_menu = tk.Menu(help_menu, tearoff=False)
+        add(sample_menu, "Friendly example", lambda: self.load_template_sample("friendly"))
+        add(sample_menu, "Raw example", lambda: self.load_template_sample("raw"))
+        help_menu.add_cascade(label="Fictional practice templates", menu=sample_menu)
         help_menu.add_command(label=f"About {PRODUCT_NAME}", command=lambda: messagebox.showinfo(PRODUCT_NAME, OWNERSHIP_NOTICE + "\n\nNative local form review and spreadsheet mapping.\n\nUpload a PDF or image, draw masks around answer areas and name the fields you need. Save a reusable named extraction type containing only rules and masks.\n\nReview and confirm every answer against its source, then approve records before spreadsheet export. Matching page shapes do not establish that two documents use the same layout.\n\nProjects retain original documents, answers and unfinished type drafts; reopening requires fresh review.", parent=self.root))
         menu.add_cascade(label="Help", menu=help_menu)
         self.root.configure(menu=menu)
@@ -1140,7 +1185,7 @@ class DesktopApp:
             self._disabled_states = []
             def disable(widget):
                 for child in widget.winfo_children():
-                    if isinstance(child, (ttk.Button, ttk.Entry, ttk.Combobox, ttk.Checkbutton, ttk.Spinbox)) and child is not getattr(self, "cancel_button", None):
+                    if isinstance(child, (ttk.Button, ttk.Menubutton, ttk.Entry, ttk.Combobox, ttk.Checkbutton, ttk.Spinbox)) and child is not getattr(self, "cancel_button", None):
                         self._disabled_states.append((child, child.state()))
                         child.state(["disabled"])
                     disable(child)
@@ -1156,6 +1201,77 @@ class DesktopApp:
             self._disabled_states = []
             self.progress.stop()
             self.cancel_button.state(["disabled"])
+        self._refresh_presentation()
+
+    def _refresh_presentation(self, _event=None):
+        state = self.snapshot
+        phase = state.get("phase", "empty")
+        review = phase == "review"
+        draft = state.get("draft") is not None
+        advanced = self.advanced_var.get()
+        record = self._record()
+        template = state.get("template")
+        mapping = review and template is not None
+        field = next((field for field in state["schema"] if field["name"] == self.selected_field), {})
+        spreadsheet = self.notebook.index("current") == 1
+        required_blank = bool(record and field.get("required") and not self.review_values.get(field.get("name"))
+                              and field.get("name") in record.get("sourceContext", {}).get("unansweredFields", []))
+        self.confirm_check.configure(text="Confirmed blank in source (required)" if required_blank else "Confirmed against source")
+        self.confirm_next_button.configure(text="Confirm blank & next" if required_blank else "Confirm & next")
+
+        def show(widget, visible):
+            if visible:
+                widget.grid()
+            else:
+                focus = self.root.focus_get()
+                if focus is not None and (focus is widget or str(focus).startswith(str(widget) + ".")):
+                    self.notebook.focus_set()
+                widget.grid_remove()
+
+        show(self.setup_fields_button, not draft and not review)
+        show(self.design_panel, not review and draft)
+        self.empty_design_hint.configure(text="Add documents and choose Combine PDFs for one patient. Confirm the study record ID and source group before reviewing answers." if review and record is None else "Set up fields to name the answers you need. Draw their answer areas, then apply the type to begin review.")
+        show(self.empty_design_hint, not review and not draft or review and record is None)
+        for widget in (self.review_heading, self.review_field_frame, self.review_editor):
+            show(widget, review and record is not None)
+        show(self.remove_document_button, advanced and record is not None)
+        show(self.source_tools, bool(record and record.get("pages")))
+        show(self.bundle_sources_button, bool(record and record.get("bundleSources")))
+        for widget in (self.zoom_in_button, self.zoom_out_button):
+            show(widget, advanced)
+        for widget in self.advanced_mask_buttons + [self.coordinates_button]:
+            show(widget, advanced)
+        self.draw_field_button.grid_configure(columnspan=1 if advanced else 3)
+        show(self.save_review_button, advanced)
+        show(self.expand_answer_button, review and field.get("type") == "text")
+        show(self.spreadsheet_options, mapping and advanced)
+        for widget in (self.mapping_workspace, self.preview_toolbar, self.spreadsheet_preview, self.export_bar):
+            show(widget, mapping)
+        self.import_template_button.configure(text="Import study fields from blank spreadsheet…" if not review else "Replace blank spreadsheet…" if template else "Choose blank spreadsheet…")
+        show(self.import_template_button, not mapping or advanced)
+        show(self.use_fields_button, review and (template is None or advanced))
+        show(self.suggest_mapping_button, mapping and advanced)
+        remaining = sum(column["name"] not in self.mappings for column in template["columns"]) if template else 0
+        show(self.blank_remaining_button, mapping and remaining > 0)
+        show(self.confirm_mapping_button, mapping)
+        for widget in (self.previous_columns_button, self.next_columns_button):
+            show(widget, mapping and len(template["columns"]) > 12)
+        show(self.export_xlsx_button, mapping and template.get("format") == "xlsx")
+        show(self.export_csv_button, mapping and template.get("format") == "csv")
+        show(self.cancel_button, self.busy)
+        if not review:
+            self.mapping_label.set("Set up fields first; column mapping follows Apply type.")
+            self.mapping_errors.set("Import a blank spreadsheet for expected field names. On Design & review, draw their answer areas and apply the type.")
+        if spreadsheet and not review:
+            self.task_hint.set("Import study fields, draw their answer areas, then apply the type before mapping and export.")
+        elif draft:
+            self.task_hint.set("Name the fields and draw their answer areas. Choose a record identifier, then apply the type.")
+        elif review and record is None:
+            self.task_hint.set("Add PDFs for one patient, confirm their record ID, then review the extracted answers.")
+        elif review:
+            self.task_hint.set("Confirm each answer against its source, approve the document, then map and export.")
+        else:
+            self.task_hint.set("Add documents, set up fields, then review answers before mapping and export.")
 
     def _render(self, state):
         self._rendering = True
@@ -1174,7 +1290,8 @@ class DesktopApp:
             widths = (155, 75)
         else:
             definition = state.get("formType")
-            self.mode_label.set("LOCAL DESKTOP · " + state.get("phase", "review").upper() + "\n" + (definition["name"] if definition else "Create your own extraction type"))
+            type_name = definition["name"] if definition else "PACE printed forms · review required" if state.get("profile") == "pace-printed-v1" else "Create your own extraction type"
+            self.mode_label.set("LOCAL DESKTOP · " + state.get("phase", "review").upper() + "\n" + type_name)
             columns, headings, widths = ("document", "state"), ("Document", "Review"), (145, 85)
         self.queue_tree.configure(columns=columns)
         self.queue_tree.configure(style="StagingQueue.Treeview" if staging else "Treeview")
@@ -1186,7 +1303,7 @@ class DesktopApp:
             approved += record["status"] == "approved"
             applicable = set(record.get("applicableFields", [field["name"] for field in state["schema"]]))
             checked = len(set(record["confirmed"]) & applicable)
-            review = "Approved" if record["status"] == "approved" else f"{checked}/{len(applicable)}" + ("" if staging else " checked")
+            review = "Approved" if record["status"] == "approved" else f"{checked}/{len(applicable)}" + ("" if staging or record.get("bundleSources") else " checked")
             if not state["schema"]:
                 review = "Setup"
             if record.get("groupConflict") or record.get("profileBlockingIssues"):
@@ -1198,7 +1315,7 @@ class DesktopApp:
                 details = " · ".join(value for value in (values.get("instrument_family", ""), values.get("form_date", "")) if value)
                 row = (concise + ("\n" + details if details else ""), review)
             else:
-                row = (filename, review)
+                row = (f'Patient {record["bundleRecordId"]}' if record.get("bundleSources") else filename, review)
             self.queue_tree.insert("", "end", iid=record["id"], values=row)
         if staging:
             groups = state.get("patientGroups", [])
@@ -1223,6 +1340,7 @@ class DesktopApp:
         self._render_spreadsheet()
         self._refresh_catalog()
         self._rendering = False
+        self._refresh_presentation()
 
     def _record(self):
         return next((r for r in self.snapshot["records"] if r["id"] == self.selected_record), None)
@@ -1398,12 +1516,15 @@ class DesktopApp:
             self.value_var.set(value)
             self.entry.pack(fill="x", pady=4, before=self.confirm_check)
         self.confirm_var.set(field["name"] in self.review_confirmed)
-        errors = validate_values(self.snapshot["schema"], self.review_values) if self._record() else {}
+        errors = validate_values(self.snapshot["schema"], self.review_values, self._record()) if self._record() else {}
         detail = errors.get(field["name"], f'{field["name"]} · {field["type"]}' + (" · required" if field["required"] else " · optional"))
+        if field["required"] and not value and self._record() and field["name"] in self._record().get("sourceContext", {}).get("unansweredFields", []):
+            detail = "Required question has no marked source answer. Confirm the source blank to retain missing data."
         if self.snapshot.get("profile") and field["name"] == "document_id" and field["name"] not in errors:
             detail = "Derived source reference; no PDF region. Review identity fields separately."
         self.field_detail.set(detail)
         self._rendering = False
+        self._refresh_presentation()
 
     def _value_changed(self, *_):
         if self._rendering or self.busy or not self._record() or not self.selected_field:
@@ -1420,7 +1541,7 @@ class DesktopApp:
             self.field_tree.set(field["name"], "value", value)
             self.field_tree.set(field["name"], "check", "")
             self.queue_tree.set(self.selected_record, "state", "Draft" if self.snapshot.get("profile") == "neurology-training-v1" else "Unsaved draft")
-            self.field_detail.set(validate_values(self.snapshot["schema"], self.review_values).get(field["name"], "Value changed. Save and confirm it against the source."))
+            self.field_detail.set(validate_values(self.snapshot["schema"], self.review_values, self._record()).get(field["name"], "Value changed. Save and confirm it against the source."))
             self.status.set("Unsaved answer edit. Prior approval will be cleared when saved.")
             self._set_export_controls(False)
 
@@ -1606,7 +1727,7 @@ class DesktopApp:
             self.bundle_dialog.lift()
             return
         ordinary_records = any(not record.get("bundleSources") for record in self.snapshot["records"])
-        if ordinary_records or self.snapshot["schema"] and not self.snapshot.get("formType"):
+        if ordinary_records or self.snapshot["schema"] and not self.snapshot.get("formType") and self.snapshot.get("profile") != "pace-printed-v1":
             messagebox.showinfo("Start a patient bundle project", "Save this project, then choose File > New project before combining patient PDFs. A patient bundle can also be added to a project using a compatible saved bundle extraction type.", parent=self.root)
             return
         paths = filedialog.askopenfilenames(parent=self.root, title="Choose this patient's PDFs in source order", filetypes=[("PDF documents", "*.pdf")])
@@ -1627,7 +1748,8 @@ class DesktopApp:
         frame.columnconfigure(0, weight=1)
         frame.rowconfigure(3, weight=1)
         ttk.Label(frame, text="One patient, one reviewed spreadsheet row", style="Heading.TLabel").grid(row=0, column=0, sticky="w")
-        ttk.Label(frame, text="Enter the study record ID yourself. QuickCap does not match patient identities automatically. The ID cover is page 1; the original PDFs follow in the order below.", style="Small.TLabel", wraplength=790).grid(row=1, column=0, sticky="ew", pady=(8, 10))
+        guidance = "Enter the study record ID yourself. The PACE reader checks printed identities and blocks conflicting sources." if self.snapshot.get("profile") == "pace-printed-v1" else "Enter the study record ID yourself. QuickCap does not match patient identities automatically."
+        ttk.Label(frame, text=guidance + " The ID cover is page 1; the original PDFs follow in the order below.", style="Small.TLabel", wraplength=790).grid(row=1, column=0, sticky="ew", pady=(8, 10))
         identifier = ttk.Frame(frame)
         identifier.grid(row=2, column=0, sticky="ew", pady=(0, 12))
         identifier.columnconfigure(1, weight=1)
@@ -1691,7 +1813,8 @@ class DesktopApp:
             return
         paths = tuple(self.bundle_paths)
         self._close_patient_bundle_dialog()
-        def complete(_record):
+        def complete(record):
+            self._select_record(record["id"])
             self.page = 1
             self.show_tab(0)
             self._render_page()
@@ -1730,6 +1853,12 @@ class DesktopApp:
         if self._confirm_schema_change():
             self._with_draft(lambda: self._submit("Preparing neurology training staging categories", self.session.use_neurology_profile))
 
+    def use_pace_profile(self):
+        if self.busy or self.closing:
+            return
+        if self._confirm_schema_change():
+            self._with_draft(lambda: self._submit("Reading PACE printed forms locally", self.session.use_pace_profile))
+
     def remove_document(self):
         if self.busy or not self.selected_record:
             return
@@ -1747,7 +1876,7 @@ class DesktopApp:
     def _confirm_schema_change(self, custom=False):
         text = "Changing extraction rules replaces the current type draft, reprocesses every document and clears field confirmations, approvals and mapping confirmation."
         if custom and self.snapshot.get("profile"):
-            text += " Custom categories leave neurology staging mode. An explicitly marked built-in profile dictionary retains its profile mode."
+            text += " Custom categories leave the current built-in reader. An explicitly marked built-in profile dictionary retains its profile mode."
         return not (self.snapshot["records"] or self.snapshot.get("draft") or self._draft_unsent) or messagebox.askyesno("Reprocess sources", text + " Continue?", parent=self.root)
 
     def edit_categories(self):
@@ -1762,7 +1891,7 @@ class DesktopApp:
         frame.pack(fill="both", expand=True)
         ttk.Label(frame, text="Your form's categories", style="Heading.TLabel").pack(anchor="w")
         if self.snapshot.get("profile"):
-            ttk.Label(frame, text="Applying custom categories leaves neurology staging mode and removes its profile rules.", style="Error.TLabel").pack(anchor="w", pady=(4, 0))
+            ttk.Label(frame, text="Applying custom categories leaves the current built-in reader and removes its profile rules.", style="Error.TLabel").pack(anchor="w", pady=(4, 0))
         ttk.Label(frame, text="One line per field: variable_name | Human label | type | required | choices\nTypes: text, date, integer, number, choice. Choices: 1=Yes;0=No. The first field is your required text identifier.\nExisting aliases, regions and numeric bounds are retained for matching variable names.", style="Small.TLabel").pack(anchor="w", pady=8)
         editor = tk.Text(frame, wrap="none", undo=True, padx=10, pady=10, relief="solid", borderwidth=1)
         editor.pack(fill="both", expand=True)
@@ -1845,7 +1974,7 @@ class DesktopApp:
 
     def _render_spreadsheet(self):
         schema, template = self.snapshot["schema"], self.snapshot.get("template")
-        self.export_help.set("Staging export • source MRN groups assessments; study REDCap mapping pending. Exports include approved records." if self.snapshot.get("profile") else "XLSX retains supported blank-template layout. CSV contains values only. Exports include approved records.")
+        self.export_help.set("Staging export • source MRN groups assessments; study REDCap mapping pending. Exports include approved records." if self.snapshot.get("profile") == "neurology-training-v1" else "XLSX retains supported blank-template layout. CSV contains values only. Exports include approved records.")
         if any(record.get("bundleSources") for record in self.snapshot["records"]):
             self.export_help.set("One patient review row per confirmed source bundle. " + self.export_help.get())
         if self.snapshot.get("patientRowExportWarning"):
@@ -2137,7 +2266,7 @@ def verify_startup(output):
                 state = app.session.snapshot()
                 checked(state["records"] == [] and state["schema"] == [])
                 checked(not state["dirty"] and not state["projectPath"])
-                checked(app.notebook.winfo_ismapped() and app.cancel_button.winfo_ismapped())
+                checked(app.notebook.winfo_ismapped() and not app.cancel_button.winfo_ismapped())
                 checked(len(app.notebook.tabs()) == 2 and app.thread.is_alive())
                 report["checks"].append(stage)
                 stage = "bundled-pace-catalog"

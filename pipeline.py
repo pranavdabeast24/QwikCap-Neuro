@@ -24,7 +24,9 @@ import sys
 from typing import Any
 
 from PIL import Image, ImageOps, UnidentifiedImageError
-from neurology_profile import is_profile, extract as extract_neurology, applicable_fields
+from neurology_profile import extract as extract_neurology
+from extraction_profiles import is_profile, is_pace_profile, applicable_fields
+from pace_profile import extract as extract_pace
 from limits import MAX_FIELDS, MAX_SCHEMA_BYTES, MAX_PAGES, MAX_RENDER_PIXELS, MAX_ASSET_BYTES
 
 try:
@@ -317,7 +319,124 @@ def _ocr(path: Path, width: int, height: int, *, layout: _OCRLayout = _OCRLayout
         return [], method, str(exc) if isinstance(exc, DocumentError) else "The local OCR program could not be started."
 
 
-def _make_pdf_pages(data: bytes, folder: Path) -> list[dict[str, Any]]:
+def _path_control_kind(obj: Any, count: int) -> str | None:
+    segments = [pdfium.raw.FPDFPath_GetPathSegment(obj, i) for i in range(count)]
+    if not all(segments):
+        return None
+    points, kinds = [], []
+    for segment in segments:
+        x, y = ctypes.c_float(), ctypes.c_float()
+        if not pdfium.raw.FPDFPathSegment_GetPoint(segment, ctypes.byref(x), ctypes.byref(y)):
+            return None
+        if not math.isfinite(x.value) or not math.isfinite(y.value):
+            return None
+        points.append((x.value, y.value))
+        kinds.append(pdfium.raw.FPDFPathSegment_GetType(segment))
+    if kinds[0] != pdfium.raw.FPDF_SEGMENT_MOVETO or pdfium.raw.FPDF_SEGMENT_MOVETO in kinds[1:]:
+        return None
+    same_point = lambda a, b: all(abs(x - y) < .01 for x, y in zip(a, b))
+    if not pdfium.raw.FPDFPathSegment_GetClose(segments[-1]) and not same_point(points[0], points[-1]):
+        return None
+    if all(kind == pdfium.raw.FPDF_SEGMENT_LINETO for kind in kinds[1:]):
+        vertices = points[:-1] if same_point(points[0], points[-1]) else points
+        if len(vertices) != 4:
+            return None
+        left, right = min(p[0] for p in vertices), max(p[0] for p in vertices)
+        bottom, top = min(p[1] for p in vertices), max(p[1] for p in vertices)
+        expected = [(left, bottom), (left, top), (right, bottom), (right, top)]
+        if not all(sum(same_point(vertex, corner) for vertex in vertices) == 1 for corner in expected):
+            return None
+        if all((abs(a[0] - b[0]) < .01) != (abs(a[1] - b[1]) < .01)
+               for a, b in zip(vertices, vertices[1:] + vertices[:1])):
+            return "square"
+        return None
+    if not all(kind == pdfium.raw.FPDF_SEGMENT_BEZIERTO for kind in kinds[1:]) or (count - 1) % 3:
+        return None
+    if not same_point(points[0], points[-1]):
+        return None
+    left, right = min(p[0] for p in points), max(p[0] for p in points)
+    bottom, top = min(p[1] for p in points), max(p[1] for p in points)
+    rx, ry = (right - left) / 2, (top - bottom) / 2
+    if min(rx, ry) <= 0:
+        return None
+    cx, cy = (left + right) / 2, (bottom + top) / 2
+    angles = []
+    for index in range(1, count, 3):
+        curve = points[index - 1:index + 3]
+        for t in (0, .25, .5, .75, 1):
+            weights = ((1 - t) ** 3, 3 * (1 - t) ** 2 * t, 3 * (1 - t) * t ** 2, t ** 3)
+            x, y = (sum(weight * point[axis] for weight, point in zip(weights, curve)) for axis in (0, 1))
+            nx, ny = (x - cx) / rx, (y - cy) / ry
+            if abs(math.hypot(nx, ny) - 1) > .03:
+                return None
+            angles.append(math.atan2(ny, nx))
+    winding = sum(math.atan2(math.sin(b - a), math.cos(b - a)) for a, b in zip(angles, angles[1:]))
+    return "circle" if abs(abs(winding) - 2 * math.pi) < .1 else None
+
+
+def _pdf_geometry(page: Any, pixel_width: int, pixel_height: int) -> dict[str, list[dict[str, Any]]]:
+    """Read bounded native row rules and closed answer-control paths.
+
+    Text marks alone cannot establish that an unmarked checkbox exists. Keep
+    the printed controls separately, using the text layer's device transform.
+    Geometry is evidence only; field/code association belongs to the adapter.
+    """
+    rules, controls = [], []
+    for object_count, obj in enumerate(page.get_objects(max_depth=15), 1):
+        if object_count > MAX_PDF_OBJECTS:
+            raise DocumentError("A PDF page exceeds the 50,000 object processing limit.")
+        if obj.type == pdfium.raw.FPDF_PAGEOBJ_FORM and obj.level >= 14 and pdfium.raw.FPDFFormObj_CountObjects(obj):
+            raise DocumentError("Nested PDF geometry exceeds the supported 15-level processing limit.")
+        if obj.type != pdfium.raw.FPDF_PAGEOBJ_PATH:
+            continue
+        left, bottom, right, top = obj.get_bounds()
+        # get_bounds includes the path's own matrix, but not its containing
+        # Form XObjects. Compose their matrices before the page transform.
+        ancestor, transform = obj.container, pdfium.PdfMatrix()
+        for _ in range(15):
+            if ancestor is None:
+                break
+            transform = transform.multiply(ancestor.get_matrix())
+            ancestor = ancestor.container
+        if ancestor is not None:
+            raise DocumentError("Nested PDF geometry exceeds the supported 15-level processing limit.")
+        native_corners = [transform.on_point(px, py) for px, py in
+                          ((left, bottom), (right, top), (left, top), (right, bottom))]
+        left, bottom = min(p[0] for p in native_corners), min(p[1] for p in native_corners)
+        right, top = max(p[0] for p in native_corners), max(p[1] for p in native_corners)
+        if not all(math.isfinite(v) for v in (left, bottom, right, top)):
+            continue
+        native_width, native_height = right - left, top - bottom
+        if native_width <= 0 or native_height < 0:
+            continue
+        corners = []
+        for px, py in native_corners:
+            dx, dy = ctypes.c_int(), ctypes.c_int()
+            pdfium.raw.FPDF_PageToDevice(page, 0, 0, pixel_width, pixel_height, 0,
+                                        px, py, ctypes.byref(dx), ctypes.byref(dy))
+            corners.append((dx.value / pixel_width, dy.value / pixel_height))
+        xs, ys = [p[0] for p in corners], [p[1] for p in corners]
+        if min(xs + ys) < -.001 or max(xs + ys) > 1.001:
+            continue
+        box = _region(min(xs), min(ys), max(xs) - min(xs), max(ys) - min(ys))
+        # Keep long rules even on rotated pages. Exclude answer underlines only
+        # at the adapter boundary, where full-row width is known.
+        if (native_width >= 60 and native_height <= 2) or (native_height >= 60 and native_width <= 2):
+            rules.append(box)
+            continue
+        if not (4 <= native_width <= 20 and 4 <= native_height <= 20
+                and .8 <= native_width / native_height <= 1.25):
+            continue
+        count = pdfium.raw.FPDFPath_CountSegments(obj)
+        if not 4 <= count <= 512:
+            continue
+        kind = _path_control_kind(obj, count)
+        if kind:
+            controls.append({"kind": kind, **box})
+    return {"rules": rules, "controls": controls}
+
+
+def _make_pdf_pages(data: bytes, folder: Path, *, capture_geometry: bool = False) -> list[dict[str, Any]]:
     if pdfium is None or PdfReader is None:
         raise DocumentError("PDF support is unavailable. Install the documented local Python dependencies.")
     try:
@@ -370,7 +489,8 @@ def _make_pdf_pages(data: bytes, folder: Path) -> list[dict[str, Any]]:
                             has_raster = True
                             break
                     lines = _pdf_lines(page, width, height)
-                    pages.append({"page": index + 1, "width": width, "height": height, "path": path, "lines": lines, "method": "pdf-text" if lines else None, "hasRaster": has_raster})
+                    geometry = _pdf_geometry(page, width, height) if capture_geometry else {}
+                    pages.append({"page": index + 1, "width": width, "height": height, "path": path, "lines": lines, "method": "pdf-text" if lines else None, "hasRaster": has_raster, **geometry})
                 finally:
                     page.close()
         finally:
@@ -719,6 +839,14 @@ def _map_fields(schema: list[dict[str, Any]], pages: list[dict[str, Any]]) -> tu
     return values, evidence, issues
 
 
+def _extract_fields(schema, pages, data):
+    if is_pace_profile(schema):
+        return extract_pace(pages)
+    values, evidence, issues = (extract_neurology(pages, hashlib.sha256(data).hexdigest())
+                                if is_profile(schema) else _map_fields(schema, pages))
+    return {"values": values, "evidence": evidence, "issues": issues}
+
+
 def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, record_id: str) -> dict[str, Any]:
     """Render and extract an upload into a new local asset directory.
 
@@ -752,7 +880,8 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
         pages = [{"page": 1, "lines": lines, "method": "plain-text", "width": 0, "height": 0}]
         pipeline.append({"stage": "Read document", "status": "complete", "detail": "UTF-8 text read locally; no document preview is generated."})
     else:
-        pages = _make_pdf_pages(data, folder) if kind == "pdf" else _make_image_pages(data, folder)
+        pages = (_make_pdf_pages(data, folder, capture_geometry=is_pace_profile(schema))
+                 if kind == "pdf" else _make_image_pages(data, folder))
         regions = [region for field in schema if isinstance(field, dict)
                    if (region := _valid_region(field.get("region")))]
         multicolumn_pages = set()
@@ -777,8 +906,9 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
         # Keep OCR as a distinct mapping layer: concatenating both layers would
         # duplicate region answers and lose the method behind each suggestion.
         mapping_pages = list(pages)
-        initial_values, _, _ = extract_neurology(pages, hashlib.sha256(data).hexdigest()) if is_profile(schema) else _map_fields(schema, pages)
-        unresolved = any(not initial_values.get(name) for name in applicable_fields(schema, initial_values))
+        initial = _extract_fields(schema, pages, data)
+        initial_values = initial["values"]
+        unresolved = any(not initial_values.get(name) for name in applicable_fields(schema, initial_values, initial))
         fallback_pages = [page for page in pages if page["method"] == "pdf-text" and page.get("hasRaster")] if unresolved else []
         for page in fallback_pages:
             layout = _OCRLayout.SPARSE if page["page"] in multicolumn_pages else _OCRLayout.BLOCK
@@ -811,7 +941,8 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
     source_text = "\n\n".join(source_pages)
     if len(source_text) > MAX_TEXT:
         raise DocumentError("Extracted text exceeds the 500,000 character document limit.")
-    values, evidence, mapping_issues = extract_neurology(mapping_pages, hashlib.sha256(data).hexdigest()) if is_profile(schema) else _map_fields(schema, mapping_pages)
+    extracted = _extract_fields(schema, mapping_pages, data)
+    values, evidence, mapping_issues = extracted["values"], extracted["evidence"], extracted["issues"]
     values = {f["name"]: values.get(f["name"], "") for f in schema}
     if is_profile(schema):
         for field in schema:
@@ -821,11 +952,15 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
                 mapping_issues.append(f"{field['name']}: {problem}")
     issues.extend(mapping_issues)
     populated = sum(bool(value) for value in values.values())
-    active_count = len(applicable_fields(schema, values))
+    active_count = len(applicable_fields(schema, values, extracted))
     pipeline.append({"stage": "Match form fields", "status": "complete" if populated else "needs-review", "detail": f"Suggested {populated} of {active_count} applicable fields using literal labels and source geometry. Human review is required."})
     previews = [{"page": page["page"], "url": f"/api/assets/{record_id}/page-{page['page']}.png", "width": page["width"], "height": page["height"]} for page in pages if page.get("path")]
     result = {"sourceText": source_text, "values": values, "pages": previews, "previewUrl": previews[0]["url"] if previews else None, "evidence": evidence, "pipeline": pipeline, "issues": issues}
-    if is_profile(schema):
+    if is_pace_profile(schema):
+        result["applicableFields"] = sorted(applicable_fields(schema, values, extracted))
+        result["sourceContext"] = extracted["sourceContext"]
+        result["profileBlockingIssues"] = list(extracted["sourceContext"]["blockingIssues"])
+    elif is_profile(schema):
         result["applicableFields"] = sorted(applicable_fields(schema, values))
         result["sourceInstrumentFamily"] = values.get("instrument_family", "")
         result["profileBlockingIssues"] = [issue for issue in mapping_issues if issue.startswith(("patient_name: Repeated", "patient_dob: Repeated", "patient_mrn: Repeated", "patient_dob: Invalid"))]

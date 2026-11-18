@@ -35,7 +35,7 @@ STATIC_RESOURCES = (
 )
 REQUIRED_FILES = (
     "desktop.py", "branding.py", "desktop_model.py", "desktop_worker.py", "runtime_paths.py", "form_types.py",
-    "pipeline.py", "worker.py", "templates.py", "template_worker.py", "server.py", "neurology_profile.py", "field_catalog.py", "limits.py",
+    "pipeline.py", "worker.py", "templates.py", "template_worker.py", "server.py", "neurology_profile.py", "pace_profile.py", "extraction_profiles.py", "field_catalog.py", "limits.py",
     "study_profiles/pace.json", "spreadsheets/pace-import-template.csv", "source_bundle.py", "bundle_worker.py",
     "requirements.txt", "requirements-build.txt",
 )
@@ -131,6 +131,7 @@ def build(work_dir: Path, dist_dir: Path) -> Path:
         "--distpath", str(helper_dist), "--workpath", str(run_dir / "helper-work"),
         "--hidden-import", "worker", "--hidden-import", "template_worker",
         "--hidden-import", "bundle_worker",
+        "--add-data", f"{ROOT / 'study_profiles/pace.json'}:study_profiles",
     ] + native_options + [str(ROOT / "desktop_worker.py")], environment)
     helper = helper_dist / ("FormbridgeWorker.exe" if sys.platform == "win32" else "FormbridgeWorker")
     if not helper.is_file():

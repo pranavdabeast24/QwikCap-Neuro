@@ -24,7 +24,10 @@ from branding import PRODUCT_NAME
 from server import (Workspace, InputError, ConflictError, MAX_BODY, MAX_FILE,
                     MAX_RECORDS, MAX_VALUE_BYTES, MAX_SESSION_BYTES, parse_schema, schema_from_csv,
                     strict_json_loads, validate_values, now, ROOT, source_bytes, public_record, project_record)
-from neurology_profile import PROFILE, is_profile, profile_schema, applicable_fields, patient_groups
+from neurology_profile import is_profile as is_neurology_profile, profile_schema, patient_groups
+from extraction_profiles import (is_profile, is_pace_profile, profile_id, canonical_schema,
+                                 applicable_fields, source_blocking_issues, bundle_identity_issues)
+from pace_profile import PROFILE as PACE_PROFILE
 from form_types import (new_draft, validate_draft, compile_draft, parse_form_type,
                         page_geometry, compatibility_issues, RULE_KEYS)
 from field_catalog import CatalogError, catalog_for_columns, extraction_rule, REPEATING_EXPORT_WARNING
@@ -208,13 +211,15 @@ class DesktopSession:
         state.update(expectedFields=catalog["fields"], expectedInstruments=catalog["instruments"],
                      expectedWarnings=catalog["warnings"], expectedCatalogName=catalog["name"],
                      patientRowExportWarning=REPEATING_EXPORT_WARNING if repeating_selected else "")
-        state["profile"] = PROFILE if is_profile(ws.schema) else None
-        state["patientGroups"] = patient_groups(ws.records) if is_profile(ws.schema) else []
+        state["profile"] = profile_id(ws.schema)
+        state["patientGroups"] = patient_groups(ws.records) if is_neurology_profile(ws.schema) else []
         for record in state["records"]:
             if is_profile(ws.schema):
-                record["applicableFields"] = sorted(applicable_fields(ws.schema, record["values"]))
+                record["applicableFields"] = sorted(applicable_fields(ws.schema, record["values"], record))
                 record["groupConflict"] = any(g["conflict"] and record["id"] in g["recordIds"] for g in state["patientGroups"])
                 record["groupConflicts"] = ["The same MRN has conflicting patient names or birth dates."] if record["groupConflict"] else []
+                if is_pace_profile(ws.schema):
+                    record["profileBlockingIssues"] = source_blocking_issues(ws.schema, record, record["values"])
             paths = {}
             for page in record.get("pages", []):
                 path = self.page_path(record["id"], page["page"])
@@ -263,9 +268,10 @@ class DesktopSession:
         if not isinstance(record_id, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,79}", record_id):
             raise InputError("Enter a study record ID of 1 to 80 letters, digits, underscores, periods or hyphens, starting with a letter or digit.")
         ws = self.workspace
+        pace_mode = is_pace_profile(ws.schema)
         if len(ws.records) >= MAX_RECORDS:
             raise InputError("This session supports at most 60 patient rows.")
-        if any("bundleSources" not in record for record in ws.records) or (ws.schema and self.form_type is None) or (ws.records and self.draft is not None):
+        if any("bundleSources" not in record for record in ws.records) or (ws.schema and self.form_type is None and not pace_mode) or (ws.records and self.draft is not None):
             raise InputError("Save this project and start a new project before combining patient PDFs. Reuse an applied patient-bundle extraction type for later patients.")
         if any(record.get("bundleRecordId") == record_id for record in ws.records):
             raise InputError("That study record ID already has a patient source bundle in this project.")
@@ -301,7 +307,14 @@ class DesktopSession:
             if len(pages) != manifest[-1]["lastPage"]:
                 raise InputError("The combined PDF does not match its ordered source manifest.")
             draft = copy.deepcopy(self.draft)
-            if self.form_type is not None:
+            if pace_mode:
+                issues = bundle_identity_issues(record, record_id, manifest)
+                if record["values"].get("record_id") != record_id:
+                    issues.append("The PACE source record ID differs from the operator-confirmed study record ID.")
+                if issues:
+                    raise InputError(" ".join(issues))
+                draft = None
+            elif self.form_type is not None:
                 if self.form_type["identifierField"] != "record_id" or ws.schema[0].get("region") != cover_rule["region"]:
                     raise InputError("Use a patient-bundle extraction type with its record_id mask on the operator cover, or start a new project.")
                 issues = compatibility_issues(self.form_type, record.get("pages", []))
@@ -329,6 +342,7 @@ class DesktopSession:
             record["bundleSources"] = [{**source, "sourceData": original["data"]} for source, original in zip(manifest, documents)]
             record["bundleRecordId"] = record_id
             record["formTypeIssues"] = []
+            record["validationErrors"] = validate_values(ws.schema, record["values"], record)
             if len(json.dumps([r["values"] for r in ws.records] + [record["values"]], ensure_ascii=True).encode()) > MAX_VALUE_BYTES:
                 raise InputError("Extracted review text exceeds the 4 MiB session limit.")
             shutil.move(str(staged.assets / record["id"]), str(ws.assets / record["id"]))
@@ -440,6 +454,11 @@ class DesktopSession:
         self.set_schema(profile_schema())
         return self.snapshot()
 
+    def use_pace_profile(self):
+        """Opt into printed PACE forms without changing custom-mask extraction."""
+        self.set_schema(canonical_schema(PACE_PROFILE))
+        return self.snapshot()
+
     def import_dictionary(self, path: str | Path):
         raw = bounded_read(path, MAX_SCHEMA_BYTES)
         try:
@@ -527,12 +546,12 @@ class DesktopSession:
         workbook = Workbook()
         try:
             sheet = workbook.active
-            sheet.title = "Neurology staging" if is_profile(self.workspace.schema) else "Category columns"
+            sheet.title = "Neurology staging" if is_neurology_profile(self.workspace.schema) else "PACE patient rows" if is_pace_profile(self.workspace.schema) else "Category columns"
             sheet.append([f["name"] for f in self.workspace.schema])
             sheet.freeze_panes = "A2"
             output = io.BytesIO()
             workbook.save(output)
-            filename = "neurology-staging-columns.xlsx" if is_profile(self.workspace.schema) else "category-columns.xlsx"
+            filename = "neurology-staging-columns.xlsx" if is_neurology_profile(self.workspace.schema) else "pace-patient-columns.xlsx" if is_pace_profile(self.workspace.schema) else "category-columns.xlsx"
             self.workspace.import_template(output.getvalue(), filename, spec_validator=self._validate_expected_spec)
         finally:
             workbook.close()
@@ -631,7 +650,11 @@ class DesktopSession:
                 added = staged.add(data, record.get("filename", ""))
                 if bundle is not None:
                     added.update(bundleSources=bundle[0], bundleRecordId=bundle[1], origin="patient-bundle")
-                added.update(values=dict(values), validationErrors=validate_values(schema, values), confirmed=[], status="review", reviewedBy="")
+                    if is_pace_profile(schema):
+                        issues = bundle_identity_issues(added, bundle[1], bundle[0])
+                        if issues:
+                            raise InputError(" ".join(issues))
+                added.update(values=dict(values), validationErrors=validate_values(schema, values, added), confirmed=[], status="review", reviewedBy="")
                 if len(json.dumps([r["values"] for r in staged.records], ensure_ascii=True).encode()) > MAX_VALUE_BYTES:
                     raise InputError("Project review text exceeds the 4 MB session limit.")
             template = body.get("template")
