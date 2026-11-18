@@ -214,10 +214,11 @@ def _pdf_lines(page: Any, pixel_width: int, pixel_height: int) -> list[dict[str,
 
 
 def _tesseract_lines(path: Path, width: int, height: int, executable: str) -> list[dict[str, Any]]:
-    result = subprocess.run(
-        [executable, str(path), "stdout", "--psm", "6", "tsv"],
-        stdin=subprocess.DEVNULL, capture_output=True, timeout=OCR_TIMEOUT, check=False,
-    )
+    with path.open("rb") as image_input:
+        result = subprocess.run(
+            [executable, "stdin", "stdout", "--psm", "6", "tsv"],
+            stdin=image_input, capture_output=True, timeout=OCR_TIMEOUT, check=False,
+        )
     if result.returncode:
         raise DocumentError("Local Tesseract OCR could not read this page.")
     if len(result.stdout) > 12_000_000:

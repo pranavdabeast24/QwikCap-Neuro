@@ -1,5 +1,8 @@
 # Run from a new clone
 
+To run the packaged Windows app without installing Python, use [WINDOWS.md](WINDOWS.md).
+The instructions below are for source development.
+
 The repository contains the desktop and earlier browser source, build scripts,
 tests, and explicitly fictional practice files. Run the commands below from the
 repository root. Python 3.12 with Tcl/Tk support is required for the desktop UI.

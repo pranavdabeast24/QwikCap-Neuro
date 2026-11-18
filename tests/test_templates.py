@@ -73,7 +73,10 @@ def rewrite_zip(data, replacements=None, extras=None):
                 payload = replacement(payload) if callable(replacement) else replacement
             destination.writestr(entry, payload)
         for name, payload in (extras or []):
-            destination.writestr(name, payload)
+            entry = zipfile.ZipInfo(name)
+            # Preserve hostile names that ZipInfo normalizes on Windows.
+            entry.filename = name
+            destination.writestr(entry, payload, compress_type=zipfile.ZIP_DEFLATED)
     return output.getvalue()
 
 
@@ -390,9 +393,14 @@ class TemplateTests(unittest.TestCase):
             data = rewrite_zip(self.xlsx, extras=[("xl/untrusted.xml", payload)])
             with self.subTest(payload=payload), self.assertRaisesRegex(templates.TemplateError, "XML"):
                 templates.inspect_template(data, "practice.xlsx")
-        for name in ["../escape.xml", "/absolute.xml", "xl/../escape.xml", "xl\\escape.xml"]:
-            with self.subTest(name=name), self.assertRaisesRegex(templates.TemplateError, "traversal"):
-                templates.inspect_template(rewrite_zip(self.xlsx, extras=[(name, b"<a/>")]), "practice.xlsx")
+        for name in ["../escape.xml", "/absolute.xml", "xl/../escape.xml", "xl\\escape.xml", "xl/null.xml\x00ignored"]:
+            for separator in ("/", "\\"):
+                with self.subTest(name=name, separator=separator), patch.object(zipfile.os, "sep", separator):
+                    data = rewrite_zip(self.xlsx, extras=[(name, b"<a/>")])
+                    with zipfile.ZipFile(io.BytesIO(data)) as archive:
+                        self.assertEqual(archive.infolist()[-1].orig_filename, name)
+                    with self.assertRaisesRegex(templates.TemplateError, "traversal"):
+                        templates.inspect_template(data, "practice.xlsx")
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", UserWarning)
             duplicate = rewrite_zip(self.xlsx, extras=[("xl/workbook.xml", b"<a/>")])

@@ -8,7 +8,7 @@ The user selected QuickCap (CV) as a working name only. The QuickCap name is alr
 
 The display name and new GUI package basename (`QuickCapCV`) have changed from Formbridge. Saved project/type formats retain their existing `formbridge-*` identifiers, and older projects remain supported. The `FORMBRIDGE_TESSERACT` setting, `FormbridgeWorker` helper name and `org.formbridge.desktop` bundle identifier also remain stable for compatibility. Renaming the app does not migrate saved data or change review requirements. The earlier browser interface and historical verification records retain their original names.
 
-For a new computer, start with [the handoff](docs/HANDOFF.md), follow [source setup](docs/GETTING_STARTED.md), and rerun [the portable checks](docs/TESTING.md). Source, fictional fixtures, and instructions travel through Git. Saved projects and private documents need a separate approved transfer.
+For a Windows download and setup, use [the Windows guide](docs/WINDOWS.md). Developers can start with [the handoff](docs/HANDOFF.md), follow [source setup](docs/GETTING_STARTED.md), and rerun [the portable checks](docs/TESTING.md). Source, fictional fixtures, and instructions travel through Git. Saved projects and private documents need a separate approved transfer.
 
 For the supplied PACE study, use [the patient-bundle workflow](docs/PACE_WORKFLOW.md). The optional catalog provides all 512 exact destination fields, instrument-specific codes and date rules. Combine ordered PDFs under an operator-entered study ID, select relevant fields and masks, and review one patient row. The full destination stays intact, with explicit blank-column and mapping confirmation. Repeating-instrument REDCap upload needs a separate validated conversion; this is a patient review export.
 
@@ -101,7 +101,7 @@ The result is `dist\windows\QuickCapCV\QuickCapCV.exe` with its adjacent depende
 
 The builder checks that the GUI, companion worker, source modules, samples, and spreadsheet directory exist before building. It requires the installed PyInstaller version pinned in `requirements-build.txt`. Each run uses a new intermediate directory. If the selected destination already contains `QuickCapCV` or `QuickCapCV.app`, choose another `--dist-dir`; the builder preserves existing output. Retained work directories can be inspected or removed manually after review.
 
-`desktop-build.yml` is an inactive GitHub Actions template. It uses separate macOS and Windows runners, Python 3.12, immutable action references, the synthetic tests, a native Tk initialization check, and a packaged-worker check. It has not been run as part of this delivery. Review its paths and copy it to `.github/workflows/` only when you choose to enable CI. Use only fictional fixtures in CI. The template does not sign, notarize, install Tesseract, or publish a release.
+The manually dispatched [Windows workflow](.github/workflows/windows-build.yml) builds and verifies the portable ZIP on Windows with fictional fixtures. It checks native startup, required local OCR, custom masks, patient bundles and spreadsheet cells after extraction outside the checkout. It retains notices and a component inventory. It has no push, pull-request or schedule trigger and does not publish releases. `desktop-build.yml` remains an older inactive matrix template; it does not provide the current Windows acceptance coverage.
 
 ## Local data and review limits
 

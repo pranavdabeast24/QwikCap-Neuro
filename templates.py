@@ -115,9 +115,10 @@ def _preflight_xlsx(data: bytes) -> None:
             names: set[str] = set()
             total = 0
             for entry in entries:
-                name = entry.filename
+                # ZipInfo normalizes Windows separators and truncates NULs.
+                name = entry.orig_filename
                 parts = name.split("/")
-                if not name or name.startswith("/") or "\\" in name or ":" in name or any(part in {".", ".."} for part in parts) or "\x00" in name:
+                if name != entry.filename or not name or name.startswith("/") or "\\" in name or ":" in name or any(part in {".", ".."} for part in parts) or "\x00" in name:
                     raise TemplateError("The XLSX archive contains an unsafe traversal path.")
                 lowered = name.casefold()
                 if lowered in names:

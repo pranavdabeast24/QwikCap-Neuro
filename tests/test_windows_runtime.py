@@ -154,7 +154,8 @@ finally:
             with self.subTest(fixture=fixture["file"]):
                 result = pipeline.process_document((APP / "samples" / fixture["file"]).read_bytes(),
                                                    fixture["file"], schema, self.folder, f"synthetic-scan-{index}")
-                self.assertEqual(result["values"], {key: str(value) for key, value in fixture["expected"].items()})
+                self.assertEqual(result["values"], {key: str(value) for key, value in fixture["expected"].items()},
+                                 f"Fictional scan extraction issues: {result['issues']}")
                 self.assertEqual(result["issues"], [])
                 self.assertTrue(result["evidence"])
                 self.assertEqual({item["method"] for item in result["evidence"].values()}, {"tesseract"})

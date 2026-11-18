@@ -4,6 +4,7 @@ from __future__ import annotations
 import io
 import json
 from pathlib import Path
+import subprocess
 import sys
 from tempfile import TemporaryDirectory
 import unittest
@@ -13,6 +14,7 @@ APP = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(APP))
 
 import pipeline
+from PIL import Image
 from pypdf import PdfReader, PdfWriter
 from reportlab.pdfgen import canvas
 
@@ -67,6 +69,31 @@ class PipelineTests(unittest.TestCase):
             self.skipTest("Local OCR framework is unavailable in this execution environment")
         self.assertEqual(result["values"], {key: str(value) for key, value in record["expected"].items()})
         self.assertTrue(all(item["method"] in {"apple-vision", "tesseract"} for item in result["evidence"].values()))
+
+    def test_tesseract_reads_binary_stdin_from_unicode_image_path(self):
+        folder = self.assets / "Folder with spaces 測試 Café 😀"
+        folder.mkdir()
+        path = folder / "fictional scan 測試.png"
+        with Image.new("RGB", (200, 100), "white") as image:
+            image.save(path, "PNG")
+        image_bytes = path.read_bytes()
+        output = (b"level\tpage_num\tblock_num\tpar_num\tline_num\tword_num\tleft\ttop\twidth\theight\tconf\ttext\n"
+                  b"5\t1\t1\t1\t1\t1\t20\t10\t40\t10\t99\tAge:\n"
+                  b"5\t1\t1\t1\t1\t2\t70\t10\t20\t10\t99\t21\n")
+
+        def local_tesseract(command, *, stdin, **options):
+            if command[1] != "stdin":
+                return subprocess.CompletedProcess(command, 1, stdout=b"", stderr=b"Cannot open Unicode filename")
+            self.assertEqual(command, ["fictional-tesseract", "stdin", "stdout", "--psm", "6", "tsv"])
+            self.assertEqual(stdin.read(), image_bytes)
+            return subprocess.CompletedProcess(command, 0, stdout=output, stderr=b"")
+
+        with patch.object(pipeline.subprocess, "run", side_effect=local_tesseract):
+            lines = pipeline._tesseract_lines(path, 200, 100, "fictional-tesseract")
+        self.assertEqual(lines, [{"text": "Age: 21", "words": [
+            {"text": "Age:", "x": 0.1, "y": 0.1, "width": 0.2, "height": 0.1},
+            {"text": "21", "x": 0.35, "y": 0.1, "width": 0.1, "height": 0.1}],
+            "x": 0.1, "y": 0.1, "width": 0.35, "height": 0.1}])
 
     def test_conflicting_exact_labels_leave_value_blank(self):
         result = self.process(fictional_pdf(["Age: 21", "Age: 70"]), [{"name": "age", "label": "Age", "type": "integer"}])
