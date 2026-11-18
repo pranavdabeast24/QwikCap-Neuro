@@ -5,11 +5,13 @@ There is no webview, browser, HTTP listener, account or network dependency.
 """
 from __future__ import annotations
 
+import argparse
 import copy
 import json
 import os
 from pathlib import Path
 import queue
+import sys
 import threading
 import uuid
 import tkinter as tk
@@ -2104,7 +2106,83 @@ class DesktopApp:
         self.root.destroy()
 
 
-def main():
+def verify_startup(output):
+    """Verify a new empty window without loading documents or showing dialogs."""
+    report = {"format": "quickcap-startup-verification-v1", "status": "failed",
+              "frozen": bool(getattr(sys, "frozen", False)), "checks": []}
+    root = app = None
+    stage = "create-window"
+    def checked(condition):
+        if not condition:
+            raise RuntimeError("Native startup verification failed")
+    try:
+        root = tk.Tk()
+        app = DesktopApp(root)
+        failures = []
+        def check_window():
+            nonlocal stage
+            try:
+                stage = "mapped-empty-window"
+                root.update_idletasks()
+                checked(root.winfo_exists() and root.winfo_viewable())
+                checked(PRODUCT_NAME in root.title())
+                state = app.session.snapshot()
+                checked(state["records"] == [] and state["schema"] == [])
+                checked(not state["dirty"] and not state["projectPath"])
+                checked(app.notebook.winfo_ismapped() and app.cancel_button.winfo_ismapped())
+                checked(len(app.notebook.tabs()) == 2 and app.thread.is_alive())
+                report["checks"].append(stage)
+                stage = "bundled-pace-catalog"
+                app.session.use_pace_template()
+                state = app.session.snapshot()
+                checked(len(state["expectedFields"]) == len(state["template"]["columns"]) == 512)
+                fields = {field["name"]: field for field in state["expectedFields"]}
+                label = "Taken, no change in symptoms"
+                checked(fields["med_caf"]["choices"]["2"] == label)
+                checked(fields["med_caf_v2"]["choices"]["3"] == label)
+                checked(state["records"] == [] and state["schema"] == [])
+                app._render(state)
+                app.show_study_fields()
+                root.update_idletasks()
+                checked(app.catalog_window.winfo_viewable())
+                checked(len(app.catalog_tree.get_children()) == 512)
+                checked(app.catalog_tree.exists("med_caf") and app.catalog_tree.exists("med_caf_v2"))
+                report["checks"].append(stage)
+                report.update(status="passed", catalogFields=512, records=0, activeFields=0,
+                              title=root.title(), windowSystem=root.tk.call("tk", "windowingsystem"),
+                              tkVersion=str(root.tk.call("info", "patchlevel")))
+            except Exception:
+                failures.append(stage)
+            finally:
+                root.quit()
+        root.after(150, check_window)
+        root.mainloop()
+        if failures:
+            report.update(status="failed", failedCheck=failures[0])
+    except Exception:
+        report.update(status="failed", failedCheck=stage)
+    finally:
+        if app is not None:
+            app.commands.put(None)
+            app.thread.join(timeout=5)
+            app.session.close()
+            if app.thread.is_alive():
+                report.update(status="failed", failedCheck="domain-thread-cleanup")
+        if root is not None:
+            root.destroy()
+    output = Path(output)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    return 0 if report["status"] == "passed" else 1
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--verify-startup", type=Path, metavar="REPORT.json",
+                        help="Verify a new empty native window, write a report and exit")
+    args = parser.parse_args(argv)
+    if args.verify_startup is not None:
+        return verify_startup(args.verify_startup)
     root = tk.Tk()
     DesktopApp(root)
     root.mainloop()

@@ -9,7 +9,7 @@ start "" "%~dp0.venv\Scripts\pythonw.exe" "%~dp0desktop.py"
 exit /b 0
 
 :setup
-echo Formbridge needs a local Python environment with Tk and the application requirements.
+echo QuickCap (CV) needs a local Python environment with Tk and the application requirements.
 echo In this folder, run these commands yourself:
 echo   py -3.12 -m venv .venv
 echo   .venv\Scripts\python.exe -m pip install -r requirements.txt
@@ -18,6 +18,6 @@ pause
 exit /b 1
 
 :incomplete
-echo desktop.py is missing. Restore the complete Formbridge source folder.
+echo desktop.py is missing. Restore the complete QuickCap (CV) source folder.
 pause
 exit /b 1

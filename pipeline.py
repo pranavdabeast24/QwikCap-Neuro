@@ -53,17 +53,27 @@ class DocumentError(ValueError):
 
 def _tesseract_path() -> str | None:
     override = os.environ.get("FORMBRIDGE_TESSERACT")
-    if override:
-        candidate = Path(override)
-        if (
-            not candidate.is_absolute()
-            or candidate.name.casefold() not in {"tesseract", "tesseract.exe"}
-            or not candidate.is_file()
-            or not os.access(candidate, os.X_OK)
-        ):
-            return None
-        return str(candidate.resolve())
-    return shutil.which("tesseract")
+    def executable(value):
+        candidate = Path(value)
+        if (candidate.is_absolute() and candidate.name.casefold() in {"tesseract", "tesseract.exe"}
+                and candidate.is_file() and os.access(candidate, os.X_OK)):
+            return str(candidate.resolve())
+        return None
+    if override is not None:
+        return executable(override)
+    found = shutil.which("tesseract")
+    if sys.platform != "win32":
+        return found
+    if found:
+        return executable(found)
+    for variable, folder in (("ProgramFiles", "Tesseract-OCR"),
+                             ("LOCALAPPDATA", "Programs/Tesseract-OCR")):
+        base = os.environ.get(variable)
+        if base:
+            found = executable(Path(base) / folder / "tesseract.exe")
+            if found:
+                return found
+    return None
 
 
 def _vision_available() -> bool:

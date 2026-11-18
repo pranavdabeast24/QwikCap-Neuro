@@ -1,5 +1,6 @@
 """Native geometry regressions for the mask designer inspector."""
 from pathlib import Path
+import os
 import sys
 from types import SimpleNamespace
 import tkinter as tk
@@ -14,6 +15,8 @@ class DesignerLayoutTests(unittest.TestCase):
         try:
             root = tk.Tk()
         except tk.TclError as exc:
+            if os.name == "nt":
+                self.fail(f"Windows acceptance requires a native Tk display: {exc}")
             self.skipTest(f"Native Tk display is unavailable: {exc}")
         app = None
         try:

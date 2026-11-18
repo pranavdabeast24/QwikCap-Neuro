@@ -22,6 +22,17 @@ PYINSTALLER_VERSION = "6.22.3"
 RUNTIME_MODULES = (
     "tkinter", "PIL", "pypdfium2", "reportlab", "pypdf", "openpyxl", "defusedxml",
 )
+STATIC_RESOURCES = (
+    "samples/README.md", "samples/answer-key.json", "samples/blank-form.pdf",
+    "samples/expected-redcap.csv", "samples/practice-01-text.pdf", "samples/practice-02-text.pdf",
+    "samples/practice-03-text.pdf", "samples/practice-04-text.pdf", "samples/practice-05-text.pdf",
+    "samples/practice-06-scan.pdf", "samples/practice-06-scan.png", "samples/practice-07-scan.pdf",
+    "samples/practice-08-scan.pdf", "samples/practice-09-scan.pdf", "samples/practice-10-scan.pdf",
+    "samples/redcap-import-template.csv", "samples/sample-data-dictionary.csv", "samples/sample-schema.json",
+    "spreadsheets/friendly-template.xlsx", "spreadsheets/redcap-template.csv",
+    "spreadsheets/redcap-template.xlsx", "spreadsheets/template-manifest.json",
+    "spreadsheets/pace-import-template.csv", "study_profiles/pace.json",
+)
 REQUIRED_FILES = (
     "desktop.py", "branding.py", "desktop_model.py", "desktop_worker.py", "runtime_paths.py", "form_types.py",
     "pipeline.py", "worker.py", "templates.py", "template_worker.py", "server.py", "neurology_profile.py", "field_catalog.py", "limits.py",
@@ -38,8 +49,8 @@ def preflight(dist_dir: Path) -> str | None:
     """Reject incomplete sources and missing tools before creating build output."""
     if sys.platform not in {"darwin", "win32"}:
         raise BuildError("Build on macOS for a Mac app, or Windows for a Windows app.")
-    missing_files = [name for name in REQUIRED_FILES if not (ROOT / name).is_file()]
-    missing_files.extend(name for name in ("samples", "spreadsheets") if not (ROOT / name).is_dir())
+    missing_files = [name for name in (*REQUIRED_FILES, *STATIC_RESOURCES)
+                     if not (ROOT / name).is_file() or (ROOT / name).is_symlink()]
     if missing_files:
         raise BuildError("Application sources are incomplete: " + ", ".join(missing_files))
     missing_modules = [name for name in RUNTIME_MODULES if util.find_spec(name) is None]
@@ -129,10 +140,9 @@ def build(work_dir: Path, dist_dir: Path) -> Path:
         "--onedir", "--windowed", "--name", APP_BASENAME,
         "--distpath", str(dist_dir), "--workpath", str(run_dir / "gui-work"),
         "--add-binary", f"{helper}:helpers",
-        "--add-data", f"{ROOT / 'samples'}:samples",
-        "--add-data", f"{ROOT / 'spreadsheets'}:spreadsheets",
-        "--add-data", f"{ROOT / 'study_profiles'}:study_profiles",
     ]
+    for name in STATIC_RESOURCES:
+        gui_options += ["--add-data", f"{ROOT / name}:{Path(name).parent.as_posix()}"]
     if sys.platform == "darwin":
         gui_options += ["--osx-bundle-identifier", "org.formbridge.desktop"]
     run(common + gui_options + native_options + [str(ROOT / "desktop.py")], environment)
