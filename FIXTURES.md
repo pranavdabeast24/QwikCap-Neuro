@@ -9,7 +9,9 @@ The 2026-11-17 study reference assets are separate from the generated fictional 
 
 `tools/verify_pace_flow.py` generates new fictional forms for patient-bundle acceptance. Its generated source PDFs, source-bearing projects and exports remain ignored verification outputs.
 
-These fixtures were generated for this prototype. They contain fictional practice records, not patient data, and are not an authorized-train or other research dataset. No training, testing split, processed record, or prior verification output is included in this repository.
+The original practice fixtures were generated for this prototype and contain fictional records. Raw training and test splits, source-bearing projects, and unreviewed outputs are excluded from the repository. Two explicitly shipped app readouts are exceptions: the generated dense practice workbook and the verified workbook from the separately supplied, user-confirmed entirely fictional train forms.
+
+`examples/quickcap-actual-train-readout.xlsx` is a byte-identical copy of the native desktop export from 28 fictional train PDFs, combined into five patient rows. All 2,560 destination cells and 512 ordered headers passed independent verification, with zero manual value corrections. Its SHA-256 is `f8aae166a92cbe5815f6008cf1fc85bc90651fbd5b47cb03e21198cb5f978a03`. The source forms and answer keys are not included. See [the actual-dataset report](docs/testing/actual-pace-dataset-2026-11-18.md) for the coverage limits, including nine total-score entries absent from the supplied destination template.
 
 `generate_samples.py` documents and regenerates the fictional PDF/image samples and their answer key. The included blank spreadsheet templates were authored for this prototype; their source generator is not shipped because it used a workstation-specific path. `spreadsheets/template-manifest.json` records the intended example field associations. SHA-256 below identifies the exact staged files, not a clinical validation claim.
 

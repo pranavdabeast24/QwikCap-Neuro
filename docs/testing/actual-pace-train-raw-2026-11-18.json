@@ -1,0 +1,59 @@
+{
+  "documents_expected": 28,
+  "documents_present": 28,
+  "raw_key_rows_expected": 609,
+  "raw_key_rows_checked": 600,
+  "raw_key_rows_matched": 600,
+  "key_only_rows": 9,
+  "key_only_rows_checked": 0,
+  "key_only_rows_matched": 0,
+  "mapped_key_rows": 600,
+  "inferred_zero_rows_checked": 483,
+  "issues": [
+    {
+      "document": "doc_06.pdf",
+      "field": "total28",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_17.pdf",
+      "field": "hit6_total",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_18.pdf",
+      "field": "hit6_total",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_20.pdf",
+      "field": "hit6_total",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_21.pdf",
+      "field": "total28_v2",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_24.pdf",
+      "field": "total28",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_25.pdf",
+      "field": "total28_v2",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_27.pdf",
+      "field": "hit6_total",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_28.pdf",
+      "field": "hit6_total",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    }
+  ]
+}
