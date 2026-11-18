@@ -53,7 +53,9 @@ See [the environment record](testing/ENVIRONMENT_MACOS.json),
 [test output](testing/UNIT_TEST_RESULTS_MACOS.txt), and
 [BUILD_ENVIRONMENT.md](BUILD_ENVIRONMENT.md) for the current evidence and the
 historical `cfd0762` snapshot. Rerun [TESTING.md](TESTING.md) on each new machine.
-Exact-pin installation and execution on Windows remain unverified.
+The Windows portable build separately passed its declared dependency pins and
+219 source tests on Windows with Python 3.12.10; the one POSIX-only test was
+skipped. See [the Windows evidence](TESTING.md#windows-portable-build-2026-11-18).
 
 ## First fictional workflow
 

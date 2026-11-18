@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "documents": 10,
+  "extractedMatches": 60,
+  "checks": [],
+  "exports": [
+    {
+      "records": 10,
+      "cellsMatched": 60
+    },
+    {
+      "records": 10,
+      "cellsMatched": 60
+    },
+    {
+      "records": 10,
+      "cellsMatched": 60
+    },
+    {
+      "records": 10,
+      "cellsMatched": 60
+    }
+  ]
+}

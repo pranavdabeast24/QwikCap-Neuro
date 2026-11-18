@@ -1,0 +1,92 @@
+{
+  "format": "quickcap-windows-delivery-record-v1",
+  "date": "2026-11-18",
+  "sourceCommit": "f9eb862afaa1fe8afdde461df814fe4ebf539dbd",
+  "workflowRun": "https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44374387855",
+  "release": "https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/quickcap-cv-windows-2026-11-18",
+  "status": "passed",
+  "package": {
+    "file": "QuickCapCV-Windows-x64.zip",
+    "bytes": 48273263,
+    "sha256": "65c980767ff5efe7ee281af485fffe65af290a6011825bce10d14e1f80cb98db",
+    "target": "Windows x64",
+    "signing": "Unsigned development prototype",
+    "pythonInstallationRequiredForPackagedApp": false,
+    "ocrBundled": false
+  },
+  "windows": {
+    "os": "Windows Server 2022 x64",
+    "python": "3.12.10",
+    "tk": "8.6.15",
+    "pyinstaller": "6.22.3",
+    "pyinstallerHooksContrib": "2026.10",
+    "tesseract": "v5.5.3.20260724",
+    "unitTestsRun": 219,
+    "unitTestsSkipped": 1,
+    "skipReason": "POSIX process-group test; separate real Windows process-tree cleanup passed",
+    "sourceAndPackagedPaceGroupsEach": 9,
+    "sourceAndPackagedCustomMaskGroupsEach": 10,
+    "packagedFixtureDocuments": 10,
+    "realScannedFixtures": 5,
+    "packagedFixtureFieldsMatched": 60,
+    "packagedFixtureExportCellsMatched": 240,
+    "paceOriginalForms": 2,
+    "pacePatientRows": 1,
+    "paceDestinationColumns": 512,
+    "paceCsvAndXlsxCellsMatched": 1024,
+    "nativeStartup": "Actual extracted frozen GUI initialized an empty workspace and rendered all 512 bundled PACE catalog fields",
+    "isolation": "Outside checkout in a spaced Unicode folder; GUI and helper PATH contained only System32; verification parent used explicit development Python",
+    "additionalNativeChecks": [
+      "Real Windows taskkill parent and child cleanup",
+      "Locked destination preserves previous bytes and pending changes",
+      "Unicode JSON under cp1252 pipes and project save/reopen",
+      "Operational Tesseract scans and no-OCR manual review",
+      "Native Tk controls and minimum-window layout"
+    ],
+    "results": "WINDOWS_RESULTS.json"
+  },
+  "macSourceRegression": {
+    "os": "macOS 27.0.1 arm64",
+    "python": "3.12.14",
+    "unitTestsRun": 219,
+    "unitTestsSkipped": 7,
+    "skipReason": "Windows-only process and runtime tests",
+    "seconds": 22.78,
+    "macBinaryRebuilt": false
+  },
+  "archiveInspection": {
+    "status": "passed",
+    "approvedStaticResources": 24,
+    "retainedNoticeFiles": 32,
+    "outerNativeFiles": 76,
+    "hashedEmbeddedArchiveEntries": 124,
+    "embeddedNativeFiles": 75,
+    "manifestFieldNote": "The v1 manifest's embeddedNativeFiles inventory contains all 124 binary-type archive entries, including data. All 75 embedded native files are covered.",
+    "independentReview": "No concrete notice or native inventory omission found for this private pilot artifact; this is not commercial license clearance",
+    "results": "WINDOWS_ARCHIVE.json"
+  },
+  "resolvedWindowsFindings": [
+    {
+      "run": "44372947203",
+      "finding": "The pinned vendor version label includes v and a build date",
+      "resolution": "Match the actual exact label after installer hash verification"
+    },
+    {
+      "run": "44373276391",
+      "finding": "All five scanned fixtures failed from a Unicode asset directory while the ordinary scan test passed",
+      "resolution": "Open the image with Python's Unicode path handling and pass a binary handle to Tesseract stdin; all five native Windows scans then passed"
+    },
+    {
+      "run": "44373276391",
+      "finding": "ZIP normalization hid malformed original names on Windows, and NUL truncation affected both platforms",
+      "resolution": "Validate orig_filename before normalization; preserve hostile raw names in fixtures; replay Windows and POSIX separators"
+    }
+  ],
+  "scope": "Committed and generated fictional acceptance inputs only. No research dataset, reference attachment, patient record, or held-out input was used.",
+  "remainingValidation": [
+    "Complete person-driven Windows client-laptop workflow, including mouse masks and file dialogs",
+    "Signed customer distribution and environment security qualification",
+    "Live REDCap import; repeating instruments still require a separately validated conversion",
+    "Handwriting, camera and LLM features are not implemented"
+  ]
+}

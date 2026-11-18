@@ -1,0 +1,47 @@
+{
+  "status": "passed",
+  "destinationColumns": 512,
+  "patientRows": 1,
+  "originalForms": 2,
+  "mappedFields": 12,
+  "exportedCellsMatched": 1024,
+  "checks": [
+    {
+      "check": "blank startup, explicit 512-field catalog and empty-project roundtrip",
+      "status": "passed"
+    },
+    {
+      "check": "ordered patient source bundle with explicit record identifier and grouping consent",
+      "status": "passed"
+    },
+    {
+      "check": "selected masks, original date evidence and instrument-specific choice codes",
+      "status": "passed"
+    },
+    {
+      "check": "field approval, explicit blank decisions and stale mapping gates",
+      "status": "passed"
+    },
+    {
+      "check": "independently reopened exact-width CSV has one patient row from two source forms",
+      "status": "passed"
+    },
+    {
+      "check": "independently reopened 512-column XLSX preserves blank, zero and date values",
+      "status": "passed"
+    },
+    {
+      "check": "saved reusable type contains only selected rules and masks",
+      "status": "passed"
+    },
+    {
+      "check": "patient project preserves exact original PDFs and clears review gates on reopening",
+      "status": "passed"
+    },
+    {
+      "check": "invalid populated template rejects transactionally",
+      "status": "passed"
+    }
+  ],
+  "exports": []
+}

@@ -1,5 +1,18 @@
 # Recorded environments and distribution work
 
+The [2026-11-18 Windows record](testing/WINDOWS_BUILD.json) describes the portable
+x64 ZIP built at `f9eb862` on Windows Server 2022 with Python 3.12.10 and Tk
+8.6.15. All 219 source tests ran successfully with one POSIX-only skip. Source
+and packaged PACE/mask acceptance, real scanned forms and extracted native
+startup passed. The ZIP includes 32 retained notice files and an inventory of
+76 outer native files and 124 hashed worker archive entries, including 75 native
+files. The v1 manifest calls that full embedded inventory `embeddedNativeFiles`;
+it also contains data files. This inventory is not a commercial
+license-clearance conclusion. A person-driven client-laptop trial remains open.
+
+The same final source passed 219 tests on macOS with seven Windows-only skips.
+This delivery adds a Windows binary; the earlier Mac binary was not rebuilt.
+
 The 2026-11-17 PACE update passed 208 source tests and nine patient-bundle acceptance groups through both source and packaged workers. See [the current build and environment record](testing/PACE_BUILD_MACOS.json). The notes below describe the earlier 2026-11-13 handoff.
 
 The earlier handoff was installed in a fresh isolated Python 3.12 environment from the unchanged runtime and build requirement files on 2026-11-13. All declared pins matched, and all 156 source tests passed on this Mac. See [that environment record](testing/ENVIRONMENT_MACOS.json) and [test output](testing/UNIT_TEST_RESULTS_MACOS.txt). This validates the source setup on the recorded Mac configuration. It does not validate Windows, other Python/Tk distributions, a future model, or clinical use.

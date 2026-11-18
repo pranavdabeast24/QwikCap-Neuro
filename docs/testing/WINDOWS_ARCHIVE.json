@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "sourceCommit": "f9eb862afaa1fe8afdde461df814fe4ebf539dbd",
+  "zipSHA256": "65c980767ff5efe7ee281af485fffe65af290a6011825bce10d14e1f80cb98db",
+  "zipBytes": 48273263,
+  "zipFiles": 1110,
+  "approvedResources": 24,
+  "noticeFiles": 32,
+  "nativeFiles": 76,
+  "embeddedArchiveEntries": 124,
+  "embeddedNativeFiles": 75,
+  "manifestEmbeddedInventoryIncludesData": true,
+  "peArchitecture": "x64",
+  "notice": "Static inspection on macOS; native Windows execution is established separately by the acceptance run."
+}

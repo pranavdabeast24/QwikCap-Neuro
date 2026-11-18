@@ -1,0 +1,15 @@
+{
+  "format": "quickcap-startup-verification-v1",
+  "status": "passed",
+  "frozen": false,
+  "checks": [
+    "mapped-empty-window",
+    "bundled-pace-catalog"
+  ],
+  "catalogFields": 512,
+  "records": 0,
+  "activeFields": 0,
+  "title": "QuickCap (CV) \u2014 Local form review",
+  "windowSystem": "win32",
+  "tkVersion": "8.6.15"
+}

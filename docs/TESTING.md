@@ -1,5 +1,46 @@
 # Testing and portable evidence
 
+## Windows portable build, 2026-11-18
+
+The [Windows build record](testing/WINDOWS_BUILD.json) links the successful
+[Windows run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44374387855)
+at `f9eb862`. The runner used Windows Server 2022 x64, Python 3.12.10, Tk 8.6.15
+and the declared package pins. All 219 source tests ran successfully; the one
+POSIX-only process test was skipped. The final source also passed 219 tests on
+Mac with seven Windows-only skips.
+
+The actual portable ZIP was extracted outside the checkout into a folder with
+spaces, Chinese characters, an accented name and an emoji. Its native GUI and
+companion worker ran with only System32 on `PATH`. The GUI initialized an empty
+workspace and rendered the 512-field PACE catalog using its bundled resources.
+The verification tools used an explicitly located development Python parent;
+the GUI and companion executables used their bundled runtimes.
+
+The [Windows results](testing/WINDOWS_RESULTS.json) record real process-tree
+cancellation, a locked destination save, Unicode project save/reopen, all five
+scanned fixtures through operational Tesseract, and a separate no-OCR manual
+review path. Source and packaged custom-mask checks passed ten groups each;
+PACE checks passed nine each. The packaged fixture regression matched 60 fields
+and 240 independently reopened export cells. PACE combined two fictional PDFs
+into one row and matched all 512 CSV and XLSX cells, 1,024 cells in total.
+
+Windows execution found and corrected two platform issues. OCR now reads a
+binary image stream instead of passing its Unicode filename to Tesseract.
+XLSX preflight validates original ZIP names before Windows separator
+normalization or NUL truncation; the hostile fixtures now preserve raw bytes.
+An initial version-label check was also corrected to match the pinned vendor.
+
+An independent static review checked the downloaded ZIP checksum, both x64
+executable headers, all 24 approved resources, 32 notice files and the native
+inventory. The embedded inventory is a superset: 124 hashed archive entries,
+including 75 native files. See [archive verification](testing/WINDOWS_ARCHIVE.json).
+Tesseract was installed separately on the disposable runner and is not bundled.
+The Windows build is unsigned. A complete person-driven workflow on a client
+Windows laptop, handwriting, and live-study REDCap import remain unverified.
+The PACE repeating-instrument conversion restriction still applies.
+
+## Earlier Mac evidence
+
 The 2026-11-17 PACE update adds [patient-bundle acceptance](../tools/verify_pace_flow.py). It generates two fictional forms, combines them as one patient record, verifies instrument-specific codes and date normalization, and independently reopens all 512 CSV and XLSX destination cells. The reference codebook and any train/test dataset are not read by the acceptance tool. See [PACE_WORKFLOW.md](PACE_WORKFLOW.md) for the workflow and the repeating-instrument import restriction. Current PACE results are recorded separately from the historical checks below.
 
 The final Mac source suite passed 208 tests. Both [source acceptance](testing/PACE_SOURCE_MACOS.json) and [packaged-worker acceptance](testing/PACE_BUNDLE_MACOS.json) passed nine groups. The [current build record](testing/PACE_BUILD_MACOS.json) records exact pins, source/resource hashes, native coverage and remaining limits. [The full unit output](testing/PACE_UNIT_MACOS.txt) is retained. Native checks covered catalog search, patient grouping, source display and project reopening. Desktop automation did not establish the complete native source-to-export path or mask drawing/coordinate entry. Those remain manual target-platform checks.
@@ -114,8 +155,9 @@ For each target OS, manually exercise drawing and redrawing a mask, deletion,
 coordinate entry, page navigation and zoom, keyboard commands, long-answer
 editing, confirmation and approval, destination mapping, export, save/reopen,
 and unsaved-change prompts. Independently compare exported cells with the
-fictional pages and destination headers. Windows execution, distribution
-signing/notarization, and live REDCap import remain unverified.
+fictional pages and destination headers. Distribution signing/notarization and
+live REDCap import remain unverified. The automated Windows execution above
+does not establish the complete interactive client-laptop workflow.
 
 ## What to carry to another computer
 

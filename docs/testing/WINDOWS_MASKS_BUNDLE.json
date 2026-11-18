@@ -1,0 +1,57 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "check": "blank start and blank project roundtrip",
+      "status": "passed"
+    },
+    {
+      "check": "first PDF renders blank and custom page masks extract exact values",
+      "status": "passed"
+    },
+    {
+      "check": "saved reusable type strict structural allowlist and no source or answer leakage",
+      "status": "passed"
+    },
+    {
+      "check": "fresh session type reuse, exact second-form extraction, review and independent exports",
+      "status": "passed"
+    },
+    {
+      "check": "project restores definitions and source while clearing all review gates",
+      "status": "passed"
+    },
+    {
+      "check": "unfinished setup blocks export and applying edited type reprocesses and clears gates",
+      "status": "passed"
+    },
+    {
+      "check": "invalid type files reject transactionally",
+      "status": "passed"
+    },
+    {
+      "check": "missing page blocks approval and export",
+      "status": "passed"
+    },
+    {
+      "check": "incompatible aspect ratio blocks approval and export",
+      "status": "passed"
+    },
+    {
+      "check": "invalid draft apply rejects transactionally and discarding edit preserves applied type",
+      "status": "passed"
+    }
+  ],
+  "exports": [
+    {
+      "records": 1,
+      "cellsMatched": 4,
+      "headersMatched": 4
+    },
+    {
+      "records": 1,
+      "cellsMatched": 4,
+      "headersMatched": 4
+    }
+  ]
+}
