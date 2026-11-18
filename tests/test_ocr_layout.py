@@ -1,4 +1,4 @@
-"""Configured page masks use sparse OCR without changing generic crop layout."""
+"""Multicolumn masks use sparse OCR without changing single-column forms."""
 import io
 from pathlib import Path
 import subprocess
@@ -37,14 +37,34 @@ class OCRLayoutTests(unittest.TestCase):
             result = pipeline.process_document(image.getvalue(), "synthetic.png", schema, Path(folder), "layout")
         return result, modes
 
-    def test_masked_page_uses_sparse_layout_and_preserves_zero(self):
+    def test_single_column_mask_uses_block_layout_and_preserves_zero(self):
         result, modes = self.process(
             [{"name": "answer", "type": "integer", "region": {"page": 1, "x": 0.05, "y": 0.05, "width": 0.5, "height": 0.5}}],
             [b"5\t1\t1\t1\t1\t1\t20\t10\t20\t10\t99\t0\n"],
         )
         self.assertEqual(result["values"], {"answer": "0"})
         self.assertEqual(result["evidence"]["answer"]["method"], "tesseract")
+        self.assertEqual(modes, ["6"])
+
+    def test_side_by_side_masks_in_same_row_use_sparse_layout(self):
+        result, modes = self.process(
+            [{"name": "left", "type": "integer", "region": {"page": 1, "x": 0.05, "y": 0.05, "width": 0.3, "height": 0.5}},
+             {"name": "right", "type": "integer", "region": {"page": 1, "x": 0.6, "y": 0.05, "width": 0.3, "height": 0.5}}],
+            [b"5\t1\t1\t1\t1\t1\t20\t10\t20\t10\t99\t0\n"
+             b"5\t1\t1\t1\t1\t2\t130\t10\t20\t10\t99\t21\n"],
+        )
+        self.assertEqual(result["values"], {"left": "0", "right": "21"})
         self.assertEqual(modes, ["11"])
+
+    def test_separate_rows_do_not_imply_multiple_columns(self):
+        result, modes = self.process(
+            [{"name": "top", "type": "integer", "region": {"page": 1, "x": 0.05, "y": 0.05, "width": 0.3, "height": 0.2}},
+             {"name": "bottom", "type": "integer", "region": {"page": 1, "x": 0.6, "y": 0.6, "width": 0.3, "height": 0.2}}],
+            [b"5\t1\t1\t1\t1\t1\t20\t10\t20\t10\t99\t0\n"
+             b"5\t1\t1\t1\t2\t1\t130\t65\t20\t10\t99\t21\n"],
+        )
+        self.assertEqual(result["values"], {"top": "0", "bottom": "21"})
+        self.assertEqual(modes, ["6"])
 
     def test_label_only_page_keeps_block_layout(self):
         result, modes = self.process(
@@ -63,7 +83,7 @@ class OCRLayoutTests(unittest.TestCase):
              b"5\t1\t1\t1\t2\t1\t40\t70\t30\t10\t99\tSecond\n"],
         )
         self.assertEqual(result["values"], {"notes": "First\nSecond"})
-        self.assertEqual(modes, ["11", "6"])
+        self.assertEqual(modes, ["6", "6"])
 
     def test_invalid_choice_is_retried_without_erasing_original_ocr(self):
         result, modes = self.process(
@@ -75,7 +95,7 @@ class OCRLayoutTests(unittest.TestCase):
         )
         self.assertEqual(result["values"], {"answer": "0"})
         self.assertEqual(result["sourceText"], "O\n0")
-        self.assertEqual(modes, ["11", "7"])
+        self.assertEqual(modes, ["6", "7"])
         box = result["evidence"]["answer"]["region"]
         self.assertTrue(0.1 < box["x"] < box["x"] + box["width"] < 0.6)
         self.assertTrue(0.3 < box["y"] < box["y"] + box["height"] < 0.8)

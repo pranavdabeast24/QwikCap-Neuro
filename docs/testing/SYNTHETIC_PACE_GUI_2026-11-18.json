@@ -92,17 +92,28 @@
     "Saved project serialization omits approval and confirmation state; screenshots prove this GUI run."
   ],
   "source_tests": {
-    "run": 236,
+    "run": 238,
     "skipped": 7,
     "failures": 0,
     "errors": 0,
     "platform": "macOS arm64",
-    "duration_seconds": 17.705
+    "duration_seconds": 18.42
   },
   "portable_verifier": {
     "command": "python tools/verify_synthetic_pace_readout.py examples/quickcap-synthetic-pace-readout.xlsx",
     "passed": true,
     "input_unchanged": true,
     "negative_tests": 4
+  },
+  "platform_follow_up": {
+    "pipeline_sha256": "f1b74021427b8887898f1b6b147d717f159edcab1570e8cf660d12d031604dd5",
+    "change": "Sparse OCR requires horizontally disjoint same-row masks; single-column pages use block mode. Permission-negative test is host-independent.",
+    "native_legacy_fields_correct": 30,
+    "native_legacy_fields_checked": 30,
+    "native_dense_fields_correct": 506,
+    "native_dense_fields_checked": 512,
+    "dense_manual_corrections_unchanged": true,
+    "initial_windows_run": "https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44406510847",
+    "initial_windows_result": "Failed before portable build; permission test and two single-column omissions corrected."
   }
 }

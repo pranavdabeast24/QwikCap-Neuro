@@ -23,7 +23,7 @@ The audit identifies 69 destination option columns across 14 source entries with
 | Text case in an app-saved project | 512 of 512 cells match | `audit/gui-draft-text-verified.json` passes with zero mismatches. |
 | Scan case in the baseline app-saved project | 169 of 512 cells match | `audit/gui-draft-both.json` has 681 matches across both cases and 343 mismatches. Subtracting the verified 512 text matches gives 169 scan matches. |
 | Separate native Vision diagnostic | 330 of 512 scan cells match | Task diagnostic observation. This is separate from the baseline app result and final GUI acceptance. |
-| Tesseract in the rebuilt native app | 506 of 512 scan cells match before review | Local Tesseract 5.5.3_1, sparse layout for masked pages and bounded typed-region retries. The separately saved raw GUI draft has six mismatches. |
+| Tesseract in the rebuilt native app | 506 of 512 scan cells match before review | Local Tesseract 5.5.3_1, sparse layout for multi-column masked pages and bounded typed-region retries. The separately saved raw GUI draft has six mismatches. |
 | Final GUI review and approval | Passed | Both records had all 512 fields confirmed and were approved by Synthetic QA through the native UI. Project serialization omits this state; the screenshots below prove the GUI run. |
 | Final mapping confirmation and XLSX export | Passed | Mapping was explicitly confirmed, export became enabled, and the native save dialog wrote the workbook. All 512 headers and 1,024 cells match. No formulas, errors, hidden rows or hidden columns. |
 
@@ -45,7 +45,7 @@ The workbook SHA-256 is `c519d0dec4e316a55afb324ae49b362217c0601458eee65b38bc238
 python tools/verify_synthetic_pace_readout.py examples/quickcap-synthetic-pace-readout.xlsx
 ```
 
-The final source suite ran 236 tests with seven platform-specific skips and no failures. It includes the final UI changes and four negative checks for blank/zero distinctions, code types, minus signs, formulas, header order and identifiers. Native Windows checks remain separate from this macOS run.
+The final source suite ran 238 tests with seven platform-specific skips and no failures. It includes the final UI changes and four negative checks for blank/zero distinctions, code types, minus signs, formulas, header order and identifiers. Native Windows checks remain separate from this macOS run.
 
 ## Evidence locations
 
@@ -66,3 +66,7 @@ Portable acceptance proof and fictional inputs are committed:
 - [Completed native export](SYNTHETIC_PACE_EXPORT.jpg)
 - [Practice kit](../../examples/pace-synthetic-practice.zip)
 - [Actual app-written Excel readout](../../examples/quickcap-synthetic-pace-readout.xlsx)
+
+## Platform regression follow-up
+
+The first Windows CI run of commit `bdf6ab2` exposed an OS-dependent permission assertion and two legacy single-column scan omissions. The permission negative now mocks executable access rather than relying on Unix chmod behavior. Sparse OCR selection now requires side-by-side masks with vertical overlap; single-column pages retain block mode. No fixture or answer key was changed. The native local engine again extracts all 30 fields in the five legacy scans, while the dense PACE scan remains 506/512 with the same six manual corrections. The final Mac source suite after this fix passes 238 tests with seven skips. This follow-up does not retroactively change the recorded Mac GUI build or its exported workbook.

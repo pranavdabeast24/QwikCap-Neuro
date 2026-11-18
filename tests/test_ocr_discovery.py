@@ -26,8 +26,8 @@ class OCRDiscoveryTests(unittest.TestCase):
                 self.assertEqual(pipeline._tesseract_path(), str(arm.resolve()))
                 arm.unlink()
                 self.assertEqual(pipeline._tesseract_path(), str(intel.resolve()))
-                intel.chmod(0o600)
-                self.assertIsNone(pipeline._tesseract_path())
+                with patch.object(pipeline.os, "access", return_value=False):
+                    self.assertIsNone(pipeline._tesseract_path())
                 intel.unlink()
                 self.assertIsNone(pipeline._tesseract_path())
 

@@ -26,7 +26,7 @@ python tools/verify_synthetic_pace_readout.py examples/quickcap-synthetic-pace-r
 
 The readout retains default column widths, so long headers and identifiers can clip or wrap. Use Excel AutoFit and adjust row heights for readability. These layout limits do not change the verified cell values.
 
-The final source suite ran 236 tests with seven skips and no failures, including the final UI changes and four negative tests for the read-only export verifier. The latest UI source compiles. New shortcuts use Command on Mac or Ctrl on Windows. Shift-N and Shift-P navigate documents, and Shift-B opens the spreadsheet view. Choice fields now accept direct code entry, and approval still validates entered codes. The earlier Windows package predates these OCR and UI changes and does not contain the current source changes.
+The final source suite ran 238 tests with seven skips and no failures, including the final UI changes and four negative tests for the read-only export verifier. The latest UI source compiles. New shortcuts use Command on Mac or Ctrl on Windows. Shift-N and Shift-P navigate documents, and Shift-B opens the spreadsheet view. Choice fields now accept direct code entry, and approval still validates entered codes. The earlier Windows package predates these OCR and UI changes and does not contain the current source changes.
 
 For another AI or developer, [docs/HANDOFF.md](docs/HANDOFF.md) provides the source map, exact continuation steps, test commands, and dataset boundaries. The PACE smoke verifier and the full practice-kit GUI run are separate checks.
 

@@ -753,12 +753,22 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
         pipeline.append({"stage": "Read document", "status": "complete", "detail": "UTF-8 text read locally; no document preview is generated."})
     else:
         pages = _make_pdf_pages(data, folder) if kind == "pdf" else _make_image_pages(data, folder)
-        region_pages = {region["page"] for field in schema if isinstance(field, dict)
-                        if (region := _valid_region(field.get("region")))}
+        regions = [region for field in schema if isinstance(field, dict)
+                   if (region := _valid_region(field.get("region")))]
+        multicolumn_pages = set()
+        for index, region in enumerate(regions):
+            for other in regions[index + 1:]:
+                if region["page"] != other["page"]:
+                    continue
+                side_by_side = (region["x"] + region["width"] <= other["x"]
+                                or other["x"] + other["width"] <= region["x"])
+                same_row = max(region["y"], other["y"]) < min(region["y"] + region["height"], other["y"] + other["height"])
+                if side_by_side and same_row:
+                    multicolumn_pages.add(region["page"])
         pipeline.append({"stage": "Render pages", "status": "complete", "detail": f"Rendered {len(pages)} page(s) into bounded local PNG previews."})
         for page in pages:
             if page["method"] is None:
-                layout = _OCRLayout.SPARSE if page["page"] in region_pages else _OCRLayout.BLOCK
+                layout = _OCRLayout.SPARSE if page["page"] in multicolumn_pages else _OCRLayout.BLOCK
                 lines, method, issue = _ocr(page["path"], page["width"], page["height"], layout=layout)
                 page["lines"], page["method"] = lines, method
                 if issue:
@@ -771,7 +781,7 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
         unresolved = any(not initial_values.get(name) for name in applicable_fields(schema, initial_values))
         fallback_pages = [page for page in pages if page["method"] == "pdf-text" and page.get("hasRaster")] if unresolved else []
         for page in fallback_pages:
-            layout = _OCRLayout.SPARSE if page["page"] in region_pages else _OCRLayout.BLOCK
+            layout = _OCRLayout.SPARSE if page["page"] in multicolumn_pages else _OCRLayout.BLOCK
             lines, method, issue = _ocr(page["path"], page["width"], page["height"], layout=layout)
             mapping_pages.append({**page, "lines": lines, "method": method})
             if issue:
