@@ -114,6 +114,20 @@
     "native_dense_fields_checked": 512,
     "dense_manual_corrections_unchanged": true,
     "initial_windows_run": "https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44406510847",
-    "initial_windows_result": "Failed before portable build; permission test and two single-column omissions corrected."
+    "initial_windows_result": "Failed before portable build; permission test and two single-column omissions corrected.",
+    "mac_packaged_project_reopen": {
+      "values_checked": 1024,
+      "matching_values": 1024,
+      "approvals_reset_as_designed": true
+    }
+  },
+  "windows_acceptance": {
+    "run_url": "https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44407671706",
+    "release_url": "https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/quickcap-cv-pace-2026-11-18",
+    "source_commit": "07934118e776d34abcf8a9200752307d5c34b40a",
+    "source_tests_run": 238,
+    "source_tests_skipped": 1,
+    "acceptance_stages_passed": 10,
+    "full_512_field_windows_gui_run_verified": false
   }
 }

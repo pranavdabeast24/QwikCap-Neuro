@@ -1,0 +1,81 @@
+{
+  "format": "quickcap-pace-windows-acceptance-v1",
+  "source_commit": "07934118e776d34abcf8a9200752307d5c34b40a",
+  "run_url": "https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44407671706",
+  "release_url": "https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/quickcap-cv-pace-2026-11-18",
+  "status": "passed",
+  "source_tests": {
+    "run": 238,
+    "skipped": 1,
+    "failures": 0,
+    "errors": 0
+  },
+  "acceptance_stages": [
+    {
+      "check": "source-unit-tests",
+      "status": "passed"
+    },
+    {
+      "check": "source-native-startup",
+      "status": "passed"
+    },
+    {
+      "check": "source-pace",
+      "status": "passed"
+    },
+    {
+      "check": "source-custom-masks",
+      "status": "passed"
+    },
+    {
+      "check": "build-native-bundle",
+      "status": "passed"
+    },
+    {
+      "check": "extracted-native-startup-without-python-path",
+      "status": "passed"
+    },
+    {
+      "check": "extracted-companion-unicode-json-and-no-ocr-without-python-path",
+      "status": "passed"
+    },
+    {
+      "check": "packaged-fictional-scans-and-exports",
+      "status": "passed"
+    },
+    {
+      "check": "packaged-pace",
+      "status": "passed"
+    },
+    {
+      "check": "packaged-custom-masks",
+      "status": "passed"
+    }
+  ],
+  "platform": {
+    "os": "Windows-2022Server-10.0.20348-SP0",
+    "architecture": "AMD64",
+    "python": "3.12.10",
+    "tesseractVersion": "tesseract v5.5.3.20260724",
+    "ocrBundled": false
+  },
+  "package": {
+    "file": "QuickCapCV-Windows-x64.zip",
+    "bytes": 48278265,
+    "sha256": "b2668a238f5f94c0b7c774db106c78a5a4501b02ea3bc4e88620856cb6b6f2fe"
+  },
+  "relocated_outside_checkout": true,
+  "python_absent_from_packaged_path": true,
+  "packaged_fixture_documents": 10,
+  "packaged_fixture_extracted_fields": 60,
+  "packaged_fixture_exported_cells": 240,
+  "pace_smoke": {
+    "patient_rows": 1,
+    "source_forms": 2,
+    "mapped_fields": 12,
+    "destination_columns": 512,
+    "csv_and_xlsx_cells_checked": 1024
+  },
+  "human_windows_gui_workflow_verified": false,
+  "full_512_field_windows_gui_run_verified": false
+}

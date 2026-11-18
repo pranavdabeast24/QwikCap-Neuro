@@ -2,6 +2,12 @@
 
 Property of Capitolinus Ventures
 
+## Current tested preview
+
+Use the [PACE OCR and review prerelease](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/quickcap-cv-pace-2026-11-18) from source revision `0793411`. The [native Windows acceptance run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44407671706) passed 238 source tests with one POSIX-only skip and all ten packaging/verification stages. This build includes direct choice-code entry, review/export shortcuts and geometry-based OCR layout selection. Earlier releases remain historical downloads.
+
+The portable ZIP SHA-256 is `b2668a238f5f94c0b7c774db106c78a5a4501b02ea3bc4e88620856cb6b6f2fe`. The release includes `SHA256SUMS.txt`. A complete person-driven Windows laptop workflow remains unverified.
+
 ## Open the portable app
 
 Use a 64-bit Windows computer. Download the Windows ZIP from the private
