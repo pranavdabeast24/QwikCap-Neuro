@@ -182,6 +182,56 @@ class MixedPdfTests(unittest.TestCase):
         self.assertTrue(0.2 <= evidence["region"]["y"] < 0.25)
         self.assertTrue(any(stage["stage"] == "Retry field regions" for stage in result["pipeline"]))
 
+    def test_scanned_form_retries_more_than_eight_empty_answer_regions(self):
+        output = io.BytesIO()
+        image = Image.new("RGB", (1224, 1584), "white")
+        image.save(output, "PNG")
+        image.close()
+        schema = [
+            {"name": f"answer_{index + 1}", "label": f"Answer {index + 1}",
+             "choices": {"0": "No", "1": "Yes"}, "required": True,
+             "region": {"page": 1, "x": 0.05 + index % 3 * 0.31,
+                        "y": 0.2 + index // 3 * 0.1, "width": 0.28, "height": 0.02}}
+            for index in range(12)
+        ]
+        heading = pipeline._line([{"text": "Synthetic", "x": 0.05, "y": 0.04, "width": 0.2, "height": 0.02}])
+        replies = [([heading], "apple-vision", None)] + [
+            ([pipeline._line([{"text": value, "x": 0.3, "y": 0.3, "width": 0.1, "height": 0.3}])], "apple-vision", None)
+            for value in ("0", "1") * 6
+        ]
+        with patch.object(pipeline, "_ocr", side_effect=replies):
+            result = pipeline.process_document(output.getvalue(), "synthetic-scan.png", schema, self.assets, "many-regions")
+        self.assertEqual(result["values"], {
+            "answer_1": "0", "answer_2": "1", "answer_3": "0", "answer_4": "1",
+            "answer_5": "0", "answer_6": "1", "answer_7": "0", "answer_8": "1",
+            "answer_9": "0", "answer_10": "1", "answer_11": "0", "answer_12": "1",
+        })
+        self.assertEqual(result["issues"], [])
+
+    def test_dense_region_retries_stay_within_document_render_budget(self):
+        path = self.assets / "page-1.png"
+        image = Image.new("RGB", (1224, 1584), "white")
+        image.save(path, "PNG")
+        image.close()
+        heading = pipeline._line([{"text": "Synthetic", "x": 0.01, "y": 0.01, "width": 0.2, "height": 0.02}])
+        pages = [{"page": page + 1, "width": 1224, "height": 1584, "path": path,
+                  "method": "apple-vision", "lines": [heading]}
+                 for page in range(27)]
+        schema = [
+            {"name": f"answer_{index + 1}", "region": {
+                "page": index // 20 + 1, "x": 0.05 + index % 3 * 0.31,
+                "y": 0.1 + index % 20 // 3 * 0.12, "width": 0.28, "height": 0.02}}
+            for index in range(512)
+        ]
+        code = pipeline._line([{"text": "0", "x": 0.3, "y": 0.3, "width": 0.1, "height": 0.3}])
+        with patch.object(pipeline, "_ocr", return_value=([code], "apple-vision", None)):
+            attempts, recovered, issues = pipeline._retry_empty_regions(
+                schema, pages, self.assets, rendered_pixels=52_348_032)
+        values, _, mapping_issues = pipeline._map_fields(schema, pages)
+        self.assertEqual((attempts, recovered, issues), (512, 512, []))
+        self.assertEqual(values, {f"answer_{index + 1}": "0" for index in range(512)})
+        self.assertEqual(mapping_issues, [])
+
     def test_full_page_fallback_is_bounded_by_document_page_limit(self):
         output = io.BytesIO()
         document = canvas.Canvas(output, pagesize=(612, 792))

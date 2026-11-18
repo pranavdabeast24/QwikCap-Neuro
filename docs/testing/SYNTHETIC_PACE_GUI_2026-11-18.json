@@ -1,0 +1,108 @@
+{
+  "format": "quickcap-synthetic-pace-acceptance-v1",
+  "entirely_fictional": true,
+  "source_entries": 253,
+  "source_pdfs": 18,
+  "cases": 2,
+  "columns": 512,
+  "raw_exact_values": {
+    "text": 512,
+    "scan": 506
+  },
+  "manual_scan_corrections": [
+    {
+      "field": "redcap_repeat_instrument",
+      "before": "Po",
+      "after": ""
+    },
+    {
+      "field": "redcap_repeat_instance",
+      "before": "Po",
+      "after": ""
+    },
+    {
+      "field": "redcap_data_access_group",
+      "before": "Po",
+      "after": ""
+    },
+    {
+      "field": "med_topiramate",
+      "before": "4",
+      "after": "1"
+    },
+    {
+      "field": "baseline_headache_pain",
+      "before": "4",
+      "after": "1"
+    },
+    {
+      "field": "csf_volume_delta_3",
+      "before": "7.5",
+      "after": "-7.5"
+    }
+  ],
+  "actual_gui": {
+    "records_approved": 2,
+    "confirmed_fields_per_record": 512,
+    "reviewer": "Synthetic QA",
+    "mapping_confirmed": true,
+    "xlsx_export_completed": true
+  },
+  "xlsx": {
+    "file": "examples/quickcap-synthetic-pace-readout.xlsx",
+    "sha256": "c519d0dec4e316a55afb324ae49b362217c0601458eee65b38bc238d31314fb8",
+    "checked_cells": 1024,
+    "expected_blank_cells": 8,
+    "expected_zero_cells": 343,
+    "date_cells": 38,
+    "choice_cells": 832,
+    "matching_cells": 1024,
+    "sheet": "Category columns",
+    "header_row": 1,
+    "rows": 2,
+    "columns": 512,
+    "formula_cells": [],
+    "error_cells": [],
+    "freeze_panes": "A2",
+    "hidden_rows": [],
+    "hidden_columns": []
+  },
+  "build": {
+    "source_sha256": {
+      "pipeline.py": "e24e91624bcae61ec7f2b473cdc9bfaaffff15da515ef23e053787ec12a6dbec",
+      "desktop.py": "7cab32d13cb7bbf814c187267dc4e861aaf82a53c865bbdab7f7cc618a131273",
+      "build_desktop.py": "9d9b4435acfb98eadc97ed1202752264cd8fe586cfe568ff2bfdfc364c096bb3"
+    },
+    "bundle_identifier": "com.capitolinusventures.quickcapcv",
+    "executable_sha256": {
+      "Contents/MacOS/QuickCapCV": "0632016c33f94555b4150cb36438f6f20bc624dcb5e8514bfd9e9d0e94942285",
+      "Contents/Frameworks/helpers/FormbridgeWorker": "bf966d4c12872bf3ca3b18c617ef2fc28289700bf6bcf4679b768c67329f95d4"
+    },
+    "build_log": "final-mac-build-access.log"
+  },
+  "tesseract_version": "5.5.3_1",
+  "held_out_test_set_used": false,
+  "new_train_documents_read": false,
+  "format_limit": "Default column widths may clip long headers and wrap identifiers. AutoFit in Excel for viewing; preserve the literal headers.",
+  "limitations": [
+    "Fictional printed coverage forms only; all conditional branches are exercised, not a coherent clinical case.",
+    "No handwriting, real patient, held-out, or live REDCap import validation.",
+    "Wide patient review rows require project-specific repeat/longitudinal transformation before REDCap import.",
+    "New OCR changes were built and operated on macOS; the prior Windows release predates them.",
+    "Saved project serialization omits approval and confirmation state; screenshots prove this GUI run."
+  ],
+  "source_tests": {
+    "run": 236,
+    "skipped": 7,
+    "failures": 0,
+    "errors": 0,
+    "platform": "macOS arm64",
+    "duration_seconds": 17.705
+  },
+  "portable_verifier": {
+    "command": "python tools/verify_synthetic_pace_readout.py examples/quickcap-synthetic-pace-readout.xlsx",
+    "passed": true,
+    "input_unchanged": true,
+    "negative_tests": 4
+  }
+}

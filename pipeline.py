@@ -10,6 +10,7 @@ from __future__ import annotations
 import csv
 import hashlib
 from decimal import Decimal, InvalidOperation
+from enum import Enum
 import ctypes
 import io
 import json
@@ -42,13 +43,19 @@ MAX_DIMENSION = 12_000
 MAX_TEXT = 500_000
 MAX_WORDS = 50_000
 MAX_PDF_OBJECTS = 50_000
-MAX_REGION_RETRIES = 8
+MAX_REGION_RETRIES = MAX_FIELDS
 OCR_TIMEOUT = 45
 _OCR_LAST_OPERATIONAL: bool | None = None
 
 
 class DocumentError(ValueError):
     """An upload cannot be processed within the supported safety limits."""
+
+
+class _OCRLayout(Enum):
+    BLOCK = "6"
+    SINGLE_LINE = "7"
+    SPARSE = "11"
 
 
 def _tesseract_path() -> str | None:
@@ -62,6 +69,11 @@ def _tesseract_path() -> str | None:
     if override is not None:
         return executable(override)
     found = shutil.which("tesseract")
+    if sys.platform == "darwin" and not found:
+        for location in ("/opt/homebrew/bin/tesseract", "/usr/local/bin/tesseract"):
+            found = executable(location)
+            if found:
+                return found
     if sys.platform != "win32":
         return found
     if found:
@@ -89,7 +101,7 @@ def _vision_available() -> bool:
 def capabilities() -> dict[str, Any]:
     """Describe detected local capabilities without starting or downloading OCR."""
     tesseract = _tesseract_path()
-    vision = _vision_available()
+    vision = "FORMBRIDGE_TESSERACT" not in os.environ and _vision_available()
     return {
         "pdf": pdfium is not None and PdfReader is not None,
         "ocr": bool(tesseract or vision),
@@ -213,10 +225,10 @@ def _pdf_lines(page: Any, pixel_width: int, pixel_height: int) -> list[dict[str,
         textpage.close()
 
 
-def _tesseract_lines(path: Path, width: int, height: int, executable: str) -> list[dict[str, Any]]:
+def _tesseract_lines(path: Path, width: int, height: int, executable: str, *, layout: _OCRLayout = _OCRLayout.BLOCK) -> list[dict[str, Any]]:
     with path.open("rb") as image_input:
         result = subprocess.run(
-            [executable, "stdin", "stdout", "--psm", "6", "tsv"],
+            [executable, "stdin", "stdout", "--psm", layout.value, "tsv"],
             stdin=image_input, capture_output=True, timeout=OCR_TIMEOUT, check=False,
         )
     if result.returncode:
@@ -286,15 +298,15 @@ def _vision_lines(path: Path) -> list[dict[str, Any]]:
     return lines
 
 
-def _ocr(path: Path, width: int, height: int) -> tuple[list[dict[str, Any]], str, str | None]:
+def _ocr(path: Path, width: int, height: int, *, layout: _OCRLayout = _OCRLayout.BLOCK) -> tuple[list[dict[str, Any]], str, str | None]:
     global _OCR_LAST_OPERATIONAL
     executable = _tesseract_path()
-    method = "tesseract" if executable else "apple-vision" if _vision_available() else "unavailable"
+    method = "tesseract" if executable else "apple-vision" if "FORMBRIDGE_TESSERACT" not in os.environ and _vision_available() else "unavailable"
     if method == "unavailable":
         _OCR_LAST_OPERATIONAL = False
         return [], method, "Local OCR is unavailable. Install Tesseract locally to read scanned pages; manual entry remains available."
     try:
-        lines = _tesseract_lines(path, width, height, executable) if executable else _vision_lines(path)
+        lines = _tesseract_lines(path, width, height, executable, layout=layout) if executable else _vision_lines(path)
         _OCR_LAST_OPERATIONAL = True
         return lines, method, None if lines else "Local OCR found no readable text on this page."
     except subprocess.TimeoutExpired:
@@ -445,8 +457,22 @@ def _in_region(word: dict[str, Any], region: dict[str, Any]) -> bool:
     return region["x"] <= center_x <= region["x"] + region["width"] and region["y"] <= center_y <= region["y"] + region["height"]
 
 
+def _frame_inset(image: Image.Image) -> int:
+    if min(image.size) <= 6:
+        return 0
+    with image.convert("L") as gray:
+        pixels = gray.load()
+        horizontal = lambda y: sum(pixels[x, y] < 160 for x in range(gray.width)) >= 0.9 * gray.width
+        vertical = lambda x: sum(pixels[x, y] < 160 for y in range(gray.height)) >= 0.9 * gray.height
+        framed = (any(horizontal(y) for y in range(3))
+                  and any(horizontal(y) for y in range(gray.height - 3, gray.height))
+                  and any(vertical(x) for x in range(3))
+                  and any(vertical(x) for x in range(gray.width - 3, gray.width)))
+    return 3 if framed else 0
+
+
 def _retry_empty_regions(schema: list, pages: list[dict[str, Any]], folder: Path, rendered_pixels=None) -> tuple[int, int, list[str]]:
-    """Retry at most eight empty boxes; isolated digits can evade full-page OCR."""
+    """Retry bounded empty or invalid typed boxes without replacing source lines."""
     attempts, recovered = 0, 0
     render_pixels = rendered_pixels if rendered_pixels is not None else sum(page["width"] * page["height"] for page in pages)
     issues = []
@@ -461,8 +487,13 @@ def _retry_empty_regions(schema: list, pages: list[dict[str, Any]], folder: Path
         page = next((item for item in pages if item["page"] == region["page"]), None)
         if not page or page["method"] not in {"tesseract", "apple-vision"} or not page["lines"]:
             continue
-        if any(_in_region(word, region) for line in page["lines"] for word in line["words"]):
-            continue
+        single_line = bool(_choice_pairs(field)) or field.get("type") in {"number", "integer", "date"}
+        selected = [" ".join(word["text"] for word in line["words"] if _in_region(word, region)) for line in page["lines"]]
+        raw = "\n".join(text for text in selected if text).strip()
+        if raw:
+            stripped = _label_value(raw, _labels(field))
+            if not single_line or not _validate_value(stripped if stripped is not None else raw, field)[1]:
+                continue
         attempts += 1
         path = folder / f"region-ocr-{attempts}.png"
         try:
@@ -470,12 +501,18 @@ def _retry_empty_regions(schema: list, pages: list[dict[str, Any]], folder: Path
                 x0, y0 = math.floor(region["x"] * image.width), math.floor(region["y"] * image.height)
                 x1, y1 = math.ceil((region["x"] + region["width"]) * image.width), math.ceil((region["y"] + region["height"]) * image.height)
                 crop = image.crop((x0, y0, x1, y1)).convert("RGB")
-            scale = min(3.0, math.sqrt(2_000_000 / max(1, crop.width * crop.height)))
+            inset = _frame_inset(crop) if single_line else 0
+            if inset:
+                interior = crop.crop((inset, inset, crop.width - inset, crop.height - inset))
+                crop.close()
+                crop = interior
+                x0, y0 = x0 + inset, y0 + inset
+            scale = min(2.0, math.sqrt(2_000_000 / max(1, crop.width * crop.height)))
             resized_width, resized_height = max(1, round(crop.width * scale)), max(1, round(crop.height * scale))
             sx, sy = resized_width / crop.width, resized_height / crop.height
             enlarged = crop.resize((resized_width, resized_height), Image.Resampling.LANCZOS)
             crop.close()
-            border = 80
+            border = 20
             padded = ImageOps.expand(enlarged, border=border, fill="white")
             enlarged.close()
             crop_width, crop_height = padded.size
@@ -487,7 +524,8 @@ def _retry_empty_regions(schema: list, pages: list[dict[str, Any]], folder: Path
             os.chmod(path, 0o600)
             padded.close()
             _check_asset_bytes(folder)
-            lines, method, issue = _ocr(path, crop_width, crop_height)
+            layout = _OCRLayout.SINGLE_LINE if single_line else _OCRLayout.BLOCK
+            lines, method, issue = _ocr(path, crop_width, crop_height, layout=layout)
             if issue:
                 issues.append(f"Field region {field.get('name', '')}: {issue}")
             new_lines = []
@@ -506,7 +544,7 @@ def _retry_empty_regions(schema: list, pages: list[dict[str, Any]], folder: Path
                 if words:
                     new_lines.append(_line(words))
             if new_lines:
-                page["lines"].extend(new_lines)
+                pages.append({**page, "lines": new_lines, "method": method})
                 recovered += 1
         except (OSError, ValueError):
             issues.append(f"Field region {field.get('name', '')}: The local OCR region retry could not be rendered.")
@@ -662,6 +700,10 @@ def _map_fields(schema: list[dict[str, Any]], pages: list[dict[str, Any]]) -> tu
             if field.get("required"):
                 issues.append(f"{name}: Required field was not found; enter or verify it manually.")
             continue
+        if region and (_choice_pairs(field) or field.get("type") in {"number", "integer", "date"}):
+            valid_candidates = [candidate for candidate in candidates if not _validate_value(candidate[0], field)[1]]
+            if valid_candidates:
+                candidates = valid_candidates
         unique = {candidate[0].strip() for candidate in candidates}
         if len(unique) > 1:
             methods = ", ".join(sorted({candidate[1]["method"] for candidate in candidates}))
@@ -711,10 +753,13 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
         pipeline.append({"stage": "Read document", "status": "complete", "detail": "UTF-8 text read locally; no document preview is generated."})
     else:
         pages = _make_pdf_pages(data, folder) if kind == "pdf" else _make_image_pages(data, folder)
+        region_pages = {region["page"] for field in schema if isinstance(field, dict)
+                        if (region := _valid_region(field.get("region")))}
         pipeline.append({"stage": "Render pages", "status": "complete", "detail": f"Rendered {len(pages)} page(s) into bounded local PNG previews."})
         for page in pages:
             if page["method"] is None:
-                lines, method, issue = _ocr(page["path"], page["width"], page["height"])
+                layout = _OCRLayout.SPARSE if page["page"] in region_pages else _OCRLayout.BLOCK
+                lines, method, issue = _ocr(page["path"], page["width"], page["height"], layout=layout)
                 page["lines"], page["method"] = lines, method
                 if issue:
                     issues.append(f"Page {page['page']}: {issue}")
@@ -726,7 +771,8 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
         unresolved = any(not initial_values.get(name) for name in applicable_fields(schema, initial_values))
         fallback_pages = [page for page in pages if page["method"] == "pdf-text" and page.get("hasRaster")] if unresolved else []
         for page in fallback_pages:
-            lines, method, issue = _ocr(page["path"], page["width"], page["height"])
+            layout = _OCRLayout.SPARSE if page["page"] in region_pages else _OCRLayout.BLOCK
+            lines, method, issue = _ocr(page["path"], page["width"], page["height"], layout=layout)
             mapping_pages.append({**page, "lines": lines, "method": method})
             if issue:
                 issues.append(f"Page {page['page']} mixed-content OCR fallback: {issue}")
@@ -734,11 +780,14 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
             pipeline.append({"stage": "Read mixed-content pages", "status": "complete" if any(page["lines"] for page in mapping_pages[len(pages):]) else "needs-review", "detail": f"Retried {len(fallback_pages)} native-text page(s) with local OCR because schema fields remained unresolved; native and OCR candidates are compared independently."})
         methods = sorted({page["method"] for page in mapping_pages})
         pipeline.append({"stage": "Extract text", "status": "complete" if any(p["lines"] for p in mapping_pages) else "needs-review", "detail": "Local extraction method(s): " + ", ".join(methods) + "."})
-        attempts, recovered, retry_issues = _retry_empty_regions(schema, [page for page in mapping_pages if page["method"] in {"tesseract", "apple-vision"}], folder,
+        retry_pages = [page for page in mapping_pages if page["method"] in {"tesseract", "apple-vision"}]
+        original_retry_page_count = len(retry_pages)
+        attempts, recovered, retry_issues = _retry_empty_regions(schema, retry_pages, folder,
                                                               sum(page["width"] * page["height"] for page in pages))
+        mapping_pages.extend(retry_pages[original_retry_page_count:])
         issues.extend(retry_issues)
         if attempts:
-            pipeline.append({"stage": "Retry field regions", "status": "complete" if recovered else "needs-review", "detail": f"Retried {attempts} empty configured region(s) with local OCR; recovered text in {recovered}."})
+            pipeline.append({"stage": "Retry field regions", "status": "complete" if recovered else "needs-review", "detail": f"Retried {attempts} empty or invalid configured region(s) with local OCR; recovered text in {recovered}."})
     if kind == "text":
         mapping_pages = pages
     source_pages = []

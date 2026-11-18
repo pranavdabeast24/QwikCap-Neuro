@@ -6,11 +6,31 @@ QuickCap (CV) has a native Tk desktop interface for macOS and Windows. It runs t
 
 The user selected QuickCap (CV) as a working name only. The QuickCap name is already used by MedVision in healthcare software; no affiliation or trademark clearance is asserted. See [docs/COMPETITORS_AND_NAME.md](docs/COMPETITORS_AND_NAME.md) before public naming or distribution, and `OWNERSHIP.md` for the scope of the original-code notice and third-party rights.
 
-The display name and new GUI package basename (`QuickCapCV`) have changed from Formbridge. Saved project/type formats retain their existing `formbridge-*` identifiers, and older projects remain supported. The `FORMBRIDGE_TESSERACT` setting, `FormbridgeWorker` helper name and `org.formbridge.desktop` bundle identifier also remain stable for compatibility. Renaming the app does not migrate saved data or change review requirements. The earlier browser interface and historical verification records retain their original names.
+The display name and GUI package basename (`QuickCapCV`) have changed from Formbridge. The Mac bundle identifier is `com.capitolinusventures.quickcapcv`, so macOS can distinguish QuickCap from older Formbridge builds. Saved project/type formats retain their existing `formbridge-*` identifiers, and older projects remain supported. The `FORMBRIDGE_TESSERACT` setting and `FormbridgeWorker` helper name remain stable for compatibility. Renaming the app does not migrate saved data or change review requirements. The earlier browser interface and historical verification records retain their original names.
 
 For a Windows download and setup, use [the Windows guide](docs/WINDOWS.md). Developers can start with [the handoff](docs/HANDOFF.md), follow [source setup](docs/GETTING_STARTED.md), and rerun [the portable checks](docs/TESTING.md). Source, fictional fixtures, and instructions travel through Git. Saved projects and private documents need a separate approved transfer.
 
 For the supplied PACE study, use [the patient-bundle workflow](docs/PACE_WORKFLOW.md). The optional catalog provides all 512 exact destination fields, instrument-specific codes and date rules. Combine ordered PDFs under an operator-entered study ID, select relevant fields and masks, and review one patient row. The full destination stays intact, with explicit blank-column and mapping confirmation. Repeating-instrument REDCap upload needs a separate validated conversion; this is a patient review export.
+
+## Current synthetic PACE check, 2026-11-18
+
+The [portable practice kit](examples/pace-synthetic-practice.zip) contains 18 fictional PDFs, a reusable 512-field extraction type, independent answer keys, and coverage records. It includes one text-layer case and one raster-only case, with nine ordered PDFs per case. Its 253 codebook entries expand to the exact 512 export columns. Conditional responses exercise all branches for software coverage and do not describe a clinically coherent patient. The kit is separate from the supplied train and held-out datasets.
+
+The raw app extraction matched all 512 text-case cells and 506 of 512 scan-case cells. The native Mac workflow then corrected six scan values, confirmed all 512 fields for each case, entered a reviewer, approved both records, confirmed the mapping, and exported XLSX through the Save dialog. The [actual app export](examples/quickcap-synthetic-pace-readout.xlsx) has two data rows and 512 ordered columns. Independent comparison matched all 1,024 cells, including eight expected blanks and 343 zeroes, with no formulas, spreadsheet errors, or hidden content. This corrected export result is separate from raw OCR accuracy. See [the run report](docs/testing/SYNTHETIC_PACE_GUI_2026-11-18.md) for the before-and-after results and limitations.
+
+Verify the included export without creating an app session or changing the workbook. Run this command from the repository root with the configured Python environment:
+
+```sh
+python tools/verify_synthetic_pace_readout.py examples/quickcap-synthetic-pace-readout.xlsx
+```
+
+The readout retains default column widths, so long headers and identifiers can clip or wrap. Use Excel AutoFit and adjust row heights for readability. These layout limits do not change the verified cell values.
+
+The final source suite ran 236 tests with seven skips and no failures, including the final UI changes and four negative tests for the read-only export verifier. The latest UI source compiles. New shortcuts use Command on Mac or Ctrl on Windows. Shift-N and Shift-P navigate documents, and Shift-B opens the spreadsheet view. Choice fields now accept direct code entry, and approval still validates entered codes. The earlier Windows package predates these OCR and UI changes and does not contain the current source changes.
+
+For another AI or developer, [docs/HANDOFF.md](docs/HANDOFF.md) provides the source map, exact continuation steps, test commands, and dataset boundaries. The PACE smoke verifier and the full practice-kit GUI run are separate checks.
+
+## Create and review an extraction type
 
 The app starts with no fields or preset categories. Create an extraction type for your own form:
 
@@ -36,11 +56,11 @@ The **Form type** menu provides keyboard-accessible commands for drawing, enteri
 
 On macOS, open `QuickCapCV.app`. Keep the whole app bundle together. On Windows, open `QuickCapCV\QuickCapCV.exe` and retain the entire `QuickCapCV` folder, including its dependencies and companion worker. Copying only the `.exe` is insufficient. A packaged build includes Python and its runtime dependencies; the source launchers below are not needed.
 
-The macOS build compiles the included `native_ocr.swift` adapter into an executable and bundles it with Apple Vision OCR. It does not need Swift on the computer running the packaged app. On Windows, Tesseract is optional and must be installed separately, with English language data. Standard Program Files and local application installations are detected automatically; `PATH` and an explicit `FORMBRIDGE_TESSERACT` executable path are also supported. The app does not bundle or download Tesseract. Without a working OCR engine, scans remain available for manual review and entry; text PDFs can still use their text layers.
+The macOS build compiles the included `native_ocr.swift` adapter into an executable and bundles it with Apple Vision OCR. It does not need Swift on the computer running the packaged app. Optional Tesseract discovery checks `PATH`, then the standard Homebrew locations on macOS or standard installations on Windows. An explicit `FORMBRIDGE_TESSERACT` executable path takes precedence. An invalid explicit path disables OCR instead of silently selecting another engine. Tesseract needs English language data and is not bundled or downloaded by the app. Tesseract 5.5.3_1 was installed with operator approval for the current Mac run. Without a working OCR engine, scans remain available for manual review and entry; text PDFs can still use their text layers.
 
 These are development builds without distribution signing or notarization. The Windows x64 portable ZIP passed automated native Windows and packaged-worker checks on 2026-11-18, including all five fictional scans and independently reopened spreadsheet exports. See [the Windows evidence](docs/TESTING.md#windows-portable-build-2026-11-18). A complete person-driven workflow on a Windows laptop remains a pilot check.
 
-On 2026-11-13, a fresh macOS arm64 environment installed the unchanged runtime and build pins and passed all 156 source tests. The final `QuickCapCV.app` built, and the source and packaged-worker custom-mask checks each passed all ten groups. Later PACE and Windows work has separate [recorded results and limits](docs/TESTING.md). Mouse drawing, a complete person-driven desktop workflow, and real-study REDCap import remain unverified.
+On 2026-11-13, a fresh macOS arm64 environment installed the unchanged runtime and build pins and passed all 156 source tests. That `QuickCapCV.app` built, and the source and packaged-worker custom-mask checks each passed all ten groups. Later PACE and Windows work has separate [recorded results and limits](docs/TESTING.md). The current full practice-kit GUI status is recorded above. Mouse-drag mask creation and real-study REDCap import remain unverified.
 
 ## Run the source on macOS
 
@@ -113,4 +133,4 @@ See `README_BROWSER.md` for field definitions, input limits, spreadsheet restric
 
 ## Private repository
 
-This repository is proprietary. See [OWNERSHIP.md](OWNERSHIP.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [FIXTURES.md](FIXTURES.md). Pilot and collaboration documents under `docs/` are proposals for review. Customer builds and feedback do not include core source access by default. `desktop-build.yml` remains an inactive template outside `.github/workflows/`; no CI is enabled. See [docs/BUILD_ENVIRONMENT.md](docs/BUILD_ENVIRONMENT.md) for current exact-pin evidence, the historical dependency snapshot, and distribution license and notice work. QuickCap (CV) is a working name only, pending public name clearance.
+This repository is proprietary. See [OWNERSHIP.md](OWNERSHIP.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [FIXTURES.md](FIXTURES.md). Pilot and collaboration documents under `docs/` are proposals for review. Customer builds and feedback do not include core source access by default. The Windows workflow runs only when manually dispatched. `desktop-build.yml` remains an inactive template outside `.github/workflows/`. See [docs/BUILD_ENVIRONMENT.md](docs/BUILD_ENVIRONMENT.md) for current exact-pin evidence, the historical dependency snapshot, and distribution license and notice work. QuickCap (CV) is a working name only, pending public name clearance.

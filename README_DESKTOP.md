@@ -6,7 +6,7 @@ QuickCap (CV) has a native Tk desktop interface for macOS and Windows. It runs t
 
 The user selected QuickCap (CV) as a working name only. The QuickCap name is already used by MedVision in healthcare software; no affiliation or trademark clearance is asserted. See [docs/COMPETITORS_AND_NAME.md](docs/COMPETITORS_AND_NAME.md) before public naming or distribution, and `OWNERSHIP.md` for the scope of the original-code notice and third-party rights.
 
-The display name and new GUI package basename (`QuickCapCV`) have changed from Formbridge. Saved project/type formats retain their existing `formbridge-*` identifiers, and older projects remain supported. The `FORMBRIDGE_TESSERACT` setting, `FormbridgeWorker` helper name and `org.formbridge.desktop` bundle identifier also remain stable for compatibility. Renaming the app does not migrate saved data or change review requirements. The earlier browser interface and historical verification records retain their original names.
+The display name and new GUI package basename (`QuickCapCV`) have changed from Formbridge. Saved project/type formats retain their existing `formbridge-*` identifiers, and older projects remain supported. The `FORMBRIDGE_TESSERACT` setting and `FormbridgeWorker` helper name remain stable for compatibility. The Mac bundle identifier is now `com.capitolinusventures.quickcapcv`, allowing macOS to distinguish older Formbridge builds. Renaming the app does not migrate saved data or change review requirements. The earlier browser interface and historical verification records retain their original names.
 
 For a Windows download and setup, use [the Windows guide](docs/WINDOWS.md). Developers can start with [the handoff](docs/HANDOFF.md), follow [source setup](docs/GETTING_STARTED.md), and rerun [the portable checks](docs/TESTING.md). Source, fictional fixtures, and instructions travel through Git. Saved projects and private documents need a separate approved transfer.
 
@@ -31,6 +31,17 @@ An extraction-type file contains only its name, identifier selection, field rule
 Types require the same page count and approximately the same page aspect ratios. A mismatch keeps the source available, clears suggested answers and blocks review/approval until the correct type is loaded or designed. Matching dimensions do not establish that documents have the same layout: inspect every mask and answer. A mask may include a printed label and answer, but drawing tightly around the answer usually avoids ambiguity. Text-only `.txt` files can be opened for legacy review but cannot define visual masks. Scanned/image sources need a working local OCR engine for suggestions; manual source review remains essential.
 
 The **Form type** menu provides keyboard-accessible commands for drawing, entering coordinates, redrawing, deleting, applying, saving and loading, plus focusing the type-name and field-name editors. It also selects a field's value type and explicitly assigns a text field as the record identifier. **Review > Confirm current field against source and next** uses Command-K on Mac or Ctrl-K on Windows. **Expand** opens long answers. CSV templates support CSV output; import an XLSX template to retain supported layout in XLSX output. Exports include approved documents only.
+
+The menus display review and export shortcuts. Use Command on Mac or Ctrl on Windows:
+Shift-N / Shift-P switch to the next / previous document; L focuses the current answer;
+Shift-R focuses the reviewer name; K confirms the current field and advances;
+Shift-A approves the reviewed document. Shift-B opens the spreadsheet view;
+Shift-C creates columns from the extraction categories; Shift-M confirms the mapping;
+Shift-E exports XLSX. Shift-I combines patient PDFs, Shift-L loads an extraction type,
+and Shift-S saves the project under a new name. Approval still requires every field
+to be confirmed and a reviewer name.
+Choice answers accept either a dropdown label or an exact configured code. Invalid
+codes can remain in a draft but block record approval.
 
 ## Open a packaged application
 

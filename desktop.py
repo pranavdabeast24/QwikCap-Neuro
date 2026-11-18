@@ -296,7 +296,7 @@ class DesktopApp:
         ttk.Label(editor, textvariable=self.field_title, style="Heading.TLabel", width=1).pack(fill="x", pady=(6, 2))
         self.entry = ttk.Entry(editor, textvariable=self.value_var)
         self.entry.pack(fill="x", pady=4)
-        self.choice = ttk.Combobox(editor, textvariable=self.value_var, state="readonly")
+        self.choice = ttk.Combobox(editor, textvariable=self.value_var, state="normal")
         self.value_var.trace_add("write", self._value_changed)
         self.entry.bind("<Return>", lambda e: self.save_review())
         self.choice.bind("<<ComboboxSelected>>", lambda e: None)
@@ -988,8 +988,15 @@ class DesktopApp:
                 self.root.bind(f"<{modifier}-{key}>", shortcut)
             target.add_command(**options)
         file_menu = tk.Menu(menu, tearoff=False)
-        for label, command in [("New project", self.new_project), ("Open project…", self.open_project), ("Save project", self.save_project), ("Save project as…", lambda: self.save_project(save_as=True)), ("Import forms…", self.import_forms), ("Combine patient PDFs…", self.combine_patient_pdfs)]:
-            file_menu.add_command(label=label, command=command)
+        for label, command, key in [
+            ("New project", self.new_project, None),
+            ("Open project…", self.open_project, None),
+            ("Save project", self.save_project, None),
+            ("Save project as…", lambda: self.save_project(save_as=True), "Shift-S"),
+            ("Import forms…", self.import_forms, None),
+            ("Combine patient PDFs…", self.combine_patient_pdfs, "Shift-I"),
+        ]:
+            add(file_menu, label, command, key, "⇧" + key[-1] if key else None)
         file_menu.add_separator()
         file_menu.add_command(label="Close", command=self.request_close)
         menu.add_cascade(label="File", menu=file_menu)
@@ -1001,7 +1008,8 @@ class DesktopApp:
                               ("Load extraction type…", self.load_form_type),
                               ("Edit type name", lambda: self._focus_editor(self.type_name_entry)),
                               ("Edit field name", lambda: self._focus_editor(self.design_name_entry))):
-            add(type_menu, label, action)
+            key = "Shift-L" if label == "Load extraction type…" else None
+            add(type_menu, label, action, key, "⇧L" if key else None)
         add(type_menu, "Use selected field as record identifier", self.use_selected_identifier)
         value_type_menu = tk.Menu(type_menu, tearoff=False)
         for kind in ("text", "integer", "number", "date", "choice"):
@@ -1017,15 +1025,15 @@ class DesktopApp:
         review_menu = tk.Menu(menu, tearoff=False)
         add(review_menu, "Show review forms", lambda: self.show_tab(0), "1")
         review_menu.add_separator()
-        add(review_menu, "Previous document", lambda: self.move_document(-1))
-        add(review_menu, "Next document", lambda: self.move_document(1))
+        add(review_menu, "Previous document", lambda: self.move_document(-1), "Shift-P", "⇧P")
+        add(review_menu, "Next document", lambda: self.move_document(1), "Shift-N", "⇧N")
         add(review_menu, "Previous field", lambda: self.move_field(-1), "bracketleft", "[")
         add(review_menu, "Next field", lambda: self.move_field(1), "bracketright", "]")
         add(review_menu, "Confirm current field against source and next", self.confirm_and_next, "k")
         add(review_menu, "Save review draft", self.save_review)
-        add(review_menu, "Edit current answer", self.focus_answer)
+        add(review_menu, "Edit current answer", self.focus_answer, "l", "L")
         add(review_menu, "Expand text answer…", self.expand_answer)
-        add(review_menu, "Edit reviewer name", lambda: self.focus_answer(reviewer=True))
+        add(review_menu, "Edit reviewer name", lambda: self.focus_answer(reviewer=True), "Shift-R", "⇧R")
         add(review_menu, "Approve document", self.approve_record, "Shift-A", "⇧A")
         review_menu.add_separator()
         add(review_menu, "Previous source page", lambda: self.change_page(-1))
@@ -1036,9 +1044,9 @@ class DesktopApp:
         add(review_menu, "Fit source width", self.fit_page)
         menu.add_cascade(label="Review", menu=review_menu)
         spreadsheet_menu = tk.Menu(menu, tearoff=False)
-        add(spreadsheet_menu, "Show categories and spreadsheet", lambda: self.show_tab(1), "2")
+        add(spreadsheet_menu, "Show categories and spreadsheet", lambda: self.show_tab(1), "Shift-B", "⇧B")
         add(spreadsheet_menu, "Import XLSX / CSV…", self.import_template)
-        add(spreadsheet_menu, "Use categories as columns", lambda: self._with_draft(lambda: self._submit("Preparing category columns", self.session.use_categories_as_columns)))
+        add(spreadsheet_menu, "Use categories as columns", lambda: self._with_draft(lambda: self._submit("Preparing category columns", self.session.use_categories_as_columns)), "Shift-C", "⇧C")
         sample_menu = tk.Menu(spreadsheet_menu, tearoff=False)
         add(sample_menu, "Friendly example", lambda: self.load_template_sample("friendly"))
         add(sample_menu, "Raw example", lambda: self.load_template_sample("raw"))
@@ -1046,14 +1054,14 @@ class DesktopApp:
         spreadsheet_menu.add_separator()
         add(spreadsheet_menu, "Use suggested assignments", self.suggest_mapping)
         add(spreadsheet_menu, "Leave remaining columns blank…", self.leave_remaining_columns_blank)
-        add(spreadsheet_menu, "Confirm column mapping", self.confirm_mapping)
+        add(spreadsheet_menu, "Confirm column mapping", self.confirm_mapping, "Shift-M", "⇧M")
         add(spreadsheet_menu, "Previous preview columns", lambda: self.move_preview_columns(-1))
         add(spreadsheet_menu, "Next preview columns", lambda: self.move_preview_columns(1))
         spreadsheet_menu.add_separator()
         self.export_menu_entries = []
         add(spreadsheet_menu, "Export CSV…", lambda: self.export("csv"))
         self.export_menu_entries.append((spreadsheet_menu, spreadsheet_menu.index("end"), "csv"))
-        add(spreadsheet_menu, "Export XLSX…", lambda: self.export("xlsx"))
+        add(spreadsheet_menu, "Export XLSX…", lambda: self.export("xlsx"), "Shift-E", "⇧E")
         self.export_menu_entries.append((spreadsheet_menu, spreadsheet_menu.index("end"), "xlsx"))
         menu.add_cascade(label="Spreadsheet", menu=spreadsheet_menu)
         help_menu = tk.Menu(menu, tearoff=False)

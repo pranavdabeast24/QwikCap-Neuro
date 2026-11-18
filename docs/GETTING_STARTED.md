@@ -13,7 +13,8 @@ The user-selected desktop working name is **QuickCap (CV)**, with `QuickCapCV`
 as the GUI package basename. This is a working name only, with no affiliation or
 trademark clearance asserted; see [COMPETITORS_AND_NAME.md](COMPETITORS_AND_NAME.md)
 for the known MedVision QuickCap name collision. Existing Formbridge project/type identifiers,
-worker name, bundle identifier, and environment variables remain compatible;
+worker name and environment variables remain compatible. The Mac bundle identifier
+is now `com.capitolinusventures.quickcapcv` to distinguish older Formbridge builds;
 see [README_DESKTOP.md](../README_DESKTOP.md).
 
 ## macOS source setup
