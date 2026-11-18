@@ -143,7 +143,7 @@ def verify(output, dist, report):
     engine = Path(environment.get("FORMBRIDGE_TESSERACT", ""))
     require(engine.is_absolute() and engine.is_file(), "Operational Tesseract must be explicitly configured")
     version = subprocess.run([str(engine), "--version"], capture_output=True, timeout=15, check=True)
-    require(b"tesseract 5.5.3" in version.stdout, "Unexpected Tesseract version")
+    require(version.stdout.splitlines()[0].strip() == b"tesseract v5.5.3.20260724", "Unexpected Tesseract version")
     require((engine.parent / "tessdata/eng.traineddata").is_file(), "English OCR data is missing")
     report["environment"] = {
         "commit": os.environ.get("GITHUB_SHA", "local-uncommitted"), "os": platform.platform(),
