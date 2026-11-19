@@ -21,6 +21,7 @@ from PIL import Image, ImageTk
 
 from branding import COMPANY_NAME, COPYRIGHT_NOTICE, OWNERSHIP_NOTICE, PRODUCT_NAME
 from desktop_model import DesktopSession, InputError, Cancelled
+from extraction_profiles import is_patient_profile
 from server import ROOT, validate_values, strict_json_loads
 from form_types import normalized_drag, percentage_region, validate_region
 
@@ -1753,7 +1754,7 @@ class DesktopApp:
             self.bundle_dialog.lift()
             return
         ordinary_records = any(not record.get("bundleSources") for record in self.snapshot["records"])
-        if ordinary_records or self.snapshot["schema"] and not self.snapshot.get("formType") and self.snapshot.get("profile") != "pace-printed-v1":
+        if ordinary_records or self.snapshot["schema"] and not self.snapshot.get("formType") and not is_patient_profile(self.snapshot["schema"]):
             messagebox.showinfo("Start a patient bundle project", "Save this project, then choose File > New project before combining patient PDFs. A patient bundle can also be added to a project using a compatible saved bundle extraction type.", parent=self.root)
             return
         paths = filedialog.askopenfilenames(parent=self.root, title="Choose this patient's PDFs in source order", filetypes=[("PDF documents", "*.pdf")])
