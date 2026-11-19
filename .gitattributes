@@ -13,3 +13,5 @@
 *.pdf binary
 *.png binary
 *.xlsx binary
+docs/testing/QWIKCAP_WINDOWS_2026-11-19.json -text whitespace=cr-at-eol
+docs/testing/QWIKCAP_WINDOWS_BUILD_MANIFEST_2026-11-19.json -text whitespace=cr-at-eol
