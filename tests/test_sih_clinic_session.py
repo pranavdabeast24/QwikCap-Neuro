@@ -126,6 +126,18 @@ class SihClinicSessionTests(unittest.TestCase):
         self.assertEqual(header["firstName"], "ADA")
         self.assertEqual(header["lastName"], "EXAMPLE")
 
+    def test_accented_names_link_registration_to_clinic_source(self):
+        self.choose_reader()
+        record = self.session.add_patient_bundle([
+            self.write("registration.pdf", registration(first="José", last="García")),
+            self.write("clinic.pdf", hit6(first="José", last="García")),
+        ], "SYNTH-001", confirmed_same_patient=True)
+        header = next(identity for identity in record["sourceContext"]["identities"] if identity["page"] == 3)
+        self.assertEqual(header["firstName"], "JOSÉ")
+        self.assertEqual(header["lastName"], "GARCÍA")
+        self.assertEqual(record["values"]["record_id"], "SYNTH-001")
+        self.assertEqual(record["values"]["mrn"], "00001234")
+
     def test_mrn_internal_spaces_are_preserved_and_cannot_hide_a_conflict(self):
         self.choose_reader()
         with self.assertRaises(InputError):
