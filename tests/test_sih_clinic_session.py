@@ -27,15 +27,46 @@ def registration(study="SYNTH-001", mrn="00001234", first="Ada", last="Example")
     return output.getvalue()
 
 
-def hit6(mrn="00001234", first="Ada", last="Example"):
+def hit6(mrn="00001234", first="Ada", last="Example", letterhead=False, dob="02/03/1980", study=None,
+         form_code="HA-230", frequency_headers=True, first_mark_x=350):
     output = io.BytesIO()
     pdf = canvas.Canvas(output, pagesize=(612, 792), invariant=1)
+    if letterhead:
+        pdf.drawString(40, 770, "4100 Fictional Street, Suite 300, Example Town")
     pdf.drawString(400, 740, f"{last.upper()}, {first.upper()}")
-    pdf.drawString(400, 725, "DOB 02/03/1980 Sex F")
+    pdf.drawString(400, 725, f"DOB {dob} Sex F")
     pdf.drawString(400, 710, f"MRN {mrn}")
+    if study is not None:
+        pdf.drawString(400, 695, f"Research Study ID: {study}")
     pdf.drawString(40, 660, "HIT-6 Headache Impact Test")
     pdf.drawString(40, 630, "Date 04/05/2026")
-    pdf.drawString(40, 50, "HA-230 Rev 02/2026 Page 1 of 1")
+    pdf.setFont("Helvetica", 8)
+    if frequency_headers:
+        for x, label in zip((350, 400, 455, 510, 568), ("Never", "Rarely", "Sometimes", "Very", "Always")):
+            pdf.drawCentredString(x, 590, label)
+    questions = ("Pain severe", "Limit your ability to do usual daily activities", "Wish you could lie down",
+                 "Felt too tired", "Fed up or irritated", "Limit your ability to concentrate")
+    for index, question in enumerate(questions, 1):
+        y = 590 - index * 40
+        pdf.drawString(40, y, str(index))
+        pdf.drawString(60, y, question)
+        pdf.drawCentredString(first_mark_x if index == 1 else 400, y, "X")
+    pdf.drawString(40, 50, f"{form_code} Rev 02/2026 Page 1 of 1")
+    pdf.save()
+    return output.getvalue()
+
+
+def clinician_questionnaire(*, visible_options=True, declared_pages=1):
+    output = io.BytesIO()
+    pdf = canvas.Canvas(output, pagesize=(612, 792), invariant=1)
+    pdf.drawString(400, 740, "EXAMPLE, ADA")
+    pdf.drawString(400, 725, "DOB 02/03/1980 Sex F")
+    pdf.drawString(400, 710, "MRN 00001234")
+    pdf.drawString(40, 660, "Headache History - Clinician Intake")
+    pdf.drawString(40, 610, "1. Is the patient currently experiencing headaches?")
+    if visible_options:
+        pdf.drawString(420, 610, "Yes No")
+    pdf.drawString(40, 50, f"HA-210C Rev 02/2026 Page 1 of {declared_pages}")
     pdf.save()
     return output.getvalue()
 
@@ -84,6 +115,126 @@ class SihClinicSessionTests(unittest.TestCase):
                 self.write("registration.pdf", registration()),
                 self.write("wrong-patient.pdf", hit6(mrn="99999999")),
             ], "SYNTH-001", confirmed_same_patient=True)
+
+    def test_letterhead_comma_is_not_patient_identity(self):
+        self.choose_reader()
+        record = self.session.add_patient_bundle([
+            self.write("registration.pdf", registration()),
+            self.write("clinic.pdf", hit6(letterhead=True)),
+        ], "SYNTH-001", confirmed_same_patient=True)
+        header = next(identity for identity in record["sourceContext"]["identities"] if identity["page"] == 3)
+        self.assertEqual(header["firstName"], "ADA")
+        self.assertEqual(header["lastName"], "EXAMPLE")
+
+    def test_mrn_internal_spaces_are_preserved_and_cannot_hide_a_conflict(self):
+        self.choose_reader()
+        with self.assertRaises(InputError):
+            self.session.add_patient_bundle([
+                self.write("registration.pdf", registration(mrn="0000 1234")),
+                self.write("different-mrn.pdf", hit6(mrn="0000 9999")),
+            ], "SYNTH-001", confirmed_same_patient=True)
+        record = self.session.add_patient_bundle([
+            self.write("same-registration.pdf", registration(mrn="0000 1234")),
+            self.write("same-mrn.pdf", hit6(mrn="0000 1234")),
+        ], "SYNTH-001", confirmed_same_patient=True)
+        self.assertEqual(record["values"]["mrn"], "0000 1234")
+
+    def test_printed_study_id_cannot_be_silently_shortened(self):
+        self.choose_reader()
+        for index, (printed, entered) in enumerate((("SYNTH-001 EXTRA", "SYNTH-001"), ("A" * 81, "A" * 80))):
+            with self.subTest(printed=printed):
+                with self.assertRaises(InputError):
+                    self.session.add_patient_bundle([
+                        self.write(f"registration-{index}.pdf", registration(study=printed)),
+                        self.write(f"hit6-{index}.pdf", hit6()),
+                    ], entered, confirmed_same_patient=True)
+
+    def test_complete_header_birth_date_and_other_printed_study_ids_are_checked(self):
+        self.choose_reader()
+        for index, kwargs in enumerate(({"dob": "02/03/19800"}, {"study": "SYNTH-OTHER"},
+                                        {"study": "SYNTH-001 EXTRA"})):
+            with self.subTest(kwargs=kwargs):
+                with self.assertRaises(InputError):
+                    self.session.add_patient_bundle([
+                        self.write(f"anchor-{index}.pdf", registration()),
+                        self.write(f"other-{index}.pdf", hit6(**kwargs)),
+                    ], "SYNTH-001", confirmed_same_patient=True)
+
+    def test_unknown_or_repeated_source_instrument_rolls_back(self):
+        self.choose_reader()
+        anchor = self.write("registration.pdf", registration())
+        questionnaire = self.write("hit6.pdf", hit6())
+        before = self.session.snapshot()
+        for extra in (self.write("unrecognized.pdf", hit6(form_code="UNKNOWN")),
+                      self.write("repeat-hit6.pdf", hit6())):
+            with self.subTest(extra=extra.name):
+                with self.assertRaises(InputError):
+                    self.session.add_patient_bundle([anchor, questionnaire, extra], "SYNTH-001", True)
+                self.assertEqual(self.session.snapshot(), before)
+
+    def test_reopen_reconstructs_registration_anchor_and_resets_review(self):
+        self.choose_reader()
+        record = self.session.add_patient_bundle([
+            self.write("registration.pdf", registration()), self.write("hit6.pdf", hit6()),
+        ], "SYNTH-001", True)
+        record = self.session.review_record(record["id"], record["values"], record["applicableFields"],
+                                            "Fictional Reviewer", True)
+        self.assertEqual(record["status"], "approved")
+        project = json.loads(self.session.project_bytes())
+        project["records"][0]["sourceContext"] = {"profile": "forged", "registrationAnchors": []}
+        project["records"][0]["applicableFields"] = ["record_id"]
+        path = self.write("project.json", json.dumps(project).encode())
+        self.session.open_project(path)
+        reopened = self.session.snapshot()["records"][0]
+        self.assertEqual(reopened["sourceContext"]["profile"], "sih-clinic-v1")
+        self.assertEqual(len(reopened["sourceContext"]["registrationAnchors"]), 1)
+        self.assertIn("mrn", reopened["applicableFields"])
+        self.assertEqual(reopened["confirmed"], [])
+        self.assertEqual(reopened["status"], "review")
+        self.assertEqual(reopened["reviewedBy"], "")
+        # Even an edited review value cannot rewrite the recomputed source anchor.
+        project["records"][0]["values"]["mrn"] = "99999999"
+        path.write_text(json.dumps(project))
+        self.session.open_project(path)
+        reopened = self.session.snapshot()["records"][0]
+        self.assertIn("mrn", reopened["validationErrors"])
+        with self.assertRaises(InputError):
+            self.session.review_record(reopened["id"], reopened["values"], reopened["applicableFields"],
+                                       "Fictional Reviewer", True)
+
+    def test_missing_radio_options_do_not_gain_a_source_blank_waiver(self):
+        self.choose_reader()
+        with self.assertRaises(InputError):
+            self.session.add_patient_bundle([
+                self.write("registration.pdf", registration()),
+                self.write("missing-options.pdf", clinician_questionnaire(visible_options=False)),
+            ], "SYNTH-001", True)
+        record = self.session.add_patient_bundle([
+            self.write("registration-visible.pdf", registration()),
+            self.write("visible-unmarked.pdf", clinician_questionnaire()),
+        ], "SYNTH-001", True)
+        self.assertIn("headaches_yn", record["sourceContext"]["unansweredFields"])
+
+    def test_malformed_hit6_table_cannot_omit_required_answers_or_guess_columns(self):
+        self.choose_reader()
+        for index, kwargs in enumerate(({"frequency_headers": False}, {"first_mark_x": 15}, {"first_mark_x": 602})):
+            with self.subTest(kwargs=kwargs):
+                session = DesktopSession()
+                self.addCleanup(session.close)
+                session.use_sih_clinic_profile()
+                with self.assertRaises(InputError):
+                    session.add_patient_bundle([
+                        self.write(f"registration-{index}.pdf", registration()),
+                        self.write(f"malformed-table-{index}.pdf", hit6(**kwargs)),
+                    ], "SYNTH-001", True)
+
+    def test_declared_instrument_page_count_must_be_complete(self):
+        self.choose_reader()
+        with self.assertRaises(InputError):
+            self.session.add_patient_bundle([
+                self.write("registration.pdf", registration()),
+                self.write("partial-questionnaire.pdf", clinician_questionnaire(declared_pages=4)),
+            ], "SYNTH-001", True)
 
 
 if __name__ == "__main__":
