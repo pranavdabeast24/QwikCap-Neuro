@@ -13,7 +13,7 @@ import sys
 import tempfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from pace_profile import profile_schema
+from extraction_profiles import canonical_schema, PATIENT_PROFILES
 from pipeline import process_document
 
 
@@ -21,6 +21,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--forms-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--profile", choices=sorted(PATIENT_PROFILES), default="pace-printed-v1")
     args = parser.parse_args()
     source, output = args.forms_dir, args.output
     if source.is_symlink() or not source.is_dir():
@@ -36,7 +37,7 @@ def main():
             parser.error("A PDF exceeds the app's 12 MiB limit.")
         data = path.read_bytes()
         with tempfile.TemporaryDirectory(prefix="quickcap-pace-diagnostic-") as folder:
-            result = process_document(data, path.name, profile_schema(), Path(folder), "diagnostic")
+            result = process_document(data, path.name, canonical_schema(args.profile), Path(folder), "diagnostic")
         documents.append({"filename": path.name, "sha256": hashlib.sha256(data).hexdigest(),
                           "pageCount": len(result["pages"]),
                           "result": {key: result[key] for key in
@@ -44,7 +45,7 @@ def main():
         print(f"Extracted {index}/{len(files)} synthetic PDFs locally", flush=True)
     output.parent.mkdir(parents=True, exist_ok=True)
     report = {"format": "quickcap-pace-extraction-diagnostics-v1", "diagnosticOnly": True,
-              "desktopUIUsed": False, "answerKeysRead": False, "documents": documents}
+              "desktopUIUsed": False, "answerKeysRead": False, "profile": args.profile, "documents": documents}
     serialized = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
     with output.open("x", encoding="utf-8") as stream:
         stream.write(serialized)

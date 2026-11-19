@@ -216,6 +216,11 @@ def verify(output, dist, report):
               "--output", str(output / "packaged-pace-printed")], report, isolated, relocation, 120)
     retain_acceptance_summary(output / "packaged-pace-printed/pace-printed-results.json",
                               output / "reports/packaged-pace-printed-results.json", 6)
+    run_check("packaged-sih-clinic", [python, "-B", str(APP / "tools/verify_sih_clinic.py"),
+              "--bundle", str(extracted), "--output", str(output / "packaged-sih-clinic")],
+              report, isolated, relocation, 180)
+    retain_acceptance_summary(output / "packaged-sih-clinic/sih-clinic-results.json",
+                              output / "reports/packaged-sih-clinic-results.json", 7)
     run_check("packaged-fictional-scans-and-exports", [python, "-B", str(APP / "verify_desktop_bundle.py"),
               str(extracted), "--output", str(output / "packaged-fixtures")], report, isolated, relocation)
     fixtures = read_report(output / "packaged-fixtures/desktop-bundle-results.json")

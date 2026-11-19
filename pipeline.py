@@ -25,8 +25,8 @@ from typing import Any
 
 from PIL import Image, ImageOps, UnidentifiedImageError
 from neurology_profile import extract as extract_neurology
-from extraction_profiles import is_profile, is_pace_profile, applicable_fields
-from pace_profile import extract as extract_pace
+from extraction_profiles import (PROFILES, profile_id, is_profile, is_patient_profile,
+                                 is_clinic_profile, applicable_fields)
 from limits import MAX_FIELDS, MAX_SCHEMA_BYTES, MAX_PAGES, MAX_RENDER_PIXELS, MAX_ASSET_BYTES
 
 try:
@@ -173,7 +173,18 @@ def _line(words: list[dict[str, Any]], text: str | None = None) -> dict[str, Any
     return {"text": text if text is not None else " ".join(w["text"] for w in words), "words": words, **_union(words)}
 
 
-def _pdf_lines(page: Any, pixel_width: int, pixel_height: int) -> list[dict[str, Any]]:
+def _pdf_font_name(textpage: Any, index: int) -> str:
+    flags = ctypes.c_int()
+    size = pdfium.raw.FPDFText_GetFontInfo(textpage, index, None, 0, ctypes.byref(flags))
+    if not 1 <= size <= 2048:
+        return ""
+    buffer = ctypes.create_string_buffer(size)
+    if not pdfium.raw.FPDFText_GetFontInfo(textpage, index, buffer, size, ctypes.byref(flags)):
+        return ""
+    return buffer.value.decode("utf-8", errors="replace").split("+", 1)[-1][:256]
+
+
+def _pdf_lines(page: Any, pixel_width: int, pixel_height: int, *, capture_styles: bool = False) -> list[dict[str, Any]]:
     """Use PDFium's page-to-device transform, including crop/rotation, for boxes."""
     textpage = page.get_textpage()
     try:
@@ -184,12 +195,16 @@ def _pdf_lines(page: Any, pixel_width: int, pixel_height: int) -> list[dict[str,
         lines: list[dict[str, Any]] = []
         chars: list[str] = []
         boxes: list[dict[str, Any]] = []
+        word_font = ""
 
         def flush_word() -> None:
             if chars:
                 text = "".join(chars).strip()
                 if text and boxes:
-                    words.append({"text": text, **_union(boxes)})
+                    word = {"text": text, **_union(boxes)}
+                    if capture_styles:
+                        word["font"] = word_font
+                    words.append(word)
                 chars.clear()
                 boxes.clear()
 
@@ -211,6 +226,11 @@ def _pdf_lines(page: Any, pixel_width: int, pixel_height: int) -> list[dict[str,
                 continue
             if ord(char[0]) < 32:
                 continue
+            if capture_styles:
+                font = _pdf_font_name(textpage, index)
+                if chars and font != word_font:
+                    flush_word()
+                word_font = font
             left, bottom, right, top = textpage.get_charbox(index)
             corners = []
             for px, py in ((left, bottom), (right, top), (left, top), (right, bottom)):
@@ -374,14 +394,91 @@ def _path_control_kind(obj: Any, count: int) -> str | None:
     return "circle" if abs(abs(winding) - 2 * math.pi) < .1 else None
 
 
-def _pdf_geometry(page: Any, pixel_width: int, pixel_height: int) -> dict[str, list[dict[str, Any]]]:
+def _clinic_selection_path(obj: Any, count: int) -> bool:
+    contours = []
+    for index in range(count):
+        segment = pdfium.raw.FPDFPath_GetPathSegment(obj, index)
+        x, y = ctypes.c_float(), ctypes.c_float()
+        if not segment or not pdfium.raw.FPDFPathSegment_GetPoint(segment, ctypes.byref(x), ctypes.byref(y)):
+            return False
+        if not math.isfinite(x.value) or not math.isfinite(y.value):
+            return False
+        kind = pdfium.raw.FPDFPathSegment_GetType(segment)
+        if kind == pdfium.raw.FPDF_SEGMENT_MOVETO:
+            if len(contours) >= 4:
+                return False
+            contours.append([])
+        if not contours:
+            return False
+        contours[-1].append(((x.value, y.value), kind, bool(pdfium.raw.FPDFPathSegment_GetClose(segment))))
+    fill_mode, stroke = ctypes.c_int(), ctypes.c_int()
+    if not pdfium.raw.FPDFPath_GetDrawMode(obj, ctypes.byref(fill_mode), ctypes.byref(stroke)):
+        return False
+    if not stroke.value and fill_mode.value == pdfium.raw.FPDF_FILLMODE_NONE:
+        return False
+    if not stroke.value and len(contours) < 2:
+        return False
+    fitted = []
+    for contour in contours:
+        first, last = contour[0][0], contour[-1][0]
+        if not contour[-1][2] and math.dist(first, last) > .01:
+            return False
+        samples, straight, cubic_count = [first], [], 0
+        position, index = first, 1
+        while index < len(contour):
+            point, kind, _closed = contour[index]
+            if kind == pdfium.raw.FPDF_SEGMENT_LINETO:
+                straight.append(math.dist(position, point))
+                samples.append(point)
+                position, index = point, index + 1
+            elif (kind == pdfium.raw.FPDF_SEGMENT_BEZIERTO and index + 2 < len(contour)
+                  and all(item[1] == pdfium.raw.FPDF_SEGMENT_BEZIERTO for item in contour[index:index + 3])):
+                curve = [position] + [item[0] for item in contour[index:index + 3]]
+                for t in (.25, .5, .75, 1):
+                    weights = ((1 - t) ** 3, 3 * (1 - t) ** 2 * t, 3 * (1 - t) * t ** 2, t ** 3)
+                    samples.append(tuple(sum(weight * point[axis] for weight, point in zip(weights, curve))
+                                         for axis in (0, 1)))
+                position, index = curve[-1], index + 3
+                cubic_count += 1
+            else:
+                return False
+        if cubic_count < 4:
+            return False
+        left, right = min(p[0] for p in samples), max(p[0] for p in samples)
+        bottom, top = min(p[1] for p in samples), max(p[1] for p in samples)
+        rx, ry = (right - left) / 2, (top - bottom) / 2
+        if min(rx, ry) <= 0 or any(length > .25 * min(rx, ry) for length in straight):
+            return False
+        cx, cy = (left + right) / 2, (bottom + top) / 2
+        normalized = [((x - cx) / rx, (y - cy) / ry) for x, y in samples]
+        errors = [abs(math.hypot(x, y) - 1) for x, y in normalized]
+        if max(errors) > .20 or sum(errors) / len(errors) > .08:
+            return False
+        angles = [math.atan2(y, x) for x, y in normalized]
+        winding = sum(math.atan2(math.sin(b - a), math.cos(b - a))
+                      for a, b in zip(angles, angles[1:] + angles[:1]))
+        if abs(abs(winding) - 2 * math.pi) > .25:
+            return False
+        fitted.append((cx, cy, rx, ry, winding))
+    reference = max(fitted, key=lambda item: item[2] * item[3])
+    if any(abs(item[0] - reference[0]) > .12 * reference[2]
+           or abs(item[1] - reference[1]) > .12 * reference[3]
+           or min(item[2] / reference[2], item[3] / reference[3]) < .5 for item in fitted):
+        return False
+    if not stroke.value and fill_mode.value != pdfium.raw.FPDF_FILLMODE_ALTERNATE:
+        if len({item[4] > 0 for item in fitted}) < 2:
+            return False
+    return True
+
+
+def _pdf_geometry(page: Any, pixel_width: int, pixel_height: int, *, capture_clinic: bool = False) -> dict[str, list[dict[str, Any]]]:
     """Read bounded native row rules and closed answer-control paths.
 
     Text marks alone cannot establish that an unmarked checkbox exists. Keep
     the printed controls separately, using the text layer's device transform.
     Geometry is evidence only; field/code association belongs to the adapter.
     """
-    rules, controls = [], []
+    rules, controls, selections = [], [], []
     for object_count, obj in enumerate(page.get_objects(max_depth=15), 1):
         if object_count > MAX_PDF_OBJECTS:
             raise DocumentError("A PDF page exceeds the 50,000 object processing limit.")
@@ -424,19 +521,28 @@ def _pdf_geometry(page: Any, pixel_width: int, pixel_height: int) -> dict[str, l
         if (native_width >= 60 and native_height <= 2) or (native_height >= 60 and native_width <= 2):
             rules.append(box)
             continue
-        if not (4 <= native_width <= 20 and 4 <= native_height <= 20
-                and .8 <= native_width / native_height <= 1.25):
+        small_control = (4 <= native_width <= 20 and 4 <= native_height <= 20
+                         and .8 <= native_width / native_height <= 1.25)
+        selection_candidate = capture_clinic and 10 <= native_width <= 400 and 6 <= native_height <= 40
+        if not small_control and not selection_candidate:
             continue
         count = pdfium.raw.FPDFPath_CountSegments(obj)
-        if not 4 <= count <= 512:
+        if not 4 <= count <= (2048 if selection_candidate else 512):
             continue
-        kind = _path_control_kind(obj, count)
-        if kind:
-            controls.append({"kind": kind, **box})
-    return {"rules": rules, "controls": controls}
+        if selection_candidate and _clinic_selection_path(obj, count):
+            selections.append({"kind": "ellipse", **box})
+        if small_control and count <= 512:
+            kind = _path_control_kind(obj, count)
+            if kind:
+                controls.append({"kind": kind, **box})
+    result = {"rules": rules, "controls": controls}
+    if capture_clinic:
+        result["selections"] = selections
+    return result
 
 
-def _make_pdf_pages(data: bytes, folder: Path, *, capture_geometry: bool = False) -> list[dict[str, Any]]:
+def _make_pdf_pages(data: bytes, folder: Path, *, capture_geometry: bool = False,
+                    capture_clinic: bool = False) -> list[dict[str, Any]]:
     if pdfium is None or PdfReader is None:
         raise DocumentError("PDF support is unavailable. Install the documented local Python dependencies.")
     try:
@@ -488,8 +594,9 @@ def _make_pdf_pages(data: bytes, folder: Path, *, capture_geometry: bool = False
                         if obj.type == pdfium.raw.FPDF_PAGEOBJ_IMAGE:
                             has_raster = True
                             break
-                    lines = _pdf_lines(page, width, height)
-                    geometry = _pdf_geometry(page, width, height) if capture_geometry else {}
+                    lines = _pdf_lines(page, width, height, capture_styles=True) if capture_clinic else _pdf_lines(page, width, height)
+                    geometry = (_pdf_geometry(page, width, height, capture_clinic=True) if capture_clinic
+                                else _pdf_geometry(page, width, height) if capture_geometry else {})
                     pages.append({"page": index + 1, "width": width, "height": height, "path": path, "lines": lines, "method": "pdf-text" if lines else None, "hasRaster": has_raster, **geometry})
                 finally:
                     page.close()
@@ -840,8 +947,8 @@ def _map_fields(schema: list[dict[str, Any]], pages: list[dict[str, Any]]) -> tu
 
 
 def _extract_fields(schema, pages, data):
-    if is_pace_profile(schema):
-        return extract_pace(pages)
+    if is_patient_profile(schema):
+        return PROFILES[profile_id(schema)].extract(pages)
     values, evidence, issues = (extract_neurology(pages, hashlib.sha256(data).hexdigest())
                                 if is_profile(schema) else _map_fields(schema, pages))
     return {"values": values, "evidence": evidence, "issues": issues}
@@ -880,7 +987,10 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
         pages = [{"page": 1, "lines": lines, "method": "plain-text", "width": 0, "height": 0}]
         pipeline.append({"stage": "Read document", "status": "complete", "detail": "UTF-8 text read locally; no document preview is generated."})
     else:
-        pages = (_make_pdf_pages(data, folder, capture_geometry=is_pace_profile(schema))
+        pdf_options = {"capture_geometry": is_patient_profile(schema)}
+        if is_clinic_profile(schema):
+            pdf_options["capture_clinic"] = True
+        pages = (_make_pdf_pages(data, folder, **pdf_options)
                  if kind == "pdf" else _make_image_pages(data, folder))
         regions = [region for field in schema if isinstance(field, dict)
                    if (region := _valid_region(field.get("region")))]
@@ -956,7 +1066,7 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
     pipeline.append({"stage": "Match form fields", "status": "complete" if populated else "needs-review", "detail": f"Suggested {populated} of {active_count} applicable fields using literal labels and source geometry. Human review is required."})
     previews = [{"page": page["page"], "url": f"/api/assets/{record_id}/page-{page['page']}.png", "width": page["width"], "height": page["height"]} for page in pages if page.get("path")]
     result = {"sourceText": source_text, "values": values, "pages": previews, "previewUrl": previews[0]["url"] if previews else None, "evidence": evidence, "pipeline": pipeline, "issues": issues}
-    if is_pace_profile(schema):
+    if is_patient_profile(schema):
         result["applicableFields"] = sorted(applicable_fields(schema, values, extracted))
         result["sourceContext"] = extracted["sourceContext"]
         result["profileBlockingIssues"] = list(extracted["sourceContext"]["blockingIssues"])

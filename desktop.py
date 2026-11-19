@@ -1058,6 +1058,7 @@ class DesktopApp:
         add(type_menu, "Study fields…", self.show_study_fields)
         add(type_menu, "Load PACE fields", self.load_pace_fields)
         add(type_menu, "Read NEU clinic forms", self.use_neurology_profile)
+        add(type_menu, "Read SIH clinic forms", self.use_sih_clinic_profile)
         add(type_menu, "Read PACE printed forms", self.use_pace_profile, "Shift-U", "⇧U")
         add(type_menu, "Load expected fields from blank CSV / XLSX…", self.load_expected_fields)
         add(type_menu, "Use selected study field", self.use_catalog_field)
@@ -1300,7 +1301,9 @@ class DesktopApp:
             widths = (155, 75)
         else:
             definition = state.get("formType")
-            type_name = definition["name"] if definition else "PACE printed forms · review required" if state.get("profile") == "pace-printed-v1" else "Create your own extraction type"
+            profile_name = {"pace-printed-v1": "PACE printed forms · review required",
+                            "sih-clinic-v1": "SIH clinic forms · review required"}.get(state.get("profile"))
+            type_name = definition["name"] if definition else profile_name or "Create your own extraction type"
             self.mode_label.set("LOCAL DESKTOP · " + state.get("phase", "review").upper() + "\n" + type_name)
             columns, headings, widths = ("document", "state"), ("Document", "Review"), (145, 85)
         self.queue_tree.configure(columns=columns)
@@ -1517,7 +1520,8 @@ class DesktopApp:
                        ("recordIds", "identities", "instruments", "instrumentStarts", "unansweredFields", "blockingIssues"))
                 or context["instruments"] or context["instrumentStarts"]):
             return None
-        return ("Unsupported PACE layout. For Form NEU-xxx PDFs, choose Advanced > Form type > Read NEU clinic forms. "
+        return ("Unsupported PACE layout. For SIH clinic registration, questionnaires and reports, choose Read SIH clinic forms. "
+                "For Form NEU-xxx PDFs, choose Advanced > Form type > Read NEU clinic forms. "
                 "For other layouts, save this project and start a new project to draw masks. Approval is blocked.")
 
     def _show_field(self):
@@ -1770,7 +1774,10 @@ class DesktopApp:
         frame.columnconfigure(0, weight=1)
         frame.rowconfigure(3, weight=1)
         ttk.Label(frame, text="One patient, one reviewed spreadsheet row", style="Heading.TLabel").grid(row=0, column=0, sticky="w")
-        guidance = "Enter the study record ID yourself. The PACE reader checks printed identities and blocks conflicting sources." if self.snapshot.get("profile") == "pace-printed-v1" else f"Enter the study record ID yourself. {PRODUCT_NAME} does not match patient identities automatically."
+        if self.snapshot.get("profile") == "sih-clinic-v1":
+            guidance = "Include this patient's registration. Enter its printed Research Study ID; the clinic reader verifies each source's MRN, name and birth date against registration."
+        else:
+            guidance = "Enter the study record ID yourself. The PACE reader checks printed identities and blocks conflicting sources." if self.snapshot.get("profile") == "pace-printed-v1" else f"Enter the study record ID yourself. {PRODUCT_NAME} does not match patient identities automatically."
         ttk.Label(frame, text=guidance + " The ID cover is page 1; the original PDFs follow in the order below.", style="Small.TLabel", wraplength=790).grid(row=1, column=0, sticky="ew", pady=(8, 10))
         identifier = ttk.Frame(frame)
         identifier.grid(row=2, column=0, sticky="ew", pady=(0, 12))
@@ -1880,6 +1887,12 @@ class DesktopApp:
             return
         if self._confirm_schema_change():
             self._with_draft(lambda: self._submit("Reading PACE printed forms locally", self.session.use_pace_profile))
+
+    def use_sih_clinic_profile(self):
+        if self.busy or self.closing:
+            return
+        if self._confirm_schema_change():
+            self._with_draft(lambda: self._submit("Reading SIH clinic forms locally", self.session.use_sih_clinic_profile))
 
     def remove_document(self):
         if self.busy or not self.selected_record:
