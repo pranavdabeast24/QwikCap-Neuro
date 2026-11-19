@@ -1,14 +1,14 @@
-# QuickCap (CV) desktop
+# QwikCap desktop
 
-**Property of Capitolinus Ventures**
+QwikCap is a native Python and Tk desktop app for macOS and Windows. Upload forms, review extracted answers against their source pages, map fields to spreadsheet columns, and export approved patient rows. Document and spreadsheet processing stays on the same computer.
 
-QuickCap (CV) has a native Tk desktop interface for macOS and Windows. It runs the document and spreadsheet workers on the same computer. The desktop workflow does not require a browser, a local web server, or a cloud extraction account.
+The current working name replaces QuickCap (CV). Commercial name clearance has not been established. See [the naming record](docs/COMPETITORS_AND_NAME.md) and [ownership notice](OWNERSHIP.md).
 
-The user selected QuickCap (CV) as a working name only. The QuickCap name is already used by MedVision in healthcare software; no affiliation or trademark clearance is asserted. See [docs/COMPETITORS_AND_NAME.md](docs/COMPETITORS_AND_NAME.md) before public naming or distribution, and `OWNERSHIP.md` for the scope of the original-code notice and third-party rights.
+The current packages are `QwikCap.app` on Mac and `QwikCap\QwikCap.exe` on Windows. The Mac bundle identifier is `com.capitolinusventures.qwikcap`. Saved project and type formats retain their `formbridge-*` identifiers. `FORMBRIDGE_TESSERACT` and the `FormbridgeWorker` helper stay compatible. Historical reports retain the names of the builds they tested.
 
-The display name and GUI package basename (`QuickCapCV`) have changed from Formbridge. The Mac bundle identifier is `com.capitolinusventures.quickcapcv`, so macOS can distinguish QuickCap from older Formbridge builds. Saved project/type formats retain their existing `formbridge-*` identifiers, and older projects remain supported. The `FORMBRIDGE_TESSERACT` setting and `FormbridgeWorker` helper name remain stable for compatibility. Renaming the app does not migrate saved data or change review requirements. The earlier browser interface and historical verification records retain their original names.
+For downloads and setup, use [the Windows guide](docs/WINDOWS.md), [developer handoff](docs/HANDOFF.md), and [source setup](docs/GETTING_STARTED.md). This clone includes the [original supplied synthetic train/test packet](datasets/sih-synthetic/README.md), independent evaluation files, and actual app-written readouts. Saved projects and private documents need a separate approved transfer.
 
-For a Windows download and setup, use [the Windows guide](docs/WINDOWS.md). Developers can start with [the handoff](docs/HANDOFF.md), follow [source setup](docs/GETTING_STARTED.md), and rerun [the portable checks](docs/TESTING.md). Source, fictional fixtures, and instructions travel through Git. Saved projects and private documents need a separate approved transfer.
+The [QwikCap pilot release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-2026-11-19) contains the current Windows download and complete source packet. Mac users can build from the source instructions below. Its [Windows acceptance](docs/testing/QWIKCAP_WINDOWS_2026-11-19.md) passed all 11 stages and 283 tests with one platform-specific skip. The [Mac rename and regression record](docs/testing/QWIKCAP_REBRAND_2026-11-19.md) verifies that all 55 supplied forms retain their frozen extraction results. New commits use Pranav Mukund's GitHub identity. Existing author aliases resolve through `.mailmap` without rewriting shared history.
 
 The app starts without preset fields. You can draw custom answer masks and save a reusable extraction type. For the supplied PACE forms, an optional printed-form reader recognizes questions, marked choices, and matrix columns from native PDF text and control geometry. You still confirm the source group, review its answers, and approve one patient row before export. The destination keeps the supplied template's exact 512 headers. Repeating-instrument REDCap upload needs a separate validated conversion.
 
@@ -25,37 +25,37 @@ The primary interface has **File**, **Advanced**, and **Help** menus, an **Add d
 
 The reader checks printed record IDs and demographics against the confirmed patient bundle. Unknown instruments, conflicting source identities, repeated assessments of one instrument, and conflicting source values block the one-row merge. A visibly unchecked checkbox can produce `0`. An absent question stays blank, and a visible unanswered radio stays blank and remains part of the review. Editing an answer cannot hide an observed field.
 
-## Actual train validation, 2026-11-18
+## Results on your supplied train/test packet
 
-The supplied synthetic train set contains 28 PDFs, 45 pages, nine instruments, and five patient groups. Independent answer-key checks cover 609 explicit values. Of these, 600 have destination columns in the supplied template. The final local extraction diagnostics match all 600 values and all 483 expected unchecked-checkbox zeroes. Two visibly unmarked source rows remain blank. Nine total-score entries have no destination column and are reported separately, rather than added to the export.
+The [included packet](datasets/sih-synthetic/README.md) contains the original user-supplied forms and answer keys, copied byte for byte. It is entirely fictional. It contains 28 train forms, 27 test forms, 55 matching answer-key PDFs, and the original index. These results come from that packet, not the app-authored practice forms.
 
-The Mac source suite ran 283 tests with seven Windows-specific skips and no failures. The reader retains all 14 catalog-required flags plus the required record ID. Source-confirmed missing answers require immutable unmarked-row evidence and explicit field confirmation, which must be repeated after reopening. The packaged-reader check passes 16 invented fields with all 512 destinations. Independent audit of the [new Windows run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44424411229) at `b139c46` confirms 283 source tests with one POSIX-only skip and all 11 acceptance checks passing. The older Windows prerelease below does not contain the new reader or UI changes.
+The evaluation ran on 2026-11-18. Each split contains five patient groups and nine instruments. Train has 45 form pages and test has 40. The reader was frozen at `26fb90e` before test access. No engine or extraction-rule tuning was made from test answers.
 
-The native desktop imported all 28 PDFs into five confirmed patient bundles, confirmed 1,085 applicable fields, approved all five patient rows, confirmed the 512-column mapping, and wrote [the train readout](examples/quickcap-actual-train-readout.xlsx). Independent checks of both the saved raw project and app-written workbook match all 2,560 expected destination cells, with zero issues and zero manual value corrections. The reader was frozen at `26fb90e` before any held-out access. See [the train report](docs/testing/actual-pace-dataset-2026-11-18.md) for the workbook hash and measured scope.
+| Check | Supplied train set | Supplied test set |
+| --- | --- | --- |
+| Raw extraction of mapped answer-key values | 600 / 600, **100%** | 550 / 551, **99.82%** |
+| Additional source-observed unchecked-checkbox zeroes | 483 / 483, **100%** | 390 / 390, **100%** |
+| Raw patient-row destination cells, before correction | 2,560 / 2,560, **100%** | 2,559 / 2,560, **99.96%** |
+| Reviewed app-written Excel cells | 2,560 / 2,560, **100%** | 2,560 / 2,560, **100%** |
+| Manual value corrections | 0 | 1 |
+| Key-only total-score entries without a destination column | 9 excluded | 8 excluded |
 
-## Held-out evaluation and current limit
+The 2,560-cell denominators cover five rows by 512 destination columns, including expected blanks and checkbox zeroes. They are export-fidelity measures and do not mean 2,560 independently populated answers. The mapped-key result is the narrower raw extraction measure. A literal test-key wildcard for `none checked` expands to 16 canonical checkbox destinations in the independent comparator. The [packet evaluation notes](datasets/sih-synthetic/README.md) preserve both the literal and normalized expectations.
 
-**The frozen reader makes one raw extraction error in the supplied held-out set.** Across 27 PDFs, 40 pages, and five patient groups, it matches 550 of 551 mapped key values and all 390 additional unchecked-checkbox zeroes. For `personal_ctdisorder_v2`, it suggests `hypermobility` where the fictional source reads `Joint hypermobility`. Eight key-only totals have no destination column and remain outside the export. No extraction rule or engine change was made from these test answers.
+The single test error is `personal_ctdisorder_v2`. The reader suggests `hypermobility` while the source says `Joint hypermobility`. Source review restored the omitted word through the native app. Every other value and all original source data remained unchanged. Reviewed 100% export accuracy includes this manual correction and is separate from raw extraction accuracy.
 
-The native Mac desktop workflow corrected that one suggestion from the visible source, confirmed all 941 applicable fields, approved five patient rows, confirmed the 512-column mapping, and exported XLSX. Independent checks match all 2,560 reviewed workbook cells with zero issues. Before correction, the app-saved raw project matched 2,559 of 2,560 cells. Every other value and all original source data remained unchanged. All 37 frozen runtime file hashes still match after evaluation; no engine or rule tuning was made. See [the held-out report](docs/testing/heldout-pace-2026-11-18.md) for hashes and independent evidence. Actual-dataset desktop QA ran on Mac; Windows acceptance used generated fixtures and packaged checks, with an actual-dataset Windows GUI walkthrough still outstanding.
+Both native Mac workflows imported every supplied form, confirmed all applicable fields, approved five patient rows, confirmed the exact 512-column mapping, and exported XLSX. The [train workbook](examples/quickcap-actual-train-readout.xlsx) and [reviewed test workbook](examples/qwikcap-supplied-test-reviewed-readout.xlsx) are actual app exports. [Train evidence](docs/testing/actual-pace-dataset-2026-11-18.md) and [test evidence](docs/testing/heldout-pace-2026-11-18.md) record the hashes, raw failure, review correction, and limits.
 
-## Earlier full-codebook practice check
+Actual supplied-dataset desktop QA ran on Mac. Windows acceptance used generated fixtures and packaged checks. A person-driven Windows walkthrough of this packet remains outstanding. The test set has now been used, so later tuning needs a fresh holdout before claiming another independent test score.
 
-The [portable practice kit](examples/pace-synthetic-practice.zip) contains 18 fictional PDFs, a reusable 512-field extraction type, independent answer keys, and coverage records. It includes one text-layer case and one raster-only case, with nine ordered PDFs per case. Its 253 codebook entries expand to the exact 512 export columns. Conditional responses exercise all branches for software coverage and do not describe a clinically coherent patient. The kit is separate from the supplied train and held-out datasets.
-
-The raw app extraction matched all 512 text-case cells and 506 of 512 scan-case cells. The native Mac workflow then corrected six scan values, confirmed all 512 fields for each case, entered a reviewer, approved both records, confirmed the mapping, and exported XLSX through the Save dialog. The [actual app export](examples/quickcap-synthetic-pace-readout.xlsx) has two data rows and 512 ordered columns. Independent comparison matched all 1,024 cells, including eight expected blanks and 343 zeroes, with no formulas, spreadsheet errors, or hidden content. This corrected export result is separate from raw OCR accuracy. See [the run report](docs/testing/SYNTHETIC_PACE_GUI_2026-11-18.md) for the before-and-after results and limitations.
-
-Verify the included export without creating an app session or changing the workbook. Run this command from the repository root with the configured Python environment:
+To verify the included workbooks from a configured clone, run:
 
 ```sh
-python tools/verify_synthetic_pace_readout.py examples/quickcap-synthetic-pace-readout.xlsx
+python tools/verify_actual_pace_readout.py --expected-json datasets/sih-synthetic/evaluation/train-expected.json --census-json datasets/sih-synthetic/evaluation/train-form-census.json --xlsx examples/quickcap-actual-train-readout.xlsx
+python tools/verify_actual_pace_readout.py --expected-json datasets/sih-synthetic/evaluation/test-expected-comparator.json --census-json datasets/sih-synthetic/evaluation/test-form-census.json --xlsx examples/qwikcap-supplied-test-reviewed-readout.xlsx
 ```
 
-The readout retains default column widths, so long headers and identifiers can clip or wrap. Use Excel AutoFit and adjust row heights for readability. These layout limits do not change the verified cell values.
-
-At revision `0793411`, the source suite passed 238 tests with seven skips. The [earlier private Windows prerelease](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/quickcap-cv-pace-2026-11-18) includes that revision. Its [Windows acceptance run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44407671706) passed 238 source tests with one POSIX-only skip, built and extracted the portable app, and passed all ten then-current acceptance stages. A person-driven Windows laptop walkthrough remains a pilot check.
-
-For another AI or developer, [docs/HANDOFF.md](docs/HANDOFF.md) provides the source map, exact continuation steps, test commands, and dataset boundaries. The PACE smoke verifier and the full practice-kit GUI run are separate checks.
+The separately [generated practice kit](examples/pace-synthetic-practice.zip) and [its historical report](docs/testing/SYNTHETIC_PACE_GUI_2026-11-18.md) remain supplemental regression material. Their results are not the supplied-packet success rates above. For another AI or developer, [the handoff](docs/HANDOFF.md) provides the source map, continuation steps, and evaluation boundaries.
 
 ## Create and review an extraction type
 
@@ -81,13 +81,13 @@ The **Advanced** menu retains the form-type, review, and spreadsheet commands. C
 
 ## Open a packaged application
 
-On macOS, open `QuickCapCV.app`. Keep the whole app bundle together. On Windows, open `QuickCapCV\QuickCapCV.exe` and retain the entire `QuickCapCV` folder, including its dependencies and companion worker. Copying only the `.exe` is insufficient. A packaged build includes Python and its runtime dependencies; the source launchers below are not needed.
+On macOS, open `QwikCap.app`. Keep the whole app bundle together. On Windows, open `QwikCap\QwikCap.exe` and retain the entire `QwikCap` folder, including its dependencies and companion worker. Copying only the `.exe` is insufficient. A packaged build includes Python and its runtime dependencies; the source launchers below are not needed.
 
 The macOS build compiles the included `native_ocr.swift` adapter into an executable and bundles it with Apple Vision OCR. It does not need Swift on the computer running the packaged app. Optional Tesseract discovery checks `PATH`, then the standard Homebrew locations on macOS or standard installations on Windows. An explicit `FORMBRIDGE_TESSERACT` executable path takes precedence. An invalid explicit path disables OCR instead of silently selecting another engine. Tesseract needs English language data and is not bundled or downloaded by the app. Tesseract 5.5.3_1 was installed with operator approval for the current Mac run. Without a working OCR engine, scans remain available for manual review and entry; text PDFs can still use their text layers.
 
-These are development builds without distribution signing or notarization. The Windows x64 portable ZIP passed automated native Windows and packaged-worker checks on 2026-11-18, including all five fictional scans and independently reopened spreadsheet exports. See [the Windows evidence](docs/TESTING.md#windows-portable-build-2026-11-18). A complete person-driven workflow on a Windows laptop remains a pilot check.
+These are development builds without distribution signing or notarization. The current Windows x64 portable ZIP passed automated native Windows and packaged-worker checks on 2026-11-19, including all five fictional scans and independently reopened spreadsheet exports. See [the Windows evidence](docs/testing/QWIKCAP_WINDOWS_2026-11-19.md). A complete person-driven workflow on a Windows laptop remains a pilot check.
 
-On 2026-11-13, a fresh macOS arm64 environment installed the unchanged runtime and build pins and passed all 156 source tests. That `QuickCapCV.app` built, and the source and packaged-worker custom-mask checks each passed all ten groups. Later PACE and Windows work has separate [recorded results and limits](docs/TESTING.md). The current full practice-kit GUI status is recorded above. Mouse-drag mask creation and real-study REDCap import remain unverified.
+On 2026-11-13, a fresh macOS arm64 environment installed the unchanged runtime and build pins and passed all 156 source tests. That earlier `QuickCapCV.app` built, and the source and packaged-worker custom-mask checks each passed all ten groups. Later PACE and Windows work has separate [recorded results and limits](docs/TESTING.md). Mouse-drag mask creation and real-study REDCap import remain unverified.
 
 ## Run the source on macOS
 
@@ -133,7 +133,7 @@ macOS also requires an already-installed Swift compiler and Apple developer tool
 .venv/bin/python build_desktop.py --work-dir work/desktop-build --dist-dir dist/macos
 ```
 
-The result is `dist/macos/QuickCapCV.app`. PyInstaller also leaves its supporting `dist/macos/QuickCapCV` directory. Distribute the complete `.app` bundle. The console worker is built first, then included in the GUI bundle under `helpers`. Both the GUI and its document worker include the PACE catalog. The compiled OCR helper is included with both processes.
+The result is `dist/macos/QwikCap.app`. PyInstaller also leaves its supporting `dist/macos/QwikCap` directory. Distribute the complete `.app` bundle. The console worker is built first, then included in the GUI bundle under `helpers`. Both the GUI and its document worker include the PACE catalog. The compiled OCR helper is included with both processes.
 
 Windows PowerShell:
 
@@ -144,9 +144,9 @@ Windows PowerShell:
 .venv\Scripts\python.exe build_desktop.py --work-dir work\desktop-build --dist-dir dist\windows
 ```
 
-The result is `dist\windows\QuickCapCV\QuickCapCV.exe` with its adjacent dependencies. Distribute the complete `QuickCapCV` directory. Windows packages do not include Apple Vision or Tesseract.
+The result is `dist\windows\QwikCap\QwikCap.exe` with its adjacent dependencies. Distribute the complete `QwikCap` directory. Windows packages do not include Apple Vision or Tesseract.
 
-The builder checks that the GUI, companion worker, source modules, samples, and spreadsheet directory exist before building. It requires the installed PyInstaller version pinned in `requirements-build.txt`. Each run uses a new intermediate directory. If the selected destination already contains `QuickCapCV` or `QuickCapCV.app`, choose another `--dist-dir`; the builder preserves existing output. Retained work directories can be inspected or removed manually after review.
+The builder checks that the GUI, companion worker, source modules, samples, and spreadsheet directory exist before building. It requires the installed PyInstaller version pinned in `requirements-build.txt`. Each run uses a new intermediate directory. If the selected destination already contains `QwikCap` or `QwikCap.app`, choose another `--dist-dir`; the builder preserves existing output. Retained work directories can be inspected or removed manually after review.
 
 The manually dispatched [Windows workflow](.github/workflows/windows-build.yml) builds and verifies the portable ZIP on Windows with fictional fixtures. Its 11 checks include native startup, required local OCR, custom masks, patient bundles, the packaged PACE printed-form reader, and spreadsheet values after extraction outside the checkout. It retains notices and a component inventory. It has no push, pull-request, or schedule trigger and does not publish releases. `desktop-build.yml` remains an older inactive matrix template.
 
@@ -160,4 +160,4 @@ See `README_BROWSER.md` for field definitions, input limits, spreadsheet restric
 
 ## Private repository
 
-This repository is proprietary. See [OWNERSHIP.md](OWNERSHIP.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [FIXTURES.md](FIXTURES.md). Pilot and collaboration documents under `docs/` are proposals for review. Customer builds and feedback do not include core source access by default. The Windows workflow runs only when manually dispatched. `desktop-build.yml` remains an inactive template outside `.github/workflows/`. See [docs/BUILD_ENVIRONMENT.md](docs/BUILD_ENVIRONMENT.md) for current exact-pin evidence, the historical dependency snapshot, and distribution license and notice work. QuickCap (CV) is a working name only, pending public name clearance.
+This repository is proprietary. See [OWNERSHIP.md](OWNERSHIP.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [FIXTURES.md](FIXTURES.md). Pilot and collaboration documents under `docs/` are proposals for review. Customer builds and feedback do not include core source access by default. The Windows workflow runs only when manually dispatched. `desktop-build.yml` remains an inactive template outside `.github/workflows/`. See [docs/BUILD_ENVIRONMENT.md](docs/BUILD_ENVIRONMENT.md) for current exact-pin evidence, the historical dependency snapshot, and distribution license and notice work. QwikCap is a working name pending public name clearance.

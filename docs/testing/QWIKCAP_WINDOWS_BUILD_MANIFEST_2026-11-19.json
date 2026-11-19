@@ -1,0 +1,1228 @@
+{
+  "format": "quickcap-windows-build-manifest-v1",
+  "sourceCommit": "d150f7580317a87832875ef2310ea4859babc8d2",
+  "python": "3.12.10",
+  "platform": "Windows-2022Server-10.0.20348-SP0",
+  "packages": [
+    {
+      "name": "Pillow",
+      "version": "12.3.0",
+      "noticeFiles": 1
+    },
+    {
+      "name": "pypdfium2",
+      "version": "5.14.0",
+      "noticeFiles": 18
+    },
+    {
+      "name": "reportlab",
+      "version": "4.4.9",
+      "noticeFiles": 1
+    },
+    {
+      "name": "pypdf",
+      "version": "6.10.0",
+      "noticeFiles": 1
+    },
+    {
+      "name": "openpyxl",
+      "version": "3.1.5",
+      "noticeFiles": 1
+    },
+    {
+      "name": "defusedxml",
+      "version": "0.7.1",
+      "noticeFiles": 1
+    },
+    {
+      "name": "charset-normalizer",
+      "version": "3.5.2",
+      "noticeFiles": 1
+    },
+    {
+      "name": "et-xmlfile",
+      "version": "2.0.0",
+      "noticeFiles": 3
+    },
+    {
+      "name": "pyinstaller",
+      "version": "6.22.3",
+      "noticeFiles": 1
+    }
+  ],
+  "notices": [
+    {
+      "path": "Pillow/licenses/LICENSE",
+      "bytes": 78016,
+      "sha256": "4f7866a74802c6326f81faff59a56546b6aec2b10b91973e0e9308de95e79857"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/abseil.txt",
+      "bytes": 11564,
+      "sha256": "f54fff0b905df5b3464527c652a30e903b172d6dcab4d89b5e6f105d5e4a4603"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/agg23.txt",
+      "bytes": 725,
+      "sha256": "c110d3ea2ad77467ce0dcff7d3337e6c8be8049a5103f4b9bd5fd911a77972e5"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/fast_float.txt",
+      "bytes": 1106,
+      "sha256": "bf1b57355feca8fce77ee95f48002f8d4789fb71b30ec7599c06cda4901fbb2b"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/freetype.txt",
+      "bytes": 6741,
+      "sha256": "f4b133e25df1f86ad3ffea453aa0e613f0474f34778dbbb3e437e7b2724937d8"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/icu.txt",
+      "bytes": 28286,
+      "sha256": "93679f4389d53b6835d89843f251844fb9bc455b35bab036d3c8e7abe497a47a"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/lcms.txt",
+      "bytes": 1353,
+      "sha256": "7312b68c5b25e9bf2b828706fb4e29588f22705112f411fd42e1f7d84c3d139a"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/libjpeg_turbo.ijg",
+      "bytes": 13059,
+      "sha256": "db16a04128171879c60708d171b88d97345a2dd20f9bfc173680a4497c73f704"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/libjpeg_turbo.md",
+      "bytes": 5755,
+      "sha256": "be2b2b5ab168bce87bc3e31f2a5c5adba4b7f6e9e51d618e958d1d46972ebd95"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/libopenjpeg.txt",
+      "bytes": 1794,
+      "sha256": "c5ab0890a737c2dfa7ba675036554f6d17741d98629b0c2a145354d00617e6b2"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/libpng.txt",
+      "bytes": 5479,
+      "sha256": "452390433ba0f88aa3e2b122c647741b72a0c117cd6ed7a329b49785aecb5511"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/llvm-libc.txt",
+      "bytes": 15418,
+      "sha256": "3b6226c32e168c83b891d8d6f0d3c29c2116dc3ef93dc93c307b54f279ecf383"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/pdfium-binaries.txt",
+      "bytes": 1184,
+      "sha256": "8854f4388f1ca13b3ad9baa42e95f5546b4c0b17109c159256d3eca7be39b09b"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/pdfium.txt",
+      "bytes": 12818,
+      "sha256": "961eacd9633fff6d051db7208b755e9210e30efac7adec3e6a6d52798f0ccf0e"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/simdutf.txt",
+      "bytes": 1077,
+      "sha256": "c172a0ba936ff31230febb5dad869e25cb7c1a07480c7a381be8cf011bb52719"
+    },
+    {
+      "path": "pypdfium2/licenses/data/windows_x64/BUILD_LICENSES/zlib.txt",
+      "bytes": 1332,
+      "sha256": "33fd641c9f3b0e0be64bc78fea9e94807674cdd70c48477599226cb8956565fe"
+    },
+    {
+      "path": "pypdfium2/licenses/LICENSES/Apache-2.0.txt",
+      "bytes": 11560,
+      "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5"
+    },
+    {
+      "path": "pypdfium2/licenses/LICENSES/BSD-3-Clause.txt",
+      "bytes": 1485,
+      "sha256": "ad9a9e823df025f42389c1812eae28019f657d1ed7b3a4ebfd5010b0736a0da4"
+    },
+    {
+      "path": "pypdfium2/licenses/LICENSES/CC-BY-4.0.txt",
+      "bytes": 14844,
+      "sha256": "f1b1748301cd4274f46733c218d510929661b4990855de5fc645dacd69c4371c"
+    },
+    {
+      "path": "reportlab/licenses/LICENSE",
+      "bytes": 1707,
+      "sha256": "ef831761646313921375fc2cb888e8eeaf7da213d0b92852c10c42f3a0b4d138"
+    },
+    {
+      "path": "pypdf/licenses/LICENSE",
+      "bytes": 1605,
+      "sha256": "a97ac230e5f33ef10a5367a850eb01f91f1a0b064e34742c7794d2294557f524"
+    },
+    {
+      "path": "openpyxl/LICENCE.rst",
+      "bytes": 1131,
+      "sha256": "0c84bb42f5d367e5ebf9fc2dde35b16141df5ee0fdc189250858bc6c5560f69e"
+    },
+    {
+      "path": "defusedxml/LICENSE",
+      "bytes": 2409,
+      "sha256": "b80ce9da8c42a1f91079627fbbe2bf27210ae108a0ffe5f077d5b08e076c24c8"
+    },
+    {
+      "path": "charset-normalizer/licenses/LICENSE",
+      "bytes": 1092,
+      "sha256": "18577485d3704f1a479ded8e573c0976cfed315fd2fd17983fa988da4c2f70d1"
+    },
+    {
+      "path": "et-xmlfile/AUTHORS.txt",
+      "bytes": 82,
+      "sha256": "7f038029ea5463605dd2278d300099a381bce9e90dda83ccab2042346b6c8107"
+    },
+    {
+      "path": "et-xmlfile/LICENCE.python",
+      "bytes": 14688,
+      "sha256": "4ccdaaebc0f44b83720ec0399bb7ab329adce067dd62f73c5535a2dc05628ab2"
+    },
+    {
+      "path": "et-xmlfile/LICENCE.rst",
+      "bytes": 1131,
+      "sha256": "0c84bb42f5d367e5ebf9fc2dde35b16141df5ee0fdc189250858bc6c5560f69e"
+    },
+    {
+      "path": "pyinstaller/licenses/COPYING.txt",
+      "bytes": 32604,
+      "sha256": "0598064c7d2718e38d7914a7d08343b2fa008e3bea9ebba2aa7a6ffa5900dd64"
+    },
+    {
+      "path": "reportlab/bitstream-vera-license.txt",
+      "bytes": 5954,
+      "sha256": "3361d054759a2fc686a2c058be82deaf9c2e6fe549be9004d7935a6c1736315d"
+    },
+    {
+      "path": "Python/LICENSE.txt",
+      "bytes": 36874,
+      "sha256": "e502c6b880ff58d614901495a9009c136539cd0b1e2a2abb8fc00b934c203419"
+    },
+    {
+      "path": "Python/tcl/tk8.6/demos/license.terms",
+      "bytes": 2307,
+      "sha256": "0d1e4405f6273f091732764ed89b57066be63ce64869be6c71ea337dc4f2f9b5"
+    },
+    {
+      "path": "Python/tcl/tk8.6/license.terms",
+      "bytes": 2307,
+      "sha256": "0d1e4405f6273f091732764ed89b57066be63ce64869be6c71ea337dc4f2f9b5"
+    }
+  ],
+  "nativeFiles": [
+    {
+      "path": "_internal/_bz2.pyd",
+      "bytes": 86896,
+      "sha256": "65f610646d10d5babea080e060d244b546ec52c54012e5e937dc72dcc2e2e7bc"
+    },
+    {
+      "path": "_internal/_ctypes.pyd",
+      "bytes": 127480,
+      "sha256": "0e56107a891100535f2da79d85a5ae65ff1227b4765bd108f8593ac1a1110d81"
+    },
+    {
+      "path": "_internal/_decimal.pyd",
+      "bytes": 262000,
+      "sha256": "aeacfead2befcc0768063a037bb64bd32109ae09cb144e5f571b04dd7965db9d"
+    },
+    {
+      "path": "_internal/_elementtree.pyd",
+      "bytes": 135160,
+      "sha256": "5009a9a53c03ef8387443b5cf6ce08e5c3a79727466a0b931c5bbca915bf89ca"
+    },
+    {
+      "path": "_internal/_hashlib.pyd",
+      "bytes": 68976,
+      "sha256": "03d233dbace599168eaffec823de6ed7beec8c2a4ebfe9b8a3d8e042a59af3ba"
+    },
+    {
+      "path": "_internal/_lzma.pyd",
+      "bytes": 161136,
+      "sha256": "e3deecc1f59a3b811c608861decd84de1e8df8bafd5e2b39188861318c5a38cf"
+    },
+    {
+      "path": "_internal/_queue.pyd",
+      "bytes": 33784,
+      "sha256": "48e76e0ad63f6932b4a77b5819f41c1e7595636ca8d9e824f0943a14b8bb5035"
+    },
+    {
+      "path": "_internal/_socket.pyd",
+      "bytes": 85496,
+      "sha256": "3efa4636cf9e350856f6927d67a4c2564bf9bd2758a00bbf17d3aece5b60016d"
+    },
+    {
+      "path": "_internal/_ssl.pyd",
+      "bytes": 179432,
+      "sha256": "0bc527d2dbc50009f43b2ed5d5982c4f63f4b647647ffa9eda612dcda80f6040"
+    },
+    {
+      "path": "_internal/_tkinter.pyd",
+      "bytes": 68600,
+      "sha256": "ed2f7b2c9984032cfb046923b45bb745f6e819730c086e559777665b45e8390e"
+    },
+    {
+      "path": "_internal/_uuid.pyd",
+      "bytes": 27128,
+      "sha256": "acce4f281d7ffb2dec0997527faf25b1df62ad7bd3032c568ddcf65c90edc867"
+    },
+    {
+      "path": "_internal/_wmi.pyd",
+      "bytes": 40304,
+      "sha256": "a980f1e7a29842bd946863fc2693fbeb555a9dc0f9e1630dfed9a2fcdef3ece2"
+    },
+    {
+      "path": "_internal/api-ms-win-core-console-l1-1-0.dll",
+      "bytes": 22072,
+      "sha256": "88ace577a9c51061cb7d1a36babbbefa48212fadc838ffde98fdfff60de18386"
+    },
+    {
+      "path": "_internal/api-ms-win-core-datetime-l1-1-0.dll",
+      "bytes": 22056,
+      "sha256": "1bd81dfd19204b44662510d9054852fb77c9f25c1088d647881c9b976cc16818"
+    },
+    {
+      "path": "_internal/api-ms-win-core-debug-l1-1-0.dll",
+      "bytes": 21944,
+      "sha256": "591358eb4d1531e9563ee0813e4301c552ce364c912ce684d16576eabf195dc3"
+    },
+    {
+      "path": "_internal/api-ms-win-core-errorhandling-l1-1-0.dll",
+      "bytes": 22096,
+      "sha256": "d56ce7b1cd76108ad6c137326ec694a14c99d48c3d7b0ace8c3ff4d9bcee3ce8"
+    },
+    {
+      "path": "_internal/api-ms-win-core-fibers-l1-1-0.dll",
+      "bytes": 22072,
+      "sha256": "91d249d7bc0e38ef6bcb17158b1fdc6dd8888dc086615c9b8b750b87e52a5fb3"
+    },
+    {
+      "path": "_internal/api-ms-win-core-fibers-l1-1-1.dll",
+      "bytes": 22072,
+      "sha256": "fc9d86cec621383eab636ebc87ddd3f5c19a3cb2a33d97be112c051d0b275429"
+    },
+    {
+      "path": "_internal/api-ms-win-core-file-l1-1-0.dll",
+      "bytes": 26152,
+      "sha256": "1ca895aba4e7435563a6b43e85eba67a0f8c74aa6a6a94d0fc48fa35535e2585"
+    },
+    {
+      "path": "_internal/api-ms-win-core-file-l1-2-0.dll",
+      "bytes": 22056,
+      "sha256": "4cadbc0c39da7c6722206fdcebd670abe5b8d261e7b041dd94f9397a89d1990d"
+    },
+    {
+      "path": "_internal/api-ms-win-core-file-l2-1-0.dll",
+      "bytes": 21960,
+      "sha256": "93c624b366ba16c643fc8933070a26f03b073ad0cf7f80173266d67536c61989"
+    },
+    {
+      "path": "_internal/api-ms-win-core-handle-l1-1-0.dll",
+      "bytes": 21944,
+      "sha256": "39095f59c41d76ec81bb2723d646fde4c148e7cc3402f4980d2ade95cb9c84f9"
+    },
+    {
+      "path": "_internal/api-ms-win-core-heap-l1-1-0.dll",
+      "bytes": 22072,
+      "sha256": "8f105771b236dbcb859de271f0a6822ce1cb79c36988dd42c9e3f6f55c5f7eb9"
+    },
+    {
+      "path": "_internal/api-ms-win-core-interlocked-l1-1-0.dll",
+      "bytes": 22072,
+      "sha256": "53b25e753ca785bf8b695d89dde5818a318890211dc992a89146f16658f0b606"
+    },
+    {
+      "path": "_internal/api-ms-win-core-kernel32-legacy-l1-1-1.dll",
+      "bytes": 22080,
+      "sha256": "a9b13a1cd1b8c19b0c6b4afcd5bb0dd29c0e2288231ac9e6db8510094ce68ba6"
+    },
+    {
+      "path": "_internal/api-ms-win-core-libraryloader-l1-1-0.dll",
+      "bytes": 22056,
+      "sha256": "7f39ba298b41e4963047341288cab36b6a241835ee11ba4ad70f44dacd40906c"
+    },
+    {
+      "path": "_internal/api-ms-win-core-localization-l1-2-0.dll",
+      "bytes": 22080,
+      "sha256": "6ee44dd0d8510dc024c9f7c79b1b9fa88c987b26b6beb6653ddd11751c34e5dc"
+    },
+    {
+      "path": "_internal/api-ms-win-core-memory-l1-1-0.dll",
+      "bytes": 22056,
+      "sha256": "0512a35316ec9180437f86696a84c5c06a7e4e82e050055a656e5bf9fca206f9"
+    },
+    {
+      "path": "_internal/api-ms-win-core-namedpipe-l1-1-0.dll",
+      "bytes": 22096,
+      "sha256": "c05f1fffe3b5a2738ea54ce9485cca026fb9635f982626fba1e1dcc531897273"
+    },
+    {
+      "path": "_internal/api-ms-win-core-processenvironment-l1-1-0.dll",
+      "bytes": 21968,
+      "sha256": "c4eca98c3c67b6395d5b005b00ac1eb0318b86b23aa71035a44c2b1602befba9"
+    },
+    {
+      "path": "_internal/api-ms-win-core-processthreads-l1-1-0.dll",
+      "bytes": 22096,
+      "sha256": "5ccb89e93d67bc3288d4e84649c5346e66e15e3d7cd65d989daf3f4cb584be9a"
+    },
+    {
+      "path": "_internal/api-ms-win-core-processthreads-l1-1-1.dll",
+      "bytes": 22072,
+      "sha256": "4ad565a8ba3ef0ea8ab87221ad11f83ee0bc844ce236607958406663b407333e"
+    },
+    {
+      "path": "_internal/api-ms-win-core-profile-l1-1-0.dll",
+      "bytes": 22080,
+      "sha256": "7809160932f44e59b021699f5bc68799eb7293ee1fa926d6fcca3c3445302e61"
+    },
+    {
+      "path": "_internal/api-ms-win-core-rtlsupport-l1-1-0.dll",
+      "bytes": 21960,
+      "sha256": "9dc1e91e71c7c054854bd1487cb4e6946d82c9f463430f1c4e8d1471005172b1"
+    },
+    {
+      "path": "_internal/api-ms-win-core-string-l1-1-0.dll",
+      "bytes": 22056,
+      "sha256": "60fc31d2a0c634412f529dba76af3b9bf991352877c6dae528186d3935704cfd"
+    },
+    {
+      "path": "_internal/api-ms-win-core-synch-l1-1-0.dll",
+      "bytes": 22056,
+      "sha256": "3a72b4f29f39a265d32ad12f0ce15dbf60129c840e10d84d427829ede45e78ad"
+    },
+    {
+      "path": "_internal/api-ms-win-core-synch-l1-2-0.dll",
+      "bytes": 22080,
+      "sha256": "efc1e4460984a73cf47a3def033af1c8f3b1dbc1a56cd27781d3aacf3e3330cb"
+    },
+    {
+      "path": "_internal/api-ms-win-core-sysinfo-l1-1-0.dll",
+      "bytes": 22072,
+      "sha256": "b203d862ddef1dd62bf623fc866c7f7a9c317c1c2ae30d1f52cb41f955b5698e"
+    },
+    {
+      "path": "_internal/api-ms-win-core-sysinfo-l1-2-0.dll",
+      "bytes": 22080,
+      "sha256": "2703635d835396afd0f138d7c73751afe7e33a24f4225d08c1690b0a371932c0"
+    },
+    {
+      "path": "_internal/api-ms-win-core-timezone-l1-1-0.dll",
+      "bytes": 22056,
+      "sha256": "33f4fddc181066fce06b2227bded813f95e94ed1f3d785e982c6b6b56c510c57"
+    },
+    {
+      "path": "_internal/api-ms-win-core-util-l1-1-0.dll",
+      "bytes": 21944,
+      "sha256": "6eda016742a6171205a387a14b3c0b331841567740376f56768f8c151724207d"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-conio-l1-1-0.dll",
+      "bytes": 22056,
+      "sha256": "b762061b688aae679afe788904d2c9970f74a7dac98f3b42463d08f25e483d3f"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-convert-l1-1-0.dll",
+      "bytes": 26056,
+      "sha256": "ebb2ae5535a64f65daeab8235585114fc9dd2cf1a49f5852d446250b998b6ae4"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-environment-l1-1-0.dll",
+      "bytes": 22080,
+      "sha256": "17d63275d00bdd8670422b95bd264c532998e0a1b041079e54fce4b6b7a55819"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-filesystem-l1-1-0.dll",
+      "bytes": 22056,
+      "sha256": "9a9e2a65a281644e368d0f272b95ba5f6b445d1c35910d06056c5ebeb77402db"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-heap-l1-1-0.dll",
+      "bytes": 22096,
+      "sha256": "bab9ac3ec83e380ae51e4295ef3bf2c738627812d3a49d1e713661abbc8dc57a"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-locale-l1-1-0.dll",
+      "bytes": 22080,
+      "sha256": "bd14c67ea28e21d6257ad780a37122c9b5773f69e693f5db6bffaee4d839526e"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-math-l1-1-0.dll",
+      "bytes": 30248,
+      "sha256": "606d66d82db562ea7979179d06486a0f94d079941d26b80a1e2c49d29959df6f"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-process-l1-1-0.dll",
+      "bytes": 22096,
+      "sha256": "f6156b1020380ec4f0e48577ebedaaef5fb1ab1f337d8b4e72e6a33a7567a9cc"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-runtime-l1-1-0.dll",
+      "bytes": 26152,
+      "sha256": "c5902934d026d7e15fbe9917d474f3322846a41a25e66f4b2b1f758801879f4b"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-stdio-l1-1-0.dll",
+      "bytes": 26168,
+      "sha256": "a9c5a153d8c0286f9b41a2b1c65854ad9e6471b8755b7de87bae4470e60bcab6"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-string-l1-1-0.dll",
+      "bytes": 26176,
+      "sha256": "25b8f83a7767211b11132775a0e27a45aa4ec8ab4e6572599f9c172ae3606b40"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-time-l1-1-0.dll",
+      "bytes": 22096,
+      "sha256": "7c7f6393f06de11750adb09cc5698ae55cd9fb27b2e51e207286feb1b5b2b156"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-utility-l1-1-0.dll",
+      "bytes": 21952,
+      "sha256": "d8ba5f17b9ffcbf3aeaf3fa1da226832d2fa90f81acce0cd669464e76ce434ac"
+    },
+    {
+      "path": "_internal/helpers/FormbridgeWorker.exe",
+      "bytes": 23317518,
+      "sha256": "13720e17ebea923742c9f790168bbc2d30c8af69a5b24f35cb72f84dde8ebd12"
+    },
+    {
+      "path": "_internal/libcrypto-3.dll",
+      "bytes": 5231472,
+      "sha256": "ccfffddcd3defb8d899026298af9af43bc186130f8483d77e97c93233d5f27d7"
+    },
+    {
+      "path": "_internal/libffi-8.dll",
+      "bytes": 39696,
+      "sha256": "eff52743773eb550fcc6ce3efc37c85724502233b6b002a35496d828bd7b280a"
+    },
+    {
+      "path": "_internal/libssl-3.dll",
+      "bytes": 794992,
+      "sha256": "007142039f04d04e0ed607bda53de095e5bc6a8a10d26ecedde94ea7d2d7eefe"
+    },
+    {
+      "path": "_internal/PIL/_avif.cp312-win_amd64.pyd",
+      "bytes": 7893504,
+      "sha256": "6731dce52baab0b96b0eeb3c664844b5b42c2168ea8668af2430e2fbdd2dfbd8"
+    },
+    {
+      "path": "_internal/PIL/_imaging.cp312-win_amd64.pyd",
+      "bytes": 2632704,
+      "sha256": "c8c519ec72bf75b2945b4fc4afa854af2fca8b970a403134f9ddda3e164d85e9"
+    },
+    {
+      "path": "_internal/PIL/_imagingcms.cp312-win_amd64.pyd",
+      "bytes": 272384,
+      "sha256": "c89c633ae1bf3f26a327d14ff688db66628e19c9866ab925479f27dcb60a2d6f"
+    },
+    {
+      "path": "_internal/PIL/_imagingmath.cp312-win_amd64.pyd",
+      "bytes": 21504,
+      "sha256": "82ac45c41a008854d05f67deda298b65a7bed850d0d79a3af861ed583f6e7d62"
+    },
+    {
+      "path": "_internal/PIL/_imagingtk.cp312-win_amd64.pyd",
+      "bytes": 14848,
+      "sha256": "690cc1cae4a2dc8594a342b9241e691dcc89d81dad4cddcefdf285275365a2b1"
+    },
+    {
+      "path": "_internal/PIL/_webp.cp312-win_amd64.pyd",
+      "bytes": 416256,
+      "sha256": "9823cebb84f425af3ac1e7437259bc176e7ad7e25d7fa829b0e1a3e55c11be70"
+    },
+    {
+      "path": "_internal/pyexpat.pyd",
+      "bytes": 205304,
+      "sha256": "d615e193d1affcdbfe504e90d3621cbdcff94bf72b79d899126534507fd6d27a"
+    },
+    {
+      "path": "_internal/pypdfium2_raw/pdfium.dll",
+      "bytes": 7381504,
+      "sha256": "69f1e860f6742fbaafcc4db80e785eec9a4ee0da36ea6d1dc0867ea0f18baea6"
+    },
+    {
+      "path": "_internal/python312.dll",
+      "bytes": 6945272,
+      "sha256": "9a0e3435aaa680d868150f87ab3e388ad2eebc22f87e036155c7b4eda8cd2120"
+    },
+    {
+      "path": "_internal/select.pyd",
+      "bytes": 33136,
+      "sha256": "d4d7181b11db0bd22a6cd5cda6f8583d1f5c77615fd0a6ca33350619d6e0438a"
+    },
+    {
+      "path": "_internal/tcl86t.dll",
+      "bytes": 1841896,
+      "sha256": "b894e0c9a7d2b56f9f202de5044221cfc0938cbd9ffaca6b6793bba486e28081"
+    },
+    {
+      "path": "_internal/tk86t.dll",
+      "bytes": 1590776,
+      "sha256": "3883976d6270c44cf43b0f4e3b925259a36c42f586680a93dfe6a3fdfb5b4939"
+    },
+    {
+      "path": "_internal/ucrtbase.dll",
+      "bytes": 1361448,
+      "sha256": "2e5fb14b7bf8540278f3614a12f0226e56a7cc9e64b81cbd976c6fcf2f71cbfb"
+    },
+    {
+      "path": "_internal/unicodedata.pyd",
+      "bytes": 1140592,
+      "sha256": "208ee1cd3cbad0828433ca7246b05be2b1ff5569983d27d296c0b38888585488"
+    },
+    {
+      "path": "_internal/VCRUNTIME140.dll",
+      "bytes": 120400,
+      "sha256": "052ad6a20d375957e82aa6a3c441ea548d89be0981516ca7eb306e063d5027f4"
+    },
+    {
+      "path": "_internal/VCRUNTIME140_1.dll",
+      "bytes": 49776,
+      "sha256": "6a99bc0128e0c7d6cbbf615fcc26909565e17d4ca3451b97f8987f9c6acbc6c8"
+    },
+    {
+      "path": "_internal/zlib1.dll",
+      "bytes": 148336,
+      "sha256": "a3a9487dd7a27be0296731513a5c1d9005bd3acf5861ccbe0aabca3984f51c4f"
+    },
+    {
+      "path": "QwikCap.exe",
+      "bytes": 4709535,
+      "sha256": "36eb6450611c32507a352f03da0dc23b432ba5e3f7ba0ffc916c7908197c7115"
+    }
+  ],
+  "embeddedNativeFiles": {
+    "container": "_internal/helpers/FormbridgeWorker.exe",
+    "files": [
+      {
+        "path": "PIL/_avif.cp312-win_amd64.pyd",
+        "bytes": 7893504,
+        "sha256": "6731dce52baab0b96b0eeb3c664844b5b42c2168ea8668af2430e2fbdd2dfbd8"
+      },
+      {
+        "path": "PIL/_imaging.cp312-win_amd64.pyd",
+        "bytes": 2632704,
+        "sha256": "c8c519ec72bf75b2945b4fc4afa854af2fca8b970a403134f9ddda3e164d85e9"
+      },
+      {
+        "path": "PIL/_imagingcms.cp312-win_amd64.pyd",
+        "bytes": 272384,
+        "sha256": "c89c633ae1bf3f26a327d14ff688db66628e19c9866ab925479f27dcb60a2d6f"
+      },
+      {
+        "path": "PIL/_imagingmath.cp312-win_amd64.pyd",
+        "bytes": 21504,
+        "sha256": "82ac45c41a008854d05f67deda298b65a7bed850d0d79a3af861ed583f6e7d62"
+      },
+      {
+        "path": "PIL/_imagingtk.cp312-win_amd64.pyd",
+        "bytes": 14848,
+        "sha256": "690cc1cae4a2dc8594a342b9241e691dcc89d81dad4cddcefdf285275365a2b1"
+      },
+      {
+        "path": "PIL/_webp.cp312-win_amd64.pyd",
+        "bytes": 416256,
+        "sha256": "9823cebb84f425af3ac1e7437259bc176e7ad7e25d7fa829b0e1a3e55c11be70"
+      },
+      {
+        "path": "VCRUNTIME140.dll",
+        "bytes": 120400,
+        "sha256": "052ad6a20d375957e82aa6a3c441ea548d89be0981516ca7eb306e063d5027f4"
+      },
+      {
+        "path": "VCRUNTIME140_1.dll",
+        "bytes": 49776,
+        "sha256": "6a99bc0128e0c7d6cbbf615fcc26909565e17d4ca3451b97f8987f9c6acbc6c8"
+      },
+      {
+        "path": "_asyncio.pyd",
+        "bytes": 74096,
+        "sha256": "c77de90cad749087a0c5dc5e19d78d24f6ef44e7e5ac19b8420cfc0cea62395d"
+      },
+      {
+        "path": "_bz2.pyd",
+        "bytes": 86896,
+        "sha256": "65f610646d10d5babea080e060d244b546ec52c54012e5e937dc72dcc2e2e7bc"
+      },
+      {
+        "path": "_ctypes.pyd",
+        "bytes": 127480,
+        "sha256": "0e56107a891100535f2da79d85a5ae65ff1227b4765bd108f8593ac1a1110d81"
+      },
+      {
+        "path": "_decimal.pyd",
+        "bytes": 262000,
+        "sha256": "aeacfead2befcc0768063a037bb64bd32109ae09cb144e5f571b04dd7965db9d"
+      },
+      {
+        "path": "_elementtree.pyd",
+        "bytes": 135160,
+        "sha256": "5009a9a53c03ef8387443b5cf6ce08e5c3a79727466a0b931c5bbca915bf89ca"
+      },
+      {
+        "path": "_hashlib.pyd",
+        "bytes": 68976,
+        "sha256": "03d233dbace599168eaffec823de6ed7beec8c2a4ebfe9b8a3d8e042a59af3ba"
+      },
+      {
+        "path": "_lzma.pyd",
+        "bytes": 161136,
+        "sha256": "e3deecc1f59a3b811c608861decd84de1e8df8bafd5e2b39188861318c5a38cf"
+      },
+      {
+        "path": "_multiprocessing.pyd",
+        "bytes": 37368,
+        "sha256": "2c636df7059cb0dd7e978dd735c7c5c8ddb09cf94754cf9e232296b96c5c545a"
+      },
+      {
+        "path": "_overlapped.pyd",
+        "bytes": 57336,
+        "sha256": "662126ff80c3a1b4cedf74074029c12ae4743e6d3b37376e39ac70aacb7d4d3c"
+      },
+      {
+        "path": "_queue.pyd",
+        "bytes": 33784,
+        "sha256": "48e76e0ad63f6932b4a77b5819f41c1e7595636ca8d9e824f0943a14b8bb5035"
+      },
+      {
+        "path": "_socket.pyd",
+        "bytes": 85496,
+        "sha256": "3efa4636cf9e350856f6927d67a4c2564bf9bd2758a00bbf17d3aece5b60016d"
+      },
+      {
+        "path": "_ssl.pyd",
+        "bytes": 179432,
+        "sha256": "0bc527d2dbc50009f43b2ed5d5982c4f63f4b647647ffa9eda612dcda80f6040"
+      },
+      {
+        "path": "_uuid.pyd",
+        "bytes": 27128,
+        "sha256": "acce4f281d7ffb2dec0997527faf25b1df62ad7bd3032c568ddcf65c90edc867"
+      },
+      {
+        "path": "_wmi.pyd",
+        "bytes": 40304,
+        "sha256": "a980f1e7a29842bd946863fc2693fbeb555a9dc0f9e1630dfed9a2fcdef3ece2"
+      },
+      {
+        "path": "api-ms-win-core-console-l1-1-0.dll",
+        "bytes": 22072,
+        "sha256": "88ace577a9c51061cb7d1a36babbbefa48212fadc838ffde98fdfff60de18386"
+      },
+      {
+        "path": "api-ms-win-core-datetime-l1-1-0.dll",
+        "bytes": 22056,
+        "sha256": "1bd81dfd19204b44662510d9054852fb77c9f25c1088d647881c9b976cc16818"
+      },
+      {
+        "path": "api-ms-win-core-debug-l1-1-0.dll",
+        "bytes": 21944,
+        "sha256": "591358eb4d1531e9563ee0813e4301c552ce364c912ce684d16576eabf195dc3"
+      },
+      {
+        "path": "api-ms-win-core-errorhandling-l1-1-0.dll",
+        "bytes": 22096,
+        "sha256": "d56ce7b1cd76108ad6c137326ec694a14c99d48c3d7b0ace8c3ff4d9bcee3ce8"
+      },
+      {
+        "path": "api-ms-win-core-fibers-l1-1-0.dll",
+        "bytes": 22072,
+        "sha256": "91d249d7bc0e38ef6bcb17158b1fdc6dd8888dc086615c9b8b750b87e52a5fb3"
+      },
+      {
+        "path": "api-ms-win-core-fibers-l1-1-1.dll",
+        "bytes": 22072,
+        "sha256": "fc9d86cec621383eab636ebc87ddd3f5c19a3cb2a33d97be112c051d0b275429"
+      },
+      {
+        "path": "api-ms-win-core-file-l1-1-0.dll",
+        "bytes": 26152,
+        "sha256": "1ca895aba4e7435563a6b43e85eba67a0f8c74aa6a6a94d0fc48fa35535e2585"
+      },
+      {
+        "path": "api-ms-win-core-file-l1-2-0.dll",
+        "bytes": 22056,
+        "sha256": "4cadbc0c39da7c6722206fdcebd670abe5b8d261e7b041dd94f9397a89d1990d"
+      },
+      {
+        "path": "api-ms-win-core-file-l2-1-0.dll",
+        "bytes": 21960,
+        "sha256": "93c624b366ba16c643fc8933070a26f03b073ad0cf7f80173266d67536c61989"
+      },
+      {
+        "path": "api-ms-win-core-handle-l1-1-0.dll",
+        "bytes": 21944,
+        "sha256": "39095f59c41d76ec81bb2723d646fde4c148e7cc3402f4980d2ade95cb9c84f9"
+      },
+      {
+        "path": "api-ms-win-core-heap-l1-1-0.dll",
+        "bytes": 22072,
+        "sha256": "8f105771b236dbcb859de271f0a6822ce1cb79c36988dd42c9e3f6f55c5f7eb9"
+      },
+      {
+        "path": "api-ms-win-core-interlocked-l1-1-0.dll",
+        "bytes": 22072,
+        "sha256": "53b25e753ca785bf8b695d89dde5818a318890211dc992a89146f16658f0b606"
+      },
+      {
+        "path": "api-ms-win-core-kernel32-legacy-l1-1-1.dll",
+        "bytes": 22080,
+        "sha256": "a9b13a1cd1b8c19b0c6b4afcd5bb0dd29c0e2288231ac9e6db8510094ce68ba6"
+      },
+      {
+        "path": "api-ms-win-core-libraryloader-l1-1-0.dll",
+        "bytes": 22056,
+        "sha256": "7f39ba298b41e4963047341288cab36b6a241835ee11ba4ad70f44dacd40906c"
+      },
+      {
+        "path": "api-ms-win-core-localization-l1-2-0.dll",
+        "bytes": 22080,
+        "sha256": "6ee44dd0d8510dc024c9f7c79b1b9fa88c987b26b6beb6653ddd11751c34e5dc"
+      },
+      {
+        "path": "api-ms-win-core-memory-l1-1-0.dll",
+        "bytes": 22056,
+        "sha256": "0512a35316ec9180437f86696a84c5c06a7e4e82e050055a656e5bf9fca206f9"
+      },
+      {
+        "path": "api-ms-win-core-namedpipe-l1-1-0.dll",
+        "bytes": 22096,
+        "sha256": "c05f1fffe3b5a2738ea54ce9485cca026fb9635f982626fba1e1dcc531897273"
+      },
+      {
+        "path": "api-ms-win-core-processenvironment-l1-1-0.dll",
+        "bytes": 21968,
+        "sha256": "c4eca98c3c67b6395d5b005b00ac1eb0318b86b23aa71035a44c2b1602befba9"
+      },
+      {
+        "path": "api-ms-win-core-processthreads-l1-1-0.dll",
+        "bytes": 22096,
+        "sha256": "5ccb89e93d67bc3288d4e84649c5346e66e15e3d7cd65d989daf3f4cb584be9a"
+      },
+      {
+        "path": "api-ms-win-core-processthreads-l1-1-1.dll",
+        "bytes": 22072,
+        "sha256": "4ad565a8ba3ef0ea8ab87221ad11f83ee0bc844ce236607958406663b407333e"
+      },
+      {
+        "path": "api-ms-win-core-profile-l1-1-0.dll",
+        "bytes": 22080,
+        "sha256": "7809160932f44e59b021699f5bc68799eb7293ee1fa926d6fcca3c3445302e61"
+      },
+      {
+        "path": "api-ms-win-core-rtlsupport-l1-1-0.dll",
+        "bytes": 21960,
+        "sha256": "9dc1e91e71c7c054854bd1487cb4e6946d82c9f463430f1c4e8d1471005172b1"
+      },
+      {
+        "path": "api-ms-win-core-string-l1-1-0.dll",
+        "bytes": 22056,
+        "sha256": "60fc31d2a0c634412f529dba76af3b9bf991352877c6dae528186d3935704cfd"
+      },
+      {
+        "path": "api-ms-win-core-synch-l1-1-0.dll",
+        "bytes": 22056,
+        "sha256": "3a72b4f29f39a265d32ad12f0ce15dbf60129c840e10d84d427829ede45e78ad"
+      },
+      {
+        "path": "api-ms-win-core-synch-l1-2-0.dll",
+        "bytes": 22080,
+        "sha256": "efc1e4460984a73cf47a3def033af1c8f3b1dbc1a56cd27781d3aacf3e3330cb"
+      },
+      {
+        "path": "api-ms-win-core-sysinfo-l1-1-0.dll",
+        "bytes": 22072,
+        "sha256": "b203d862ddef1dd62bf623fc866c7f7a9c317c1c2ae30d1f52cb41f955b5698e"
+      },
+      {
+        "path": "api-ms-win-core-sysinfo-l1-2-0.dll",
+        "bytes": 22080,
+        "sha256": "2703635d835396afd0f138d7c73751afe7e33a24f4225d08c1690b0a371932c0"
+      },
+      {
+        "path": "api-ms-win-core-timezone-l1-1-0.dll",
+        "bytes": 22056,
+        "sha256": "33f4fddc181066fce06b2227bded813f95e94ed1f3d785e982c6b6b56c510c57"
+      },
+      {
+        "path": "api-ms-win-core-util-l1-1-0.dll",
+        "bytes": 21944,
+        "sha256": "6eda016742a6171205a387a14b3c0b331841567740376f56768f8c151724207d"
+      },
+      {
+        "path": "api-ms-win-crt-conio-l1-1-0.dll",
+        "bytes": 22056,
+        "sha256": "b762061b688aae679afe788904d2c9970f74a7dac98f3b42463d08f25e483d3f"
+      },
+      {
+        "path": "api-ms-win-crt-convert-l1-1-0.dll",
+        "bytes": 26056,
+        "sha256": "ebb2ae5535a64f65daeab8235585114fc9dd2cf1a49f5852d446250b998b6ae4"
+      },
+      {
+        "path": "api-ms-win-crt-environment-l1-1-0.dll",
+        "bytes": 22080,
+        "sha256": "17d63275d00bdd8670422b95bd264c532998e0a1b041079e54fce4b6b7a55819"
+      },
+      {
+        "path": "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "bytes": 22056,
+        "sha256": "9a9e2a65a281644e368d0f272b95ba5f6b445d1c35910d06056c5ebeb77402db"
+      },
+      {
+        "path": "api-ms-win-crt-heap-l1-1-0.dll",
+        "bytes": 22096,
+        "sha256": "bab9ac3ec83e380ae51e4295ef3bf2c738627812d3a49d1e713661abbc8dc57a"
+      },
+      {
+        "path": "api-ms-win-crt-locale-l1-1-0.dll",
+        "bytes": 22080,
+        "sha256": "bd14c67ea28e21d6257ad780a37122c9b5773f69e693f5db6bffaee4d839526e"
+      },
+      {
+        "path": "api-ms-win-crt-math-l1-1-0.dll",
+        "bytes": 30248,
+        "sha256": "606d66d82db562ea7979179d06486a0f94d079941d26b80a1e2c49d29959df6f"
+      },
+      {
+        "path": "api-ms-win-crt-process-l1-1-0.dll",
+        "bytes": 22096,
+        "sha256": "f6156b1020380ec4f0e48577ebedaaef5fb1ab1f337d8b4e72e6a33a7567a9cc"
+      },
+      {
+        "path": "api-ms-win-crt-runtime-l1-1-0.dll",
+        "bytes": 26152,
+        "sha256": "c5902934d026d7e15fbe9917d474f3322846a41a25e66f4b2b1f758801879f4b"
+      },
+      {
+        "path": "api-ms-win-crt-stdio-l1-1-0.dll",
+        "bytes": 26168,
+        "sha256": "a9c5a153d8c0286f9b41a2b1c65854ad9e6471b8755b7de87bae4470e60bcab6"
+      },
+      {
+        "path": "api-ms-win-crt-string-l1-1-0.dll",
+        "bytes": 26176,
+        "sha256": "25b8f83a7767211b11132775a0e27a45aa4ec8ab4e6572599f9c172ae3606b40"
+      },
+      {
+        "path": "api-ms-win-crt-time-l1-1-0.dll",
+        "bytes": 22096,
+        "sha256": "7c7f6393f06de11750adb09cc5698ae55cd9fb27b2e51e207286feb1b5b2b156"
+      },
+      {
+        "path": "api-ms-win-crt-utility-l1-1-0.dll",
+        "bytes": 21952,
+        "sha256": "d8ba5f17b9ffcbf3aeaf3fa1da226832d2fa90f81acce0cd669464e76ce434ac"
+      },
+      {
+        "path": "base_library.zip",
+        "bytes": 1333717,
+        "sha256": "147d247d278af0e9f4eddd32c4c5ae69d0d5d0b3d4923674c1da361004c0d7d7"
+      },
+      {
+        "path": "charset_normalizer/cd.cp312-win_amd64.pyd",
+        "bytes": 115712,
+        "sha256": "2bdbc0805f85565d76f8d6166e451bfafa6d5490b06b36c9f423cd0102b4f149"
+      },
+      {
+        "path": "charset_normalizer/md.cp312-win_amd64.pyd",
+        "bytes": 208384,
+        "sha256": "b08be5d29125f39a92e22d0abe4b9160753f7a790fffd07258319a8e16394afa"
+      },
+      {
+        "path": "libcrypto-3.dll",
+        "bytes": 5231472,
+        "sha256": "ccfffddcd3defb8d899026298af9af43bc186130f8483d77e97c93233d5f27d7"
+      },
+      {
+        "path": "libffi-8.dll",
+        "bytes": 39696,
+        "sha256": "eff52743773eb550fcc6ce3efc37c85724502233b6b002a35496d828bd7b280a"
+      },
+      {
+        "path": "libssl-3.dll",
+        "bytes": 794992,
+        "sha256": "007142039f04d04e0ed607bda53de095e5bc6a8a10d26ecedde94ea7d2d7eefe"
+      },
+      {
+        "path": "pyexpat.pyd",
+        "bytes": 205304,
+        "sha256": "d615e193d1affcdbfe504e90d3621cbdcff94bf72b79d899126534507fd6d27a"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/INSTALLER",
+        "bytes": 4,
+        "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/METADATA",
+        "bytes": 63509,
+        "sha256": "8733a714c056453b87b48c819495cc05f9038d38221b89505043d28c2501237e"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/RECORD",
+        "bytes": 9614,
+        "sha256": "78ed8886355c99df4832fc7c970645e82f89bd7432d389c598df6aeccc5f2302"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/REQUESTED",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/WHEEL",
+        "bytes": 98,
+        "sha256": "671f7c8306ff75029c9092b71c43952a7c710f9d847d4fcf5c31bfbac309da78"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/entry_points.txt",
+        "bytes": 62,
+        "sha256": "39f3e2f656f1c386b806c26ecf2b9f92dd0e1927b6db2d496c8ddd014d779a27"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/LICENSES/Apache-2.0.txt",
+        "bytes": 11560,
+        "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/LICENSES/BSD-3-Clause.txt",
+        "bytes": 1485,
+        "sha256": "ad9a9e823df025f42389c1812eae28019f657d1ed7b3a4ebfd5010b0736a0da4"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/LICENSES/CC-BY-4.0.txt",
+        "bytes": 14844,
+        "sha256": "f1b1748301cd4274f46733c218d510929661b4990855de5fc645dacd69c4371c"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/abseil.txt",
+        "bytes": 11564,
+        "sha256": "f54fff0b905df5b3464527c652a30e903b172d6dcab4d89b5e6f105d5e4a4603"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/agg23.txt",
+        "bytes": 725,
+        "sha256": "c110d3ea2ad77467ce0dcff7d3337e6c8be8049a5103f4b9bd5fd911a77972e5"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/fast_float.txt",
+        "bytes": 1106,
+        "sha256": "bf1b57355feca8fce77ee95f48002f8d4789fb71b30ec7599c06cda4901fbb2b"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/freetype.txt",
+        "bytes": 6741,
+        "sha256": "f4b133e25df1f86ad3ffea453aa0e613f0474f34778dbbb3e437e7b2724937d8"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/icu.txt",
+        "bytes": 28286,
+        "sha256": "93679f4389d53b6835d89843f251844fb9bc455b35bab036d3c8e7abe497a47a"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/lcms.txt",
+        "bytes": 1353,
+        "sha256": "7312b68c5b25e9bf2b828706fb4e29588f22705112f411fd42e1f7d84c3d139a"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/libjpeg_turbo.ijg",
+        "bytes": 13059,
+        "sha256": "db16a04128171879c60708d171b88d97345a2dd20f9bfc173680a4497c73f704"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/libjpeg_turbo.md",
+        "bytes": 5755,
+        "sha256": "be2b2b5ab168bce87bc3e31f2a5c5adba4b7f6e9e51d618e958d1d46972ebd95"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/libopenjpeg.txt",
+        "bytes": 1794,
+        "sha256": "c5ab0890a737c2dfa7ba675036554f6d17741d98629b0c2a145354d00617e6b2"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/libpng.txt",
+        "bytes": 5479,
+        "sha256": "452390433ba0f88aa3e2b122c647741b72a0c117cd6ed7a329b49785aecb5511"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/llvm-libc.txt",
+        "bytes": 15418,
+        "sha256": "3b6226c32e168c83b891d8d6f0d3c29c2116dc3ef93dc93c307b54f279ecf383"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/pdfium-binaries.txt",
+        "bytes": 1184,
+        "sha256": "8854f4388f1ca13b3ad9baa42e95f5546b4c0b17109c159256d3eca7be39b09b"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/pdfium.txt",
+        "bytes": 12818,
+        "sha256": "961eacd9633fff6d051db7208b755e9210e30efac7adec3e6a6d52798f0ccf0e"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/simdutf.txt",
+        "bytes": 1077,
+        "sha256": "c172a0ba936ff31230febb5dad869e25cb7c1a07480c7a381be8cf011bb52719"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/licenses/data/windows_x64/BUILD_LICENSES/zlib.txt",
+        "bytes": 1332,
+        "sha256": "33fd641c9f3b0e0be64bc78fea9e94807674cdd70c48477599226cb8956565fe"
+      },
+      {
+        "path": "pypdfium2-5.14.0.dist-info/top_level.txt",
+        "bytes": 52,
+        "sha256": "07e2cb6d8ff0e395a284a74697fa4ceab81bfb3dbe45886aca406b5d7fc90fc5"
+      },
+      {
+        "path": "pypdfium2/__init__.py",
+        "bytes": 653,
+        "sha256": "e4dea381d513bf1c657cc94d83701ff7a216721d64822d078522af1b38fd6491"
+      },
+      {
+        "path": "pypdfium2/__main__.py",
+        "bytes": 914,
+        "sha256": "cc9bc7ec16b8fb3724faf4b2f13f2886c193bdb107432246e0150a1278cd5f0d"
+      },
+      {
+        "path": "pypdfium2/_helpers/__init__.py",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "pypdfium2/_helpers/attachment.py",
+        "bytes": 7701,
+        "sha256": "594d548ad08a77ea0c93b22387845dc23ad84d64e787dcabf1d8886d838d45c3"
+      },
+      {
+        "path": "pypdfium2/_helpers/bitmap.py",
+        "bytes": 20807,
+        "sha256": "fc28faf6a56112b69f2570e3522d3c9d548046ac2de7c22812b11640353043a8"
+      },
+      {
+        "path": "pypdfium2/_helpers/document.py",
+        "bytes": 30441,
+        "sha256": "b4d112176efcd8bacef8be71b652cc02fd873d3c597e57ca06d9afbb4cd252a1"
+      },
+      {
+        "path": "pypdfium2/_helpers/matrix.py",
+        "bytes": 6615,
+        "sha256": "4eab322995c9bb6ae9bfe8ead5bd723a5b946d23e4abd66d9a4bc1bc8ac07107"
+      },
+      {
+        "path": "pypdfium2/_helpers/misc.py",
+        "bytes": 1578,
+        "sha256": "0de38c4d38e8ffd24349d3e7b753e269d07efe3ee1390c057f88f5099e90b81f"
+      },
+      {
+        "path": "pypdfium2/_helpers/page.py",
+        "bytes": 24174,
+        "sha256": "0c756c5542c58bdffa3a09e527508e651f3083a5d0d0e44910f2421bc820bc51"
+      },
+      {
+        "path": "pypdfium2/_helpers/pageobjects.py",
+        "bytes": 27441,
+        "sha256": "3ccbca76c25ec3d39ee177b0b162f85bdb9982fdc9b7f9b244a97ce3a30426c5"
+      },
+      {
+        "path": "pypdfium2/_helpers/sysfontinfo.py",
+        "bytes": 12468,
+        "sha256": "c97d9502e5004ff9b3de1071823dca410eec8182a9fb7368efc3864b2f9c45b4"
+      },
+      {
+        "path": "pypdfium2/_helpers/textpage.py",
+        "bytes": 14058,
+        "sha256": "d8899cda5e394d26da5eeadf998644a417b8ce7ac10c20c33da512eed369446d"
+      },
+      {
+        "path": "pypdfium2/_helpers/unsupported.py",
+        "bytes": 2651,
+        "sha256": "a46a7101a8865e094cad1923d5356d2377fbebc683ad673357418f07b74fbb8f"
+      },
+      {
+        "path": "pypdfium2/_lazy.py",
+        "bytes": 871,
+        "sha256": "0b946874c8df7a542568f6a873843e8a63aeca1340520738777ea87bd8475b19"
+      },
+      {
+        "path": "pypdfium2/_library_scope.py",
+        "bytes": 2342,
+        "sha256": "d2507c29c5364f0939a8cd7571381ad0fcbdeb75b4bb12162395ed212db5dd5b"
+      },
+      {
+        "path": "pypdfium2/internal/__init__.py",
+        "bytes": 242,
+        "sha256": "ca51eac7bb2637e09bbb3e9b17f5c9ce69cb0f472b6176b0fbe32433d552da17"
+      },
+      {
+        "path": "pypdfium2/internal/bases.py",
+        "bytes": 6863,
+        "sha256": "ffa1d4664a0f7f0526e55e6356603022cba81cbacdbf3e1dcea2f3a785523e10"
+      },
+      {
+        "path": "pypdfium2/internal/consts.py",
+        "bytes": 8057,
+        "sha256": "4444cc73ed21386abf41959b16c33c6ff692f703851c6e0c0352ec6330e574a6"
+      },
+      {
+        "path": "pypdfium2/internal/utils.py",
+        "bytes": 3073,
+        "sha256": "69117299be5ee6cd062a7ee946d1ce9b044546f3610cafa3aabcf1e550c03802"
+      },
+      {
+        "path": "pypdfium2/raw.py",
+        "bytes": 273,
+        "sha256": "78f7cd3ff66290d97cf63771f3868729481b6edc4d808b93b2841304462951bb"
+      },
+      {
+        "path": "pypdfium2/version.json",
+        "bytes": 171,
+        "sha256": "4fea9865d76e0996f34fd409258c82e683393c273a58f4def53de27837965547"
+      },
+      {
+        "path": "pypdfium2/version.py",
+        "bytes": 2779,
+        "sha256": "722db25612df52d609dc30c0a4aa74dda5210befd723fdf2ac3994effaf66ce8"
+      },
+      {
+        "path": "pypdfium2_raw/pdfium.dll",
+        "bytes": 7381504,
+        "sha256": "69f1e860f6742fbaafcc4db80e785eec9a4ee0da36ea6d1dc0867ea0f18baea6"
+      },
+      {
+        "path": "pypdfium2_raw/version.json",
+        "bytes": 152,
+        "sha256": "363ee2f6a236c8b262326634ee79c661a6020c9df1fcef734dd928ee6924113a"
+      },
+      {
+        "path": "python312.dll",
+        "bytes": 6945272,
+        "sha256": "9a0e3435aaa680d868150f87ab3e388ad2eebc22f87e036155c7b4eda8cd2120"
+      },
+      {
+        "path": "select.pyd",
+        "bytes": 33136,
+        "sha256": "d4d7181b11db0bd22a6cd5cda6f8583d1f5c77615fd0a6ca33350619d6e0438a"
+      },
+      {
+        "path": "study_profiles/pace.json",
+        "bytes": 320108,
+        "sha256": "e8a2c021405da7defead007e9f8e7f5f3852ae926c35f2fb687a474e6f8faf53"
+      },
+      {
+        "path": "ucrtbase.dll",
+        "bytes": 1361448,
+        "sha256": "2e5fb14b7bf8540278f3614a12f0226e56a7cc9e64b81cbd976c6fcf2f71cbfb"
+      },
+      {
+        "path": "unicodedata.pyd",
+        "bytes": 1140592,
+        "sha256": "208ee1cd3cbad0828433ca7246b05be2b1ff5569983d27d296c0b38888585488"
+      }
+    ]
+  },
+  "ocrBundled": false
+}

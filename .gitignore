@@ -17,7 +17,8 @@ Thumbs.db
 /dist/
 /work/
 /verification/
-/datasets/
+/datasets/*
+!/datasets/sih-synthetic/
 /train/
 /test-splits/
 /data/
@@ -34,6 +35,7 @@ Thumbs.db
 *.key
 *.formbridge.json
 quickcap-project.json
+qwikcap-project.json
 *.formtype.json
 *.spec
 *.pdf
@@ -64,11 +66,19 @@ quickcap-project.json
 !spreadsheets/pace-import-template.csv
 !docs/testing/QUICKCAP_CV_EMPTY.jpg
 !docs/testing/QUICKCAP_CV_ABOUT.jpg
+!docs/testing/QWIKCAP_EMPTY_2026-11-19.jpg
+!docs/testing/QWIKCAP_ABOUT_2026-11-19.jpg
 !docs/testing/PACE_CATALOG_MACOS.jpg
 !docs/testing/PACE_GROUPING_MACOS.jpg
 !docs/testing/PACE_PATIENT_BUNDLE_MACOS.jpg
 !examples/quickcap-synthetic-pace-readout.xlsx
 !examples/quickcap-actual-train-readout.xlsx
+!examples/qwikcap-supplied-test-reviewed-readout.xlsx
+!/datasets/sih-synthetic/manifest.pdf
+!/datasets/sih-synthetic/train/forms/*.pdf
+!/datasets/sih-synthetic/train/answer_keys/*.pdf
+!/datasets/sih-synthetic/test/forms/*.pdf
+!/datasets/sih-synthetic/test/answer_keys/*.pdf
 !docs/testing/SYNTHETIC_PACE_TWO_APPROVED.jpg
 !docs/testing/SYNTHETIC_PACE_MAPPING.jpg
 !docs/testing/SYNTHETIC_PACE_EXPORT.jpg

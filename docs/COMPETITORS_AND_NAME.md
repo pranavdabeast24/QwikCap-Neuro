@@ -2,7 +2,7 @@
 
 Research date: 2026-11-13. This is a bounded public-source comparison of a proposed desktop workflow that imports PDFs or images, applies user-defined field regions, proposes OCR values, requires human review, and exports a structured table. Sources are official vendor or project pages. No customer documents were uploaded and no product trials were run.
 
-The user selected **QuickCap (CV)** as the current working name only, with `QuickCapCV` as the application package basename. The MedVision QuickCap collision below remains known; this choice does not assert affiliation, trademark clearance, or clearance for a public name. The recommendation to select and clear a different public name remains applicable.
+On 2026-11-19 the owner selected **QwikCap** to replace QuickCap (CV), with `QwikCap` as the package basename. The historical QuickCap collision below prompted the rename. The new spelling has not received a trademark search or legal clearance. It does not establish that a similar-sounding name avoids infringement. Existing comparison sources below remain dated research, not a fresh naming assessment.
 
 ## QuickCap already names healthcare software
 

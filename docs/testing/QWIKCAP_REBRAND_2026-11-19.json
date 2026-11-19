@@ -1,0 +1,63 @@
+{
+  "sourceCommit": "d150f7580317a87832875ef2310ea4859babc8d2",
+  "originalPacketPDFs": 111,
+  "originalPacketBytes": 10353882,
+  "packetByteIdenticalToOriginal": true,
+  "frozenFilesUnchanged": 33,
+  "frozenFilesChanged": [
+    "branding.py",
+    "build_desktop.py",
+    "desktop.py",
+    "tools/verify_windows_release.py"
+  ],
+  "extractionRulesChanged": false,
+  "sourceTests": {
+    "run": 283,
+    "skipped": 7,
+    "failures": 0,
+    "errors": 0
+  },
+  "macNativeUI": {
+    "opened": true,
+    "displayName": "QwikCap",
+    "largeOwnershipHeaderRemoved": true,
+    "ownershipInAbout": true
+  },
+  "splits": {
+    "train": {
+      "documents": 28,
+      "pages": 45,
+      "rawExtractionIdenticalToFrozenBaseline": true,
+      "baselineMethod": "isolated 26fb90e source replay",
+      "readoutPassed": true,
+      "workbookSHA256": "f8aae166a92cbe5815f6008cf1fc85bc90651fbd5b47cb03e21198cb5f978a03",
+      "rawMappedKeyValuesMatched": 600,
+      "rawMappedKeyValuesExpected": 600,
+      "additionalCheckboxZeroesChecked": 483,
+      "keyOnlyRowsNotExtracted": 9,
+      "rawDiagnosticExit": 1,
+      "knownMappedAnswerMismatches": 0
+    },
+    "test": {
+      "documents": 27,
+      "pages": 40,
+      "rawExtractionIdenticalToFrozenBaseline": true,
+      "baselineMethod": "archived frozen test diagnostics",
+      "readoutPassed": true,
+      "workbookSHA256": "ed30b51f2752dcec51f0ce478ff3e2148aeedc707eee7c4fb8631cdce8b12343",
+      "rawMappedKeyValuesMatched": 550,
+      "rawMappedKeyValuesExpected": 551,
+      "additionalCheckboxZeroesChecked": 390,
+      "keyOnlyRowsNotExtracted": 8,
+      "rawDiagnosticExit": 1,
+      "knownMappedAnswerMismatches": 1
+    }
+  },
+  "macPackagedPACE": {
+    "status": "passed",
+    "documents": 1,
+    "extractedMatches": 16,
+    "destinationColumns": 512,
+    "scope": "invented packaging fixture, separate from supplied packet"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "format": "quickcap-packaged-pace-printed-v1",
+  "status": "passed",
+  "desktopUIUsed": false,
+  "exitCode": 0,
+  "stdoutSHA256": "30551fe00a27742ddd1a093b1193579c2be5470fedefa8a2ac23f62b8bab6df5",
+  "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "documents": 1,
+  "extractedMatches": 16,
+  "destinationColumns": 512,
+  "uncheckedZeros": 6,
+  "inactiveBlanks": 496,
+  "reviewsCreated": 0,
+  "approvalsCreated": 0,
+  "checks": [
+    {
+      "check": "packaged-catalog-resource",
+      "status": "passed"
+    },
+    {
+      "check": "canonical-destinations",
+      "status": "passed"
+    },
+    {
+      "check": "source-identity",
+      "status": "passed"
+    },
+    {
+      "check": "visible-radio-and-checkbox-controls",
+      "status": "passed"
+    },
+    {
+      "check": "absent-fields-stay-blank",
+      "status": "passed"
+    },
+    {
+      "check": "native-evidence",
+      "status": "passed"
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "pdfCoverage": "28/28",
+  "pageCoverage": "47/47",
+  "explicitFields": 609,
+  "independentFullColumnIdentifierCheck": "Passed on all 47 pages. Artificial first-character line breaks are ignored while comparing the exact identifier character stream and order.",
+  "independentOriginBasedRawAndChoiceCellChecks": 1280,
+  "independentPypdfRawValueChecks": 609,
+  "pypdfComparisonNormalization": "Whitespace and typographic ligatures only. The delivered raw expectations are unchanged by this comparison.",
+  "valueCellMismatches": [],
+  "continuations": [
+    {
+      "document": "doc_01.pdf",
+      "name": "med_other_worsen_v2",
+      "pages": [
+        3,
+        4
+      ]
+    },
+    {
+      "document": "doc_21.pdf",
+      "name": "lying_down_improve_qual_v2",
+      "pages": [
+        2,
+        3
+      ]
+    },
+    {
+      "document": "doc_24.pdf",
+      "name": "pots",
+      "pages": [
+        2,
+        3
+      ]
+    }
+  ],
+  "issues": [],
+  "printedHyphenNormalizations": 24,
+  "glyphVerification": "PDFium U+0002 glyphs were confirmed as printed hyphens through pypdf and rendered-page inspection. No REDCap codes were inferred.",
+  "instrumentCounts": {
+    "duke_neuroradiology_headache_questionnaire_patient": 3,
+    "patient_records": 5,
+    "image_information_brain_scan": 5,
+    "duke_neuroradiology_headache_questionnaire": 2,
+    "image_information_ct_dsm_or_fluroscopic_guided": 2,
+    "image_information_spine_mri": 3,
+    "csf_volume_provocation_form": 2,
+    "image_information_ct_myelogram": 1,
+    "hit6": 5
+  },
+  "fieldCounts": {
+    "doc_01.pdf": 54,
+    "doc_02.pdf": 10,
+    "doc_03.pdf": 16,
+    "doc_04.pdf": 18,
+    "doc_05.pdf": 16,
+    "doc_06.pdf": 72,
+    "doc_07.pdf": 11,
+    "doc_08.pdf": 10,
+    "doc_09.pdf": 10,
+    "doc_10.pdf": 17,
+    "doc_11.pdf": 9,
+    "doc_12.pdf": 12,
+    "doc_13.pdf": 30,
+    "doc_14.pdf": 9,
+    "doc_15.pdf": 9,
+    "doc_16.pdf": 9,
+    "doc_17.pdf": 9,
+    "doc_18.pdf": 9,
+    "doc_19.pdf": 9,
+    "doc_20.pdf": 9,
+    "doc_21.pdf": 60,
+    "doc_22.pdf": 10,
+    "doc_23.pdf": 46,
+    "doc_24.pdf": 52,
+    "doc_25.pdf": 64,
+    "doc_26.pdf": 11,
+    "doc_27.pdf": 9,
+    "doc_28.pdf": 9
+  },
+  "visualPagesInspected": {
+    "doc_01_key.pdf": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "doc_02_key.pdf": [
+      1
+    ],
+    "doc_03_key.pdf": [
+      1
+    ],
+    "doc_04_key.pdf": [
+      1
+    ],
+    "doc_05_key.pdf": [
+      1
+    ],
+    "doc_06_key.pdf": [
+      5
+    ],
+    "doc_07_key.pdf": [
+      1
+    ],
+    "doc_08_key.pdf": [
+      1
+    ],
+    "doc_10_key.pdf": [
+      1
+    ],
+    "doc_12_key.pdf": [
+      1
+    ],
+    "doc_16_key.pdf": [
+      1
+    ],
+    "doc_17_key.pdf": [
+      1
+    ],
+    "doc_21_key.pdf": [
+      2,
+      3
+    ],
+    "doc_23_key.pdf": [
+      2
+    ],
+    "doc_24_key.pdf": [
+      2,
+      3,
+      4
+    ],
+    "doc_25_key.pdf": [
+      5
+    ]
+  },
+  "visualPageCount": 22,
+  "visualInstrumentFamilyCoverage": "9/9",
+  "unlistedFieldCaveat": "Coverage means every printed table row. Unlisted checkbox options and branch-hidden fields were not invented.",
+  "expectedArtifactSha256": "02cf094050c0a006b78d1beb8c26e5deecc4a0698f607d5baab12986e6e4e545"
+}

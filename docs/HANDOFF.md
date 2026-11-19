@@ -1,12 +1,18 @@
-# Continue QuickCap (CV) on another computer
+# Continue QwikCap on another computer
 
-The private repository is [pranavdabeast24/capitolinus-form-extraction](https://github.com/pranavdabeast24/capitolinus-form-extraction). The owner notice is **Property of Capitolinus Ventures**. QuickCap (CV) is a working label without commercial name clearance. Read [the naming record](COMPETITORS_AND_NAME.md) before public distribution.
+The private repository is [pranavdabeast24/capitolinus-form-extraction](https://github.com/pranavdabeast24/capitolinus-form-extraction). QwikCap is the current working name, with ownership recorded in [OWNERSHIP.md](../OWNERSHIP.md). Commercial name clearance has not been established. Read [the naming record](COMPETITORS_AND_NAME.md) before public distribution.
 
-## Current state, 2026-11-18
+## Current handoff, 2026-11-19
+
+The current name is QwikCap, with quieter ownership branding. Original-code ownership remains recorded in the About dialog and ownership notice. The [supplied synthetic packet](../datasets/sih-synthetic/README.md) now travels in this clone with the original train and test PDFs, answer keys, index, hashes, and independently audited evaluation JSON. The [reviewed test workbook](../examples/qwikcap-supplied-test-reviewed-readout.xlsx) is also included unchanged. Use that packet for the supplied-dataset results below. The app-authored practice kit is a separate regression fixture.
+
+Software commit `d150f75` changes display and packaging only. The [rename regression](testing/QWIKCAP_REBRAND_2026-11-19.md) replays all 55 supplied forms with unchanged extraction. Of the earlier 37 freeze files, 33 remain identical. The four changed files concern branding, UI copy, bundle naming, and the release verifier's relocation label. The [current private release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-2026-11-19) supersedes the older QuickCap downloads. Its [Windows run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44473031594) passed all 11 stages and 283 tests with one POSIX-only skip. See the [current archive evidence](testing/QWIKCAP_WINDOWS_2026-11-19.md). New commits are authored and committed as Pranav Mukund. Historical aliases are mapped without rewriting history.
+
+The evaluation counts and frozen-runtime claims below describe the completed 2026-11-18 run. Later display and package naming changes do not constitute another held-out evaluation. Preserve the original freeze record and raw failure.
 
 The native Python and Tk app processes documents locally, reviews values, and exports approved records to a confirmed spreadsheet mapping. It does not use an LLM, a cloud extraction account, a model download, or a remote fallback.
 
-The current change adds an opt-in `pace-printed-v1` reader for the supplied printed PACE layouts. Custom masks remain the default. The reader uses native PDF text, row separators, and visible control outlines to decode radios, checkboxes, and matrix columns. Its schema contains all 512 destination fields, while each processed record has a source-derived applicable subset. The confirmed patient bundle path accepts variable instrument lengths without an absolute-page mask type.
+The app includes an opt-in `pace-printed-v1` reader for the supplied printed PACE layouts. Custom masks remain the default. The reader uses native PDF text, row separators, and visible control outlines to decode radios, checkboxes, and matrix columns. Its schema contains all 512 destination fields, while each processed record has a source-derived applicable subset. The confirmed patient bundle path accepts variable instrument lengths without an absolute-page mask type.
 
 Independent train diagnostics cover the actual supplied 28 PDFs and 45 pages. All 600 explicit key values with destination columns match, as do 483 expected checkbox zeroes. Two visible unmarked rows remain blank. Nine key-only totals, named `total28`, `total28_v2`, and `hit6_total`, have no destination column and remain outside the export. See [the actual-dataset report](testing/actual-pace-dataset-2026-11-18.md) for the measured scope.
 
@@ -47,7 +53,7 @@ The earlier source suite at `0793411` passed 238 tests with seven skips. Its OCR
 | `branding.py`, `build_desktop.py` | Product identity and target-OS packaging with pinned installed tools. |
 | `tests/`, `tools/`, `verify_*.py` | Synthetic source tests and portable acceptance checks. |
 
-The Mac bundle identifier is `com.capitolinusventures.quickcapcv`. Older Formbridge builds use a different identifier. Target the intended executable and window explicitly when testing. Saved project and type formats keep their `formbridge-*` identifiers. `FormbridgeWorker` and `FORMBRIDGE_TESSERACT` also remain stable. Renaming the app does not migrate stored data.
+The Mac bundle identifier is `com.capitolinusventures.qwikcap`. Older Formbridge builds use a different identifier. Target the intended executable and window explicitly when testing. Saved project and type formats keep their `formbridge-*` identifiers. `FormbridgeWorker` and `FORMBRIDGE_TESSERACT` also remain stable. Renaming the app does not migrate stored data.
 
 ## Set up and build
 
@@ -116,8 +122,8 @@ On Windows, use `.venv\Scripts\python.exe` in place of `.venv/bin/python`. [TEST
 For a built Mac application:
 
 ```sh
-.venv/bin/python verify_desktop_bundle.py dist/macos/QuickCapCV.app --output verification/bundle
-.venv/bin/python tools/verify_pace_flow.py --bundle dist/macos/QuickCapCV.app --output verification/pace-bundle
+.venv/bin/python verify_desktop_bundle.py dist/macos/QwikCap.app --output verification/bundle
+.venv/bin/python tools/verify_pace_flow.py --bundle dist/macos/QwikCap.app --output verification/pace-bundle
 ```
 
 These commands exercise the packaged worker without establishing GUI interaction. Recheck menus, focus, choice edits, drawing, approval, save prompts, and exports in the actual app after UI changes. Record the source revision, platform, dependencies, command, result, and skipped checks.
@@ -126,14 +132,14 @@ The actual-dataset tools accept explicit local paths. `inventory_dataset.py` che
 
 ## Data and security boundaries
 
-Only generated fictional practice inputs and selected summary evidence belong in this clone. Keep original attachments, private documents, source-bearing projects, reviewer details, raw screenshots, logs, credentials, environments, caches, and compiled packages outside Git. A saved project embeds source documents. An extraction type contains reusable rules and geometry instead of answers or source bytes.
+This clone includes generated fictional practice inputs, selected evidence, and the explicitly authorized original [supplied synthetic packet](../datasets/sih-synthetic/README.md). Keep other original attachments, private documents, source-bearing projects, reviewer details, raw screenshots, logs, credentials, environments, caches, and compiled packages outside Git. A saved project embeds source documents. An extraction type contains reusable rules and geometry instead of answers or source bytes.
 
-The separately supplied dataset uses `train/forms`, `test/forms`, sibling `answer_keys` directories, and `manifest.pdf`. The user confirmed that all of its forms and keys are entirely fictional or synthetic. Train acceptance used the actual forms and audited keys. The runtime freeze preceded all held-out access. The user authorized final test evaluation with that reader. This does not authorize development against test answers. The generated practice kit remains separate from this dataset.
+The supplied packet is under `datasets/sih-synthetic/`, with `train/forms`, `test/forms`, sibling `answer_keys` directories, and unchanged `manifest.pdf`. The user confirmed that all of its forms and keys are entirely fictional or synthetic and requested the GitHub copy. Train acceptance used the actual forms and audited keys. The runtime freeze preceded all held-out access. The user authorized final test evaluation with that reader. The test set is now used and does not support another fresh held-out claim. Keep answer keys, index, and evaluation JSON out of app upload. The generated practice kit remains separate from this dataset.
 
 Processing remains local, but the app does not provide managed access controls, encryption at rest, tamper-evident audit trails, or a compliance determination. Read [SECURITY.md](../SECURITY.md) and [LLM_PRIVACY.md](LLM_PRIVACY.md) before expanding use. Existing limits include 600 fields or destination columns, 32 pages per combined document, 16 source PDFs per patient bundle, a 1 MiB rule definition, 120 megapixels of aggregate rendering, and 128 MiB of generated assets. OCR calls retain a 45-second timeout and document workers a 180-second timeout. These are processing limits, not clinical validation.
 
 ## Next steps and historical context
 
-The Windows artifact is independently audited at `b139c46`, with all 11 acceptance checks passing, and its private printed PACE prerelease is published. Native Mac held-out export is complete after one documented source-reviewed correction. Retain the raw failure when continuing development. Repeat relevant scan and custom-mask regressions after later changes to the shared pipeline. Any future work based on the held-out answers needs a new evaluation scope and fresh holdout. Mouse-drag mask creation, handwriting, camera capture, learning from corrections, and live-study REDCap import remain unverified or unimplemented.
+The current QwikCap Windows artifact is independently audited at `d150f75`, with all 11 acceptance checks passing. The original printed-reader evidence at `b139c46` remains historical. Native Mac held-out export is complete after one documented source-reviewed correction. Retain the raw failure when continuing development. Repeat relevant scan and custom-mask regressions after later changes to the shared pipeline. Any future work based on the held-out answers needs a new evaluation scope and fresh holdout. Mouse-drag mask creation, handwriting, camera capture, learning from corrections, and live-study REDCap import remain unverified or unimplemented.
 
 [history/CONVERSATION.md](history/CONVERSATION.md) and [history/WINDOWS_2026-11-18.md](history/WINDOWS_2026-11-18.md) preserve earlier sanitized context. Treat historical names, experiments, and test counts as records of their revisions. Current source and dated evidence take precedence. [COLLABORATION.md](COLLABORATION.md) and [PILOT_PLAN.md](PILOT_PLAN.md) remain proposals, without granting repository access or product approval.

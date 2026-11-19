@@ -1,6 +1,6 @@
 # Review PACE forms as one patient row
 
-QuickCap (CV) includes an optional catalog derived from the supplied 2026-11-17 PACE codebook and blank REDCap import table. It contains 512 exact destination column names across nine instruments. The reference CSV's single trailing empty header cell is omitted. No patient rows, source codebook PDF, questionnaire images, or training/test dataset are included.
+QwikCap includes an optional catalog derived from the supplied 2026-11-17 PACE codebook and blank REDCap import table. It contains 512 exact destination column names across nine instruments. The reference CSV's single trailing empty header cell is omitted. The catalog and template contain no patient rows. The source codebook PDF is not included. The separately [supplied entirely fictional train/test packet](../datasets/sih-synthetic/README.md) is included for reproducible evaluation.
 
 ## Read the supported printed PACE forms
 
@@ -31,7 +31,7 @@ Missing checkbox data remains blank. It does not become `0`. The printed reader 
 
 All 14 catalog-required flags and the record identifier remain required. A required, visibly unmarked choice can stay blank only with source evidence and explicit field confirmation. The review button makes that missing-answer decision explicit. Reopening clears its confirmation along with other approvals. This allowance does not let a reviewer clear an answer that was present in the source.
 
-The PDF clips 69 option labels. Those catalog entries retain explicit uncertainty notes. `hit6_date` has no printed field label and uses its variable name with a note. Branching expressions and potential inconsistencies in the reference remain visible guidance. QuickCap does not execute those expressions, invent applicability, calculate excluded scores, or default instrument completion. Review conditional fields manually. Obtain the native REDCap data dictionary CSV to resolve clipped labels before a production configuration.
+The PDF clips 69 option labels. Those catalog entries retain explicit uncertainty notes. `hit6_date` has no printed field label and uses its variable name with a note. Branching expressions and potential inconsistencies in the reference remain visible guidance. QwikCap does not execute those expressions, invent applicability, calculate excluded scores, or default instrument completion. Review conditional fields manually. Obtain the native REDCap data dictionary CSV to resolve clipped labels before a production configuration.
 
 Additional annotations, including date-relative limits such as `Max: today`, are reference guidance unless represented by an implemented validator. Verify them during study configuration. Exact field names, known numeric bounds, configured choice codes and explicit source date formats are enforced by the application.
 
@@ -57,7 +57,7 @@ Run the [portable PACE acceptance tool](../tools/verify_pace_flow.py) using the 
 
 ```sh
 .venv/bin/python tools/verify_pace_flow.py
-.venv/bin/python tools/verify_pace_flow.py --bundle dist/macos/QuickCapCV.app --output verification/pace-bundle
+.venv/bin/python tools/verify_pace_flow.py --bundle dist/macos/QwikCap.app --output verification/pace-bundle
 ```
 
 The tool generates fictional forms and an independent answer key. It checks two original PDFs becoming one patient row, masks, instrument-specific codes, date normalization and raw evidence, blank versus zero, mapping and approval gates, all 512 CSV/XLSX headers and cells, original PDF preservation and project reopening. It does not read the supplied reference PDF or a dataset, test actual handwriting, or validate a live REDCap import. The separate packaged printed-reader check is `tools/verify_pace_printed.py`. Both run in the [11-stage Windows acceptance](testing/WINDOWS_PRINTED_PACE_2026-11-18.md); actual supplied-dataset UI results are Mac-specific.

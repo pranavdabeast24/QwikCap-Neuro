@@ -69,7 +69,7 @@ The nine key-only total-score entries stay outside this 512-column comparison. T
 
 ## Reproduce local checks
 
-The repository contains source, fictional practice fixtures, and verifiers. The separately supplied dataset, audited expectation files, projects containing sources, raw screenshots, and logs remain outside Git. On another computer, transfer authorized dataset materials separately. Do not construct independent expectations from the reader's own output.
+At the time of this run, the supplied dataset and audited expectation files remained outside Git. On 2026-11-19 the owner requested inclusion of the entirely fictional originals. They now travel in the [supplied packet](../../datasets/sih-synthetic/README.md), with byte hashes, independent expectations, censuses, and runnable clone-relative commands. Source-bearing projects, raw screenshots, and logs remain outside Git. Do not construct independent expectations from the reader's own output. The generic explicit-path commands below also apply to separately approved local copies.
 
 These commands use a configured Python environment, a POSIX shell, and fresh output paths. Replace the input paths with your approved local copies. In PowerShell, put each command on one line and use the configured Windows Python executable and Windows paths.
 
@@ -104,7 +104,7 @@ Test a built Mac companion with an invented form:
 
 ```sh
 python tools/verify_pace_printed.py \
-	--helper "dist/macos/QuickCapCV.app/Contents/Frameworks/helpers/FormbridgeWorker" \
+	--helper "dist/macos/QwikCap.app/Contents/Frameworks/helpers/FormbridgeWorker" \
 	--output "/path/to/fresh-packaged-reader-evidence"
 ```
 

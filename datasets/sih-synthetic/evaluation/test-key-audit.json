@@ -1,0 +1,195 @@
+{
+  "pdfCoverage": "27/27",
+  "pageCoverage": "41/41",
+  "explicitFields": 544,
+  "independentFullColumnIdentifierCheck": "Passed on all 41 pages. Artificial first-character line breaks are ignored while comparing the exact identifier character stream and order.",
+  "independentOriginBasedRawAndChoiceCellChecks": 1158,
+  "independentPypdfRawValueChecks": 544,
+  "pypdfComparisonNormalization": "Whitespace and typographic ligatures only. The delivered raw expectations are unchanged by this comparison.",
+  "valueCellMismatches": [],
+  "continuations": [
+    {
+      "document": "doc_11.pdf",
+      "name": "mcas",
+      "pages": [
+        3,
+        4
+      ]
+    },
+    {
+      "document": "doc_18.pdf",
+      "name": "headaches_every_start_v2",
+      "pages": [
+        1,
+        2
+      ]
+    },
+    {
+      "document": "doc_18.pdf",
+      "name": "periods_v2",
+      "pages": [
+        2,
+        3
+      ]
+    },
+    {
+      "document": "doc_18.pdf",
+      "name": "pots_v2",
+      "pages": [
+        3,
+        4
+      ]
+    },
+    {
+      "document": "doc_18.pdf",
+      "name": "prior_tves_v2",
+      "pages": [
+        4,
+        5
+      ]
+    },
+    {
+      "document": "doc_22.pdf",
+      "name": "none_past28_v2",
+      "pages": [
+        1,
+        2
+      ]
+    },
+    {
+      "document": "doc_22.pdf",
+      "name": "med_glp1a_v2",
+      "pages": [
+        3,
+        4
+      ]
+    },
+    {
+      "document": "doc_27.pdf",
+      "name": "headache_associated___1",
+      "pages": [
+        1,
+        2
+      ]
+    }
+  ],
+  "issues": [],
+  "printedHyphenNormalizations": 15,
+  "glyphVerification": "PDFium U+0002 glyphs were confirmed as printed hyphens through pypdf and rendered-page inspection. No REDCap codes were inferred.",
+  "instrumentCounts": {
+    "patient_records": 5,
+    "image_information_brain_scan": 5,
+    "image_information_ct_dsm_or_fluroscopic_guided": 2,
+    "image_information_spine_mri": 3,
+    "image_information_ct_myelogram": 1,
+    "hit6": 5,
+    "duke_neuroradiology_headache_questionnaire": 3,
+    "duke_neuroradiology_headache_questionnaire_patient": 2,
+    "csf_volume_provocation_form": 1
+  },
+  "fieldCounts": {
+    "doc_01.pdf": 9,
+    "doc_02.pdf": 11,
+    "doc_03.pdf": 10,
+    "doc_04.pdf": 9,
+    "doc_05.pdf": 10,
+    "doc_06.pdf": 17,
+    "doc_07.pdf": 10,
+    "doc_08.pdf": 9,
+    "doc_09.pdf": 10,
+    "doc_10.pdf": 17,
+    "doc_11.pdf": 67,
+    "doc_12.pdf": 11,
+    "doc_13.pdf": 9,
+    "doc_14.pdf": 50,
+    "doc_15.pdf": 15,
+    "doc_16.pdf": 9,
+    "doc_17.pdf": 9,
+    "doc_18.pdf": 60,
+    "doc_19.pdf": 10,
+    "doc_20.pdf": 15,
+    "doc_21.pdf": 9,
+    "doc_22.pdf": 54,
+    "doc_23.pdf": 32,
+    "doc_24.pdf": 9,
+    "doc_25.pdf": 10,
+    "doc_26.pdf": 9,
+    "doc_27.pdf": 54
+  },
+  "visualPagesInspected": {
+    "doc_01_key.pdf": [
+      1
+    ],
+    "doc_02_key.pdf": [
+      1
+    ],
+    "doc_03_key.pdf": [
+      1
+    ],
+    "doc_05_key.pdf": [
+      1
+    ],
+    "doc_06_key.pdf": [
+      1
+    ],
+    "doc_07_key.pdf": [
+      1
+    ],
+    "doc_08_key.pdf": [
+      1
+    ],
+    "doc_10_key.pdf": [
+      1
+    ],
+    "doc_11_key.pdf": [
+      3,
+      4
+    ],
+    "doc_15_key.pdf": [
+      1
+    ],
+    "doc_18_key.pdf": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "doc_20_key.pdf": [
+      1
+    ],
+    "doc_22_key.pdf": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "doc_23_key.pdf": [
+      1
+    ],
+    "doc_27_key.pdf": [
+      1,
+      2
+    ]
+  },
+  "visualPageCount": 24,
+  "visualInstrumentFamilyCoverage": "9/9",
+  "unlistedFieldCaveat": "Coverage means every printed table row. Unlisted checkbox options and branch-hidden fields were not invented.",
+  "expectedArtifactSha256": "4ad450bda3e1162833840cb44144023294f7862d5f0bc252f6f37b41773240a1",
+  "literalWildcardRows": [
+    {
+      "document": "doc_02.pdf",
+      "field": "scan_findings___*",
+      "keyPage": 1,
+      "family": "scan_findings"
+    }
+  ],
+  "unresolvedAmbiguities": [],
+  "trainFreeze": {
+    "path": "/Users/aorta/Documents/Codex/2026-10-25/re/work/actual-dataset-validation/train-freeze.json",
+    "sha256": "94526e077908d79ff7b6b66ddd56647b173f3bec3f46d4737bb788e105a6fe79",
+    "sourceCommit": "26fb90eaea6c4a2255c681ad9947e9ab0739c3a5",
+    "runtimeFilesChecked": 37,
+    "runtimeFilesUnchanged": true
+  }
+}

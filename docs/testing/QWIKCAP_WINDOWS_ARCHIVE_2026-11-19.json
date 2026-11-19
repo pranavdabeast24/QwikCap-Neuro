@@ -1,0 +1,31 @@
+{
+  "status": "passed",
+  "sourceCommit": "d150f7580317a87832875ef2310ea4859babc8d2",
+  "githubRun": 44473031594,
+  "package": {
+    "file": "QwikCap-Windows-x64.zip",
+    "bytes": 48363996,
+    "sha256": "bc86b9ab0182fb38f2b6772dd5e45977e4c99523710909568429ed3ad6ba978f"
+  },
+  "acceptanceStages": 11,
+  "sourceTests": 283,
+  "sourceSkips": 1,
+  "outerNativeFilesHashVerified": 76,
+  "embeddedNativeFilesHashVerified": 125,
+  "noticeFilesHashVerified": 32,
+  "executablesX64": true,
+  "guiWorkerCatalogsIdentical": true,
+  "catalogFields": 512,
+  "generatedFixtureDocuments": 10,
+  "generatedExtractedFields": 60,
+  "generatedExportCells": 240,
+  "printedFixtureMatches": 16,
+  "windowsExecutionPerformedByAudit": false,
+  "scope": "Independent static audit of CI artifact and reports. Windows CI used generated fixtures, not the supplied train/test packet. Actual supplied-packet GUI acceptance remains Mac-specific.",
+  "limitations": [
+    "Unsigned development artifact",
+    "Tesseract not bundled",
+    "No person-driven Windows supplied-packet GUI walkthrough established",
+    "Component inventory is not a separate SPDX or CycloneDX SBOM"
+  ]
+}

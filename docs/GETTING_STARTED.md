@@ -4,18 +4,18 @@ To run the packaged Windows app without installing Python, use [WINDOWS.md](WIND
 The instructions below are for source development.
 
 The repository contains the desktop and earlier browser source, build scripts,
-tests, and explicitly fictional practice files. Run the commands below from the
+tests, explicitly fictional practice files, and the [original supplied synthetic train/test packet](../datasets/sih-synthetic/README.md). Run the commands below from the
 repository root. Python 3.12 with Tcl/Tk support is required for the desktop UI.
 The launchers use the clone's `.venv`; they do not install dependencies.
 For the scope of this transfer and the remaining work, read [HANDOFF.md](HANDOFF.md).
 
-The user-selected desktop working name is **QuickCap (CV)**, with `QuickCapCV`
+The user-selected desktop working name is **QwikCap**, with `QwikCap`
 as the GUI package basename. This is a working name only, with no affiliation or
 trademark clearance asserted; see [COMPETITORS_AND_NAME.md](COMPETITORS_AND_NAME.md)
-for the known MedVision QuickCap name collision. Existing Formbridge project/type identifiers,
+for the historical QuickCap name collision and limits of the rename. Existing Formbridge project/type identifiers,
 worker name and environment variables remain compatible. The Mac bundle identifier
-is now `com.capitolinusventures.quickcapcv` to distinguish older Formbridge builds;
-see [README_DESKTOP.md](../README_DESKTOP.md).
+is now `com.capitolinusventures.qwikcap` to distinguish older Formbridge builds;
+see [the current README](../README.md).
 
 ## macOS source setup
 
@@ -54,9 +54,9 @@ See [the environment record](testing/ENVIRONMENT_MACOS.json),
 [test output](testing/UNIT_TEST_RESULTS_MACOS.txt), and
 [BUILD_ENVIRONMENT.md](BUILD_ENVIRONMENT.md) for the current evidence and the
 historical `cfd0762` snapshot. Rerun [TESTING.md](TESTING.md) on each new machine.
-The Windows portable build separately passed its declared dependency pins and
-219 source tests on Windows with Python 3.12.10; the one POSIX-only test was
-skipped. See [the Windows evidence](TESTING.md#windows-portable-build-2026-11-18).
+The current QwikCap build passes 283 source tests on Mac with seven Windows-only
+skips. Its Windows build uses Python 3.12.10 and passes 283 tests with one
+POSIX-only skip and all 11 acceptance stages. See [the current Windows evidence](testing/QWIKCAP_WINDOWS_2026-11-19.md).
 
 ## First fictional workflow
 
@@ -93,8 +93,8 @@ macOS:
 .venv/bin/python -m pip install -r requirements-build.txt
 .venv/bin/python -m unittest discover -s tests -v
 .venv/bin/python build_desktop.py --work-dir work/desktop-build --dist-dir dist/macos
-.venv/bin/python verify_desktop_bundle.py dist/macos/QuickCapCV.app --output verification/bundle
-.venv/bin/python tools/verify_custom_masks.py --bundle dist/macos/QuickCapCV.app --output verification/custom-masks-bundle
+.venv/bin/python verify_desktop_bundle.py dist/macos/QwikCap.app --output verification/bundle
+.venv/bin/python tools/verify_custom_masks.py --bundle dist/macos/QwikCap.app --output verification/custom-masks-bundle
 ```
 
 Windows PowerShell:
@@ -103,8 +103,8 @@ Windows PowerShell:
 .venv\Scripts\python.exe -m pip install -r requirements-build.txt
 .venv\Scripts\python.exe -m unittest discover -s tests -v
 .venv\Scripts\python.exe build_desktop.py --work-dir work\desktop-build --dist-dir dist\windows
-.venv\Scripts\python.exe verify_desktop_bundle.py dist\windows\QuickCapCV --output verification\bundle
-.venv\Scripts\python.exe tools\verify_custom_masks.py --bundle dist\windows\QuickCapCV --output verification\custom-masks-bundle
+.venv\Scripts\python.exe verify_desktop_bundle.py dist\windows\QwikCap --output verification\bundle
+.venv\Scripts\python.exe tools\verify_custom_masks.py --bundle dist\windows\QwikCap --output verification\custom-masks-bundle
 ```
 
 The recorded Mac build produced `QuickCapCV.app`, and both the source and bundled
@@ -115,9 +115,9 @@ or a complete native end-to-end workflow.
 The builder preserves earlier output and asks for a new destination when one
 already exists. Keep the complete macOS `.app` or Windows application directory,
 including its companion worker. macOS development builds use ad hoc signing;
-they are not distribution signed or notarized. Windows packaging and execution
-remain unverified. A build passing worker checks still needs native UI testing
-on its target OS.
+they are not distribution signed or notarized. Windows packaging and native
+automated acceptance are recorded in [TESTING.md](TESTING.md). A person-driven
+Windows walkthrough of the supplied packet remains outstanding.
 
 Extraction currently uses local text layers, configured regions, and optional
 OCR. LLM extraction and learning from corrections are not implemented. The

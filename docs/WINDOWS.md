@@ -1,12 +1,10 @@
-# QuickCap (CV) on Windows
-
-Property of Capitolinus Ventures
+# QwikCap on Windows
 
 ## Current tested preview
 
-Use the [printed PACE pilot prerelease](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/quickcap-cv-printed-pace-2026-11-18) from built source revision `b139c46`. The [native Windows acceptance run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44424411229) ran 283 source tests with one POSIX-only skip and passed all 11 packaging and verification stages. This build includes the local printed-form reader, source identity and instrument checks, and the simpler three-menu, two-tab interface. Earlier releases remain historical downloads.
+Use the [QwikCap pilot prerelease](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-2026-11-19) built from software revision `d150f75`. The [native Windows acceptance run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44473031594) ran 283 source tests with one POSIX-only skip and passed all 11 packaging and verification stages. This build uses QwikCap naming and quieter branding. It retains the printed-form reader, source identity and instrument checks, and three-menu, two-tab interface. Earlier releases remain historical downloads.
 
-The portable ZIP SHA-256 is `2da5c9fe56ace1a01373b49764511c152268173c75ea415217a9dc40246881f7`. The release includes `SHA256SUMS.txt`. Its archive and component hashes were checked independently. Windows acceptance used generated fixtures; actual train and held-out desktop QA ran on Mac. A complete person-driven Windows laptop workflow remains unverified. See [the Windows record](testing/WINDOWS_PRINTED_PACE_2026-11-18.md).
+The `QwikCap-Windows-x64.zip` SHA-256 is `bc86b9ab0182fb38f2b6772dd5e45977e4c99523710909568429ed3ad6ba978f`. The release includes `SHA256SUMS.txt`. Its archive and component hashes were checked independently. Windows acceptance used generated fixtures; actual train and held-out desktop QA ran on Mac. A complete person-driven Windows laptop workflow remains unverified. See [the current Windows record](testing/QWIKCAP_WINDOWS_2026-11-19.md).
 
 ## Open the portable app
 
@@ -16,7 +14,7 @@ while signed into a GitHub account with repository access.
 
 1. In File Explorer, right-click the ZIP and choose **Extract All**. Extract to
    a folder where your account can write, such as Documents.
-2. Open the extracted `QuickCapCV` folder and double-click `QuickCapCV.exe`.
+2. Open the extracted `QwikCap` folder and double-click `QwikCap.exe`.
    Keep the whole folder, including `_internal`, together. Do not run the app
    inside the ZIP or copy the executable by itself.
 3. The workspace starts empty. Import a fictional PDF or image, name a form
@@ -50,9 +48,9 @@ Install the 64-bit Windows Tesseract distribution linked by
 and the [UB Mannheim Windows installer page](https://github.com/UB-Mannheim/tesseract/wiki).
 Keep English language data selected. Use the installer's suggested folder or a
 new dedicated folder. Tesseract is a separate installation and is not included
-or automatically downloaded by QuickCap (CV).
+or automatically downloaded by QwikCap.
 
-Close and reopen QuickCap after installation. It looks on `PATH`, then in the
+Close and reopen QwikCap after installation. It looks on `PATH`, then in the
 usual `Tesseract-OCR` locations under Program Files and your local application
 programs folder. You should not need to edit `PATH` for a standard installation.
 
@@ -60,7 +58,7 @@ For a custom installation, start the app from PowerShell with an explicit path:
 
 ```powershell
 $env:FORMBRIDGE_TESSERACT = 'C:\Program Files\Tesseract-OCR\tesseract.exe'
-& 'C:\Users\YOUR_NAME\Documents\QuickCapCV\QuickCapCV.exe'
+& 'C:\Users\YOUR_NAME\Documents\QwikCap\QwikCap.exe'
 ```
 
 Replace the second path with the actual extracted app location. An invalid

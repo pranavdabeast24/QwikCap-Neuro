@@ -1,5 +1,15 @@
 # Testing and portable evidence
 
+## Current QwikCap packages, 2026-11-19
+
+The [rename and supplied-packet regression](testing/QWIKCAP_REBRAND_2026-11-19.md) records native Mac startup, 283 passing source tests with seven Windows-only skips, packaged printed-reader checks, and unchanged extraction on all 55 supplied forms. The [QwikCap Windows record](testing/QWIKCAP_WINDOWS_2026-11-19.md) records all 11 acceptance stages, 283 tests with one POSIX-only skip, and an independent audit of the actual portable ZIP. These presentation and packaging changes do not claim a fresh held-out evaluation.
+
+## Supplied evaluation packet in the clone
+
+The [original supplied SIH packet](../datasets/sih-synthetic/README.md) now includes 111 unchanged PDFs, seven independent evaluation JSON files, hash manifests, and reproduction commands. The [train app export](../examples/quickcap-actual-train-readout.xlsx) and [reviewed test app export](../examples/qwikcap-supplied-test-reviewed-readout.xlsx) are included unchanged. These are the sources for the supplied-packet rates in the [README](../README.md#results-on-your-supplied-traintest-packet). The earlier generated practice kit is separate.
+
+The dated reports below retain their historical build names and runtime freeze. Current QwikCap naming and packaging changes do not relabel those measurements as another fresh held-out test. The test set has been used. Future tuning requires fresh held-out material for an independent score.
+
 ## Printed PACE reader and actual-dataset checks, 2026-11-18
 
 The [actual train report](testing/actual-pace-dataset-2026-11-18.md) and [held-out report](testing/heldout-pace-2026-11-18.md) distinguish raw suggestions from reviewed desktop exports. Train used 28 PDFs and no manual value corrections. Held-out evaluation used 27 PDFs and one source-confirmed text correction. Each native Mac workbook contains five patient rows and the exact 512 headers, with all 2,560 destination cells independently verified. The reader was frozen before held-out access; the one raw word omission remains a known failure.
@@ -141,11 +151,11 @@ To exercise a real packaged companion worker, first build on its target OS, then
 run both worker checks. Example for macOS:
 
 ```sh
-.venv/bin/python verify_desktop_bundle.py dist/macos/QuickCapCV.app --output verification/bundle
-.venv/bin/python tools/verify_custom_masks.py --bundle dist/macos/QuickCapCV.app --output verification/custom-masks-bundle
+.venv/bin/python verify_desktop_bundle.py dist/macos/QwikCap.app --output verification/bundle
+.venv/bin/python tools/verify_custom_masks.py --bundle dist/macos/QwikCap.app --output verification/custom-masks-bundle
 ```
 
-On Windows, pass `dist\windows\QuickCapCV` with the Windows environment's Python.
+On Windows, pass `dist\windows\QwikCap` with the Windows environment's Python.
 `--bundle` selects the existing bundled worker; it does not mock worker results,
 launch the GUI, install anything, or create a network listener. On macOS the
 worker check removes `PATH` inside the verification context to exercise the

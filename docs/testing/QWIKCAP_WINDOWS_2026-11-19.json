@@ -1,0 +1,186 @@
+{
+  "format": "quickcap-windows-release-verification-v1",
+  "status": "passed",
+  "currentStage": "complete",
+  "notice": "Committed and generated fictional acceptance fixtures only. No patient data.",
+  "checks": [
+    {
+      "check": "source-unit-tests",
+      "status": "passed",
+      "seconds": 71.27,
+      "exitCode": 0,
+      "outputSHA256": "7b3d8e336194ca42b8ee0eabf1e7e108f47c911414308d55cd79692f9f8a8256",
+      "testsRun": 283,
+      "testSeconds": 69.256,
+      "skippedTests": [
+        "test_worker_group_cleanup_stops_child_process (test_processes.ProcessCleanupTests.test_worker_group_cleanup_stops_child_process)"
+      ],
+      "skippedCount": 1
+    },
+    {
+      "check": "source-native-startup",
+      "status": "passed",
+      "seconds": 0.88,
+      "exitCode": 0,
+      "outputSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "check": "source-pace",
+      "status": "passed",
+      "seconds": 4.2,
+      "exitCode": 0,
+      "outputSHA256": "4b62112f6f94369b0f009d7fce29ceb0d8c03122590a1e64b5b290b4c22ee3f8"
+    },
+    {
+      "check": "source-custom-masks",
+      "status": "passed",
+      "seconds": 4.7,
+      "exitCode": 0,
+      "outputSHA256": "80b6527c7f4bc6514e8f4e43bf6ef5f7e77142881aa2e6ba2598c97b739b6b39"
+    },
+    {
+      "check": "build-native-bundle",
+      "status": "passed",
+      "seconds": 36.44,
+      "exitCode": 0,
+      "outputSHA256": "ee647526d506b73cab4c76d688b429cb4226f81b16d1a2246a10a2d67b87499f"
+    },
+    {
+      "check": "extracted-native-startup-without-python-path",
+      "status": "passed",
+      "seconds": 2.55,
+      "exitCode": 0,
+      "outputSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "check": "extracted-companion-unicode-json-and-no-ocr-without-python-path",
+      "status": "passed"
+    },
+    {
+      "check": "packaged-pace-printed",
+      "status": "passed",
+      "seconds": 1.83,
+      "exitCode": 0,
+      "outputSHA256": "4ebd591662099695267d8bb6eb15cea60447c22c39c49cef85fca02e6cd38909"
+    },
+    {
+      "check": "packaged-fictional-scans-and-exports",
+      "status": "passed",
+      "seconds": 25.77,
+      "exitCode": 0,
+      "outputSHA256": "340f1f2210f4ce47e1e0b997a3369fb967134788818cabc08fcc8405aeec327e"
+    },
+    {
+      "check": "packaged-pace",
+      "status": "passed",
+      "seconds": 17.0,
+      "exitCode": 0,
+      "outputSHA256": "f57638e04e28ec3e1bd4e0c5e8d5b1934e8ac924ca060441da03811eab03fc84"
+    },
+    {
+      "check": "packaged-custom-masks",
+      "status": "passed",
+      "seconds": 19.14,
+      "exitCode": 0,
+      "outputSHA256": "f06f2e3cb295b9aa824e529f2d10218c5a4be74e67a40f1f9ae0b48e10886d58"
+    }
+  ],
+  "environment": {
+    "commit": "d150f7580317a87832875ef2310ea4859babc8d2",
+    "os": "Windows-2022Server-10.0.20348-SP0",
+    "architecture": "AMD64",
+    "python": "3.12.10",
+    "dependencies": {
+      "Pillow": "12.3.0",
+      "pypdfium2": "5.14.0",
+      "reportlab": "4.4.9",
+      "pypdf": "6.10.0",
+      "openpyxl": "3.1.5",
+      "defusedxml": "0.7.1",
+      "pyinstaller": "6.22.3"
+    },
+    "requirements": {
+      "requirements.txt": [
+        "Pillow==12.3.0",
+        "pypdfium2==5.14.0",
+        "reportlab==4.4.9",
+        "pypdf==6.10.0",
+        "openpyxl==3.1.5",
+        "defusedxml==0.7.1"
+      ],
+      "requirements-build.txt": [
+        "-r requirements.txt",
+        "pyinstaller==6.22.3"
+      ]
+    },
+    "tesseractVersion": "tesseract v5.5.3.20260724",
+    "tesseractInstallerSHA256": "bee9e3434bd94fd65387d9be28cd467a41f61b1275383b55b0f59a1331270ae4",
+    "ocrBundled": false
+  },
+  "distribution": {
+    "manifest": "BUILD_MANIFEST.json",
+    "manifestSHA256": "2811c5b5aa962815fb3a03e326db35a7ee9b40ae0551b1aeb6622d88ad0cf5b3",
+    "noticeFiles": 32,
+    "nativeFiles": 76,
+    "embeddedNativeFiles": 125,
+    "packages": [
+      {
+        "name": "Pillow",
+        "version": "12.3.0",
+        "noticeFiles": 1
+      },
+      {
+        "name": "pypdfium2",
+        "version": "5.14.0",
+        "noticeFiles": 18
+      },
+      {
+        "name": "reportlab",
+        "version": "4.4.9",
+        "noticeFiles": 1
+      },
+      {
+        "name": "pypdf",
+        "version": "6.10.0",
+        "noticeFiles": 1
+      },
+      {
+        "name": "openpyxl",
+        "version": "3.1.5",
+        "noticeFiles": 1
+      },
+      {
+        "name": "defusedxml",
+        "version": "0.7.1",
+        "noticeFiles": 1
+      },
+      {
+        "name": "charset-normalizer",
+        "version": "3.5.2",
+        "noticeFiles": 1
+      },
+      {
+        "name": "et-xmlfile",
+        "version": "2.0.0",
+        "noticeFiles": 3
+      },
+      {
+        "name": "pyinstaller",
+        "version": "6.22.3",
+        "noticeFiles": 1
+      }
+    ],
+    "python": "3.12.10",
+    "ocrBundled": false
+  },
+  "package": {
+    "file": "QwikCap-Windows-x64.zip",
+    "bytes": 48363996,
+    "sha256": "bc86b9ab0182fb38f2b6772dd5e45977e4c99523710909568429ed3ad6ba978f"
+  },
+  "relocatedOutsideCheckout": true,
+  "pythonAbsentFromPackagedPATH": true,
+  "packagedDocuments": 10,
+  "packagedExtractedFields": 60,
+  "packagedExportedCells": 240
+}
