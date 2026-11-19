@@ -1,0 +1,17 @@
+{
+  "format": "qwikcap-frozen-clinic-evaluation-completion-v1",
+  "recordedAt": "2026-11-19T10:28:00.534537+00:00",
+  "evaluatedSourceCommit": "e2fbd2e8bbb28d31427c229ad18cae5f896c9d93",
+  "frozenFilesUnchanged": 72,
+  "nativeTestFieldsConfirmed": 893,
+  "nativeTestPatientsApproved": 5,
+  "nativeTestManualValueEdits": 0,
+  "nativeWorkflowObservedComplete": true,
+  "independentTestArtifactAudit": "pending",
+  "outputsSHA256": {
+    "native-test-reviewed-project.json": "d9bac9c5ebe2ccb8475fbdf2d9982fd70088261570aeb4792ccf2b85d3dd8c7a",
+    "qwikcap-sih-clinic-test-readout.xlsx": "5c180a6bdcb9913022e5f5e2abb2507b6a950380527840d1276c87a596966213",
+    "native-test-five-approved.jpg": "000c243574f94f9c7b5a8ce52f2fd5884eea36e8909e91bd7aedb2c4dc6ce0c3",
+    "native-ui-log.json": "0ecca87a25a8e4ff58d03faa4c8718e1dc49a46417f331491d5f9022d2d2963e"
+  }
+}
