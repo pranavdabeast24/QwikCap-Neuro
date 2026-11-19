@@ -1057,6 +1057,7 @@ class DesktopApp:
         type_menu.add_separator()
         add(type_menu, "Study fields…", self.show_study_fields)
         add(type_menu, "Load PACE fields", self.load_pace_fields)
+        add(type_menu, "Read NEU clinic forms", self.use_neurology_profile)
         add(type_menu, "Read PACE printed forms", self.use_pace_profile, "Shift-U", "⇧U")
         add(type_menu, "Load expected fields from blank CSV / XLSX…", self.load_expected_fields)
         add(type_menu, "Use selected study field", self.use_catalog_field)
@@ -1231,7 +1232,13 @@ class DesktopApp:
 
         show(self.setup_fields_button, not draft and not review)
         show(self.design_panel, not review and draft)
-        self.empty_design_hint.configure(text="Add documents and choose Combine PDFs for one patient. Confirm the study record ID and source group before reviewing answers." if review and record is None else "Set up fields to name the answers you need. Draw their answer areas, then apply the type to begin review.")
+        if review and record is None:
+            hint = ("Choose Add documents > Import separate forms for NEU clinic PDFs. Review each source before export."
+                    if state.get("profile") == "neurology-training-v1" else
+                    "Add documents and choose Combine PDFs for one patient. Confirm the study record ID and source group before reviewing answers.")
+        else:
+            hint = "Set up fields to name the answers you need. Draw their answer areas, then apply the type to begin review."
+        self.empty_design_hint.configure(text=hint)
         show(self.empty_design_hint, not review and not draft or review and record is None)
         for widget in (self.review_heading, self.review_field_frame, self.review_editor):
             show(widget, review and record is not None)
@@ -1267,6 +1274,8 @@ class DesktopApp:
             self.task_hint.set("Import study fields, draw their answer areas, then apply the type before mapping and export.")
         elif draft:
             self.task_hint.set("Name the fields and draw their answer areas. Choose a record identifier, then apply the type.")
+        elif review and record is None and state.get("profile") == "neurology-training-v1":
+            self.task_hint.set("Add clinic forms as separate documents, then review their answers.")
         elif review and record is None:
             self.task_hint.set("Add PDFs for one patient, confirm their record ID, then review the extracted answers.")
         elif review:
@@ -1285,7 +1294,7 @@ class DesktopApp:
         self.queue_tree.delete(*self.queue_tree.get_children())
         staging = state.get("profile") == "neurology-training-v1"
         if staging:
-            self.mode_label.set("Staging export • source MRN groups assessments\nStudy REDCap mapping pending")
+            self.mode_label.set("NEU clinic forms · review required\nDocument staging · study REDCap mapping pending")
             columns = ("document", "state")
             headings = ("Assessment", "Review")
             widths = (155, 75)
@@ -1499,6 +1508,18 @@ class DesktopApp:
         dialog.focus_force()
         editor.focus_set()
 
+    def _unsupported_pace_layout_message(self, record):
+        if self.snapshot.get("profile") != "pace-printed-v1" or not record:
+            return None
+        context = record.get("sourceContext")
+        if (not isinstance(context, dict) or context.get("profile") != "pace-printed-v1"
+                or any(not isinstance(context.get(key), list) for key in
+                       ("recordIds", "identities", "instruments", "instrumentStarts", "unansweredFields", "blockingIssues"))
+                or context["instruments"] or context["instrumentStarts"]):
+            return None
+        return ("Unsupported PACE layout. For Form NEU-xxx PDFs, choose Advanced > Form type > Read NEU clinic forms. "
+                "For other layouts, save this project and start a new project to draw masks. Approval is blocked.")
+
     def _show_field(self):
         field = next((f for f in self.snapshot["schema"] if f["name"] == self.selected_field), None)
         if not field:
@@ -1518,7 +1539,7 @@ class DesktopApp:
             self.entry.pack(fill="x", pady=4, before=self.confirm_check)
         self.confirm_var.set(field["name"] in self.review_confirmed)
         errors = validate_values(self.snapshot["schema"], self.review_values, self._record()) if self._record() else {}
-        detail = errors.get(field["name"], f'{field["name"]} · {field["type"]}' + (" · required" if field["required"] else " · optional"))
+        detail = self._unsupported_pace_layout_message(self._record()) or errors.get(field["name"], f'{field["name"]} · {field["type"]}' + (" · required" if field["required"] else " · optional"))
         if field["required"] and not value and self._record() and field["name"] in self._record().get("sourceContext", {}).get("unansweredFields", []):
             detail = "Required question has no marked source answer. Confirm the source blank to retain missing data."
         if self.snapshot.get("profile") and field["name"] == "document_id" and field["name"] not in errors:
@@ -1665,7 +1686,7 @@ class DesktopApp:
         else:
             self.record_context_label.grid_remove()
         issues = list(dict.fromkeys(record.get("formTypeIssues", []) + record.get("issues", []) + record.get("groupConflicts", []) + record.get("profileBlockingIssues", [])))
-        self.source_issues.set("\n".join(issues))
+        self.source_issues.set(self._unsupported_pace_layout_message(record) or "\n".join(issues))
         pages = record.get("pages", [])
         if not pages:
             self.canvas.grid_remove()
@@ -1852,7 +1873,7 @@ class DesktopApp:
         if self.busy or self.closing:
             return
         if self._confirm_schema_change():
-            self._with_draft(lambda: self._submit("Preparing neurology training staging categories", self.session.use_neurology_profile))
+            self._with_draft(lambda: self._submit("Reading NEU clinic forms locally", self.session.use_neurology_profile))
 
     def use_pace_profile(self):
         if self.busy or self.closing:

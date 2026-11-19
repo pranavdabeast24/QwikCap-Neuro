@@ -12,6 +12,31 @@ The [QwikCap pilot release](https://github.com/pranavdabeast24/capitolinus-form-
 
 The app starts without preset fields. You can draw custom answer masks and save a reusable extraction type. For the supplied PACE forms, an optional printed-form reader recognizes questions, marked choices, and matrix columns from native PDF text and control geometry. You still confirm the source group, review its answers, and approve one patient row before export. The destination keeps the supplied template's exact 512 headers. Repeating-instrument REDCap upload needs a separate validated conversion.
 
+## Choose the reader for your packet
+
+The two supplied packets use different layouts and export schemas. Check the printed form and folder before selecting a reader.
+
+| Your documents | Reader under **Advanced > Form type** | Import and output |
+| --- | --- | --- |
+| Original `Neuro Synthetic Forms/dataset/train/forms/` clinic packet, with printed `Form NEU-101`, `NEU-210`, `NEU-215`, `NEU-330`, or `NEU-410` | **Read NEU clinic forms** | Import separate forms. One reviewed document per row, with 45 staging columns. |
+| Separate `Neuro Synthetic Forms/sih_dataset/` packet, copied into this repository as `datasets/sih-synthetic/` | **Read PACE printed forms** | Combine the listed PDFs for one confirmed patient. One reviewed patient per row, with 512 destination columns. |
+| Another form layout | Start a new project and design custom fields and masks. | Use an extraction type for that layout and review its suggestions. |
+
+The NEU clinic reader recognizes intake, HIT-6, MIDAS, NIHSS, and seizure-history forms by their printed `Form NEU` codes. A HIT-6 clinic sheet is not interchangeable with a PACE printed form. QwikCap does not switch readers automatically.
+
+### Review the original NEU clinic packet
+
+1. Save your current project. Choose **File > New project**, then **Advanced > Form type > Read NEU clinic forms**. The banner reads **NEU clinic forms · review required**.
+2. Choose **Add documents… > Import separate forms…**. Select PDFs from the original `dataset/train/forms/` folder. For an initial trial, select `doc_01.pdf` and `doc_03.pdf`. Keep answer keys and the index out of document upload.
+3. Select a document in the queue. Review the source identity and each applicable answer. Correct any suggestion that differs from the source, then click **Confirm & next**. The source document ID is derived by the app; review the printed MRN, name, birth date, and form date separately.
+4. Enter your reviewer name and click **Approve document** for each document. Use the matching files in `dataset/train/answer_keys/` to check your work independently.
+5. Open **Map & export** and click **Use fields as columns**. This creates the 45-column NEU staging workbook and assigns matching names automatically. Inspect the populated preview, click **Confirm column mapping**, and choose **Export XLSX…**.
+6. Open the saved workbook. If you approved both trial documents, it contains two data rows. Each row represents one source document. Questions from other instrument families remain blank on that row.
+
+If clinic forms were imported under the PACE reader, choose **Read NEU clinic forms** and confirm the rule change. QwikCap reprocesses the existing sources and clears prior field confirmations, approvals, and mapping confirmation. Keep a saved copy first if you want to retain the earlier project.
+
+The NEU output is document staging. It does not combine the forms into the PACE patient-row contract or establish a REDCap import mapping. Use the PACE walkthrough below only for the separate PACE packet. The recorded 512-column train/test rates apply to that PACE packet.
+
 ## Review supplied PACE forms
 
 You will create an Excel file with one reviewed patient row, then repeat the same steps for the rest of the packet. No camera is needed for these PDFs.
