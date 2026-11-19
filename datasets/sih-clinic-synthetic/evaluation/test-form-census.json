@@ -1,0 +1,1361 @@
+{
+  "format": "sih-clinic-test-form-census-v1",
+  "recordedAt": "2026-11-19T10:15:28.429358+00:00",
+  "scope": {
+    "dataset_status": "User confirmed entirely fictional/synthetic",
+    "source_documents": "Only new sih_clinic_dataset/test/forms/*.pdf",
+    "answer_keys_accessed": false,
+    "manifest_pdf_accessed": false,
+    "reader_or_diagnostic_outputs_accessed": false,
+    "network_used": false,
+    "production_code_changed": false
+  },
+  "source_catalog": {
+    "file": "/Users/aorta/Documents/Codex/2026-10-25/re/capitolinus-form-extraction/study_profiles/pace.json",
+    "sha256": "e8a2c021405da7defead007e9f8e7f5f3852ae926c35f2fb687a474e6f8faf53"
+  },
+  "summary": {
+    "documents": 27,
+    "pages": 42,
+    "instruments": 9,
+    "study_id_registration_anchors": 5,
+    "all_group_demographics_consistent": true,
+    "all_document_page_sequences_complete": true,
+    "acroform_fields": 0,
+    "text_bearing_pages": 42,
+    "embedded_images": 0,
+    "widget_annotations": 0
+  },
+  "instrument_inventory": [
+    {
+      "instrument": "csf_volume_provocation_form",
+      "files": [
+        "doc_23.pdf"
+      ],
+      "document_count": 1,
+      "page_count": 1
+    },
+    {
+      "instrument": "duke_neuroradiology_headache_questionnaire",
+      "files": [
+        "doc_11.pdf",
+        "doc_14.pdf",
+        "doc_27.pdf"
+      ],
+      "document_count": 3,
+      "page_count": 12
+    },
+    {
+      "instrument": "duke_neuroradiology_headache_questionnaire_patient",
+      "files": [
+        "doc_18.pdf",
+        "doc_22.pdf"
+      ],
+      "document_count": 2,
+      "page_count": 8
+    },
+    {
+      "instrument": "hit6",
+      "files": [
+        "doc_08.pdf",
+        "doc_13.pdf",
+        "doc_16.pdf",
+        "doc_21.pdf",
+        "doc_26.pdf"
+      ],
+      "document_count": 5,
+      "page_count": 5
+    },
+    {
+      "instrument": "image_information_brain_scan",
+      "files": [
+        "doc_02.pdf",
+        "doc_06.pdf",
+        "doc_10.pdf",
+        "doc_15.pdf",
+        "doc_20.pdf"
+      ],
+      "document_count": 5,
+      "page_count": 5
+    },
+    {
+      "instrument": "image_information_ct_dsm_or_fluroscopic_guided",
+      "files": [
+        "doc_03.pdf",
+        "doc_12.pdf"
+      ],
+      "document_count": 2,
+      "page_count": 2
+    },
+    {
+      "instrument": "image_information_ct_myelogram",
+      "files": [
+        "doc_07.pdf"
+      ],
+      "document_count": 1,
+      "page_count": 1
+    },
+    {
+      "instrument": "image_information_spine_mri",
+      "files": [
+        "doc_05.pdf",
+        "doc_19.pdf",
+        "doc_25.pdf"
+      ],
+      "document_count": 3,
+      "page_count": 3
+    },
+    {
+      "instrument": "patient_records",
+      "files": [
+        "doc_01.pdf",
+        "doc_04.pdf",
+        "doc_09.pdf",
+        "doc_17.pdf",
+        "doc_24.pdf"
+      ],
+      "document_count": 5,
+      "page_count": 5
+    }
+  ],
+  "patient_groups": [
+    {
+      "record_id": "1046",
+      "source_mrn": "01662832",
+      "registration_file": "doc_09.pdf",
+      "files": [
+        "doc_05.pdf",
+        "doc_06.pdf",
+        "doc_09.pdf",
+        "doc_12.pdf",
+        "doc_13.pdf",
+        "doc_18.pdf"
+      ]
+    },
+    {
+      "record_id": "1055",
+      "source_mrn": "02215819",
+      "registration_file": "doc_17.pdf",
+      "files": [
+        "doc_03.pdf",
+        "doc_15.pdf",
+        "doc_17.pdf",
+        "doc_26.pdf",
+        "doc_27.pdf"
+      ]
+    },
+    {
+      "record_id": "1060",
+      "source_mrn": "07931498",
+      "registration_file": "doc_04.pdf",
+      "files": [
+        "doc_04.pdf",
+        "doc_07.pdf",
+        "doc_08.pdf",
+        "doc_10.pdf",
+        "doc_11.pdf",
+        "doc_25.pdf"
+      ]
+    },
+    {
+      "record_id": "1066",
+      "source_mrn": "02066814",
+      "registration_file": "doc_24.pdf",
+      "files": [
+        "doc_02.pdf",
+        "doc_21.pdf",
+        "doc_22.pdf",
+        "doc_24.pdf"
+      ]
+    },
+    {
+      "record_id": "1073",
+      "source_mrn": "02653613",
+      "registration_file": "doc_01.pdf",
+      "files": [
+        "doc_01.pdf",
+        "doc_14.pdf",
+        "doc_16.pdf",
+        "doc_19.pdf",
+        "doc_20.pdf",
+        "doc_23.pdf"
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "file": "doc_01.pdf",
+      "sha256": "d8b5d8681ae5233864a10ac6f5a97b3d77c1de6487403f9e399ab86815c8bc73",
+      "bytes": 138022,
+      "pages": 1,
+      "instrument": "patient_records",
+      "printed_header": "Patient Registration Form",
+      "source_mrn": "02653613",
+      "printed_record_ids": [
+        "1073"
+      ],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "7ed88464d2f2b43fb4dc6fc0af1b0ea8962dd2da8cd648f92ec290420d8b6e48",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1291,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            1
+          ]
+        }
+      ],
+      "record_id": "1073",
+      "registration_anchor": "doc_01.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_02.pdf",
+      "sha256": "a199e520f83dda564d5d6f312cbd175d8e9bc5a4da8a282051fe3d2e0efb922c",
+      "bytes": 153915,
+      "pages": 1,
+      "instrument": "image_information_brain_scan",
+      "printed_header": "MRI BRAIN WITH AND WITHOUT IV CONTRAST",
+      "source_mrn": "02066814",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "dc9ba2eed80e2c49bc692e356f54217056ba3b16dd21681f2ef7d6d03dcf39b4",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "native-radiology-report",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1316,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": null
+        }
+      ],
+      "record_id": "1066",
+      "registration_anchor": "doc_24.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_03.pdf",
+      "sha256": "cad175df5a1cf9781ca699b0ea081bdaa67accdf6518a8b77ba63699ab4518e0",
+      "bytes": 151698,
+      "pages": 1,
+      "instrument": "image_information_ct_dsm_or_fluroscopic_guided",
+      "printed_header": "DIGITAL SUBTRACTION MYELOGRAM, DECUBITUS (FLUOROSCOPIC GUIDED)",
+      "source_mrn": "02215819",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "5feb5d57b7919bad581ffe45902d5e3e1a74646da7ffdca6d9b4267a2acc6a3b",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "native-radiology-report",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1237,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": null
+        }
+      ],
+      "record_id": "1055",
+      "registration_anchor": "doc_17.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_04.pdf",
+      "sha256": "1004d8c507acc6657dd7f7390be69d645f1d8fe96ebb678d87bf8a6995ea21c2",
+      "bytes": 158265,
+      "pages": 1,
+      "instrument": "patient_records",
+      "printed_header": "Patient Registration Form",
+      "source_mrn": "07931498",
+      "printed_record_ids": [
+        "1060"
+      ],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "4caa0be39594e38af15134f7e5179a8ffe02bd91602e03aaf6eba07b94b9a4a9",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1290,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            1
+          ]
+        }
+      ],
+      "record_id": "1060",
+      "registration_anchor": "doc_04.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_05.pdf",
+      "sha256": "18eaeb90d9b93861b5d407265113860d8f83e399b03313088e0ef314cc3c96b6",
+      "bytes": 151189,
+      "pages": 1,
+      "instrument": "image_information_spine_mri",
+      "printed_header": "MRI TOTAL SPINE WITH AND WITHOUT IV CONTRAST",
+      "source_mrn": "01662832",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "e3a346ea3ab1e215466fe36765e90328caf74ec142be9ebfb7ae20760e050862",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "native-radiology-report",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1245,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": null
+        }
+      ],
+      "record_id": "1046",
+      "registration_anchor": "doc_09.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_06.pdf",
+      "sha256": "daa58f8fa20f37ba80b37864c61aa6cd51225cb30493bba06c5423a0243e96c7",
+      "bytes": 157154,
+      "pages": 1,
+      "instrument": "image_information_brain_scan",
+      "printed_header": "MRI BRAIN WITH AND WITHOUT IV CONTRAST",
+      "source_mrn": "01662832",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "e3a346ea3ab1e215466fe36765e90328caf74ec142be9ebfb7ae20760e050862",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "native-radiology-report",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1719,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": null
+        }
+      ],
+      "record_id": "1046",
+      "registration_anchor": "doc_09.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_07.pdf",
+      "sha256": "2bbce3d06015d8cd37c924189c10ce71df5ba5fbd06d2995ed3131ce024e032d",
+      "bytes": 148856,
+      "pages": 1,
+      "instrument": "image_information_ct_myelogram",
+      "printed_header": "CT MYELOGRAM, TOTAL SPINE",
+      "source_mrn": "07931498",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "4caa0be39594e38af15134f7e5179a8ffe02bd91602e03aaf6eba07b94b9a4a9",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "native-radiology-report",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1158,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": null
+        }
+      ],
+      "record_id": "1060",
+      "registration_anchor": "doc_04.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_08.pdf",
+      "sha256": "9e8d0b0009d47df5c4842a00398476f2fa27692686c5609f28fa872a10bc9831",
+      "bytes": 155802,
+      "pages": 1,
+      "instrument": "hit6",
+      "printed_header": "HIT-6TM Headache Impact Test",
+      "source_mrn": "07931498",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "4caa0be39594e38af15134f7e5179a8ffe02bd91602e03aaf6eba07b94b9a4a9",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1339,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            1
+          ]
+        }
+      ],
+      "record_id": "1060",
+      "registration_anchor": "doc_04.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_09.pdf",
+      "sha256": "0a4936d0510d78bd9aa217c8a0c2f47c1c7bf61d0b01ceba58a3413fc31356d7",
+      "bytes": 140696,
+      "pages": 1,
+      "instrument": "patient_records",
+      "printed_header": "Patient Registration Form",
+      "source_mrn": "01662832",
+      "printed_record_ids": [
+        "1046"
+      ],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "e3a346ea3ab1e215466fe36765e90328caf74ec142be9ebfb7ae20760e050862",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1290,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            1
+          ]
+        }
+      ],
+      "record_id": "1046",
+      "registration_anchor": "doc_09.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_10.pdf",
+      "sha256": "5888f4c4760b5f5177c599683a748819060fffd454bac3faf2525445eda941fb",
+      "bytes": 156909,
+      "pages": 1,
+      "instrument": "image_information_brain_scan",
+      "printed_header": "MRI BRAIN WITH AND WITHOUT IV CONTRAST",
+      "source_mrn": "07931498",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "4caa0be39594e38af15134f7e5179a8ffe02bd91602e03aaf6eba07b94b9a4a9",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "native-radiology-report",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1807,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": null
+        }
+      ],
+      "record_id": "1060",
+      "registration_anchor": "doc_04.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_11.pdf",
+      "sha256": "75cec146fdf4d801db3863b6a167962deb324084323561d8543fbdf417675493",
+      "bytes": 303629,
+      "pages": 4,
+      "instrument": "duke_neuroradiology_headache_questionnaire",
+      "printed_header": "Headache History \u2014 Clinician Intake",
+      "source_mrn": "07931498",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "4caa0be39594e38af15134f7e5179a8ffe02bd91602e03aaf6eba07b94b9a4a9",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1562,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            4
+          ]
+        },
+        {
+          "page": 2,
+          "native_text_characters": 1586,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            2,
+            4
+          ]
+        },
+        {
+          "page": 3,
+          "native_text_characters": 2275,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            3,
+            4
+          ]
+        },
+        {
+          "page": 4,
+          "native_text_characters": 1544,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            4,
+            4
+          ]
+        }
+      ],
+      "record_id": "1060",
+      "registration_anchor": "doc_04.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_12.pdf",
+      "sha256": "5f5e5bea85ae86ab8603c5bf0aa9ee0e42e7789ea8659346537c6f2af2e7dc43",
+      "bytes": 153999,
+      "pages": 1,
+      "instrument": "image_information_ct_dsm_or_fluroscopic_guided",
+      "printed_header": "DIGITAL SUBTRACTION MYELOGRAM, DECUBITUS (FLUOROSCOPIC GUIDED)",
+      "source_mrn": "01662832",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "e3a346ea3ab1e215466fe36765e90328caf74ec142be9ebfb7ae20760e050862",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "native-radiology-report",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1324,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": null
+        }
+      ],
+      "record_id": "1046",
+      "registration_anchor": "doc_09.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_13.pdf",
+      "sha256": "e45797323464dc61df6a424d15a690d0918b69f350126cf8740e7337cf17ab4a",
+      "bytes": 155985,
+      "pages": 1,
+      "instrument": "hit6",
+      "printed_header": "HIT-6TM Headache Impact Test",
+      "source_mrn": "01662832",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "e3a346ea3ab1e215466fe36765e90328caf74ec142be9ebfb7ae20760e050862",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1340,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            1
+          ]
+        }
+      ],
+      "record_id": "1046",
+      "registration_anchor": "doc_09.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_14.pdf",
+      "sha256": "faa24a67be68b5f125c881c2de122d68909c9986440d3f59d4e7c41ba9ee3dd9",
+      "bytes": 290108,
+      "pages": 4,
+      "instrument": "duke_neuroradiology_headache_questionnaire",
+      "printed_header": "Headache History \u2014 Clinician Intake",
+      "source_mrn": "02653613",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "7ed88464d2f2b43fb4dc6fc0af1b0ea8962dd2da8cd648f92ec290420d8b6e48",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1421,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            4
+          ]
+        },
+        {
+          "page": 2,
+          "native_text_characters": 1567,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            2,
+            4
+          ]
+        },
+        {
+          "page": 3,
+          "native_text_characters": 2258,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            3,
+            4
+          ]
+        },
+        {
+          "page": 4,
+          "native_text_characters": 1551,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            4,
+            4
+          ]
+        }
+      ],
+      "record_id": "1073",
+      "registration_anchor": "doc_01.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_15.pdf",
+      "sha256": "113f5707a49b9b2e74b61d3b8e3fe0bb9965fe2092969ad504b27fd3c03776a6",
+      "bytes": 155245,
+      "pages": 1,
+      "instrument": "image_information_brain_scan",
+      "printed_header": "MRI BRAIN WITH AND WITHOUT IV CONTRAST",
+      "source_mrn": "02215819",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "5feb5d57b7919bad581ffe45902d5e3e1a74646da7ffdca6d9b4267a2acc6a3b",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "native-radiology-report",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1641,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": null
+        }
+      ],
+      "record_id": "1055",
+      "registration_anchor": "doc_17.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_16.pdf",
+      "sha256": "ccfb81bf0a2a27d5446f0b2c486cc1fd6fbc1fe660677401d17c92a3f4761500",
+      "bytes": 157026,
+      "pages": 1,
+      "instrument": "hit6",
+      "printed_header": "HIT-6TM Headache Impact Test",
+      "source_mrn": "02653613",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "7ed88464d2f2b43fb4dc6fc0af1b0ea8962dd2da8cd648f92ec290420d8b6e48",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1336,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            1
+          ]
+        }
+      ],
+      "record_id": "1073",
+      "registration_anchor": "doc_01.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_17.pdf",
+      "sha256": "fe240e6c3601164a54f2ba419b1a83ee0ad8403c66f1a6a4262b238abd0f6da9",
+      "bytes": 142288,
+      "pages": 1,
+      "instrument": "patient_records",
+      "printed_header": "Patient Registration Form",
+      "source_mrn": "02215819",
+      "printed_record_ids": [
+        "1055"
+      ],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "5feb5d57b7919bad581ffe45902d5e3e1a74646da7ffdca6d9b4267a2acc6a3b",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1266,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            1
+          ]
+        }
+      ],
+      "record_id": "1055",
+      "registration_anchor": "doc_17.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_18.pdf",
+      "sha256": "d9cf5f24984f614a301ae17a830e5ba1eaba17630f0b926b8d7070d9f17c320d",
+      "bytes": 364573,
+      "pages": 4,
+      "instrument": "duke_neuroradiology_headache_questionnaire_patient",
+      "printed_header": "Headache Questionnaire \u2014 Patient Self-Report",
+      "source_mrn": "01662832",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "e3a346ea3ab1e215466fe36765e90328caf74ec142be9ebfb7ae20760e050862",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1254,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            4
+          ]
+        },
+        {
+          "page": 2,
+          "native_text_characters": 1766,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            2,
+            4
+          ]
+        },
+        {
+          "page": 3,
+          "native_text_characters": 1964,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            3,
+            4
+          ]
+        },
+        {
+          "page": 4,
+          "native_text_characters": 1453,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            4,
+            4
+          ]
+        }
+      ],
+      "record_id": "1046",
+      "registration_anchor": "doc_09.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_19.pdf",
+      "sha256": "740c935668e6db8acbeb772d3c493301f5195c3cef5a5f324459a930cbb05490",
+      "bytes": 150544,
+      "pages": 1,
+      "instrument": "image_information_spine_mri",
+      "printed_header": "MRI TOTAL SPINE WITH AND WITHOUT IV CONTRAST",
+      "source_mrn": "02653613",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "7ed88464d2f2b43fb4dc6fc0af1b0ea8962dd2da8cd648f92ec290420d8b6e48",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "native-radiology-report",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1311,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": null
+        }
+      ],
+      "record_id": "1073",
+      "registration_anchor": "doc_01.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_20.pdf",
+      "sha256": "46e3b63e4b07e1236710bc15f5fb28d3ca9e591326b9283de71090fc92d60786",
+      "bytes": 155640,
+      "pages": 1,
+      "instrument": "image_information_brain_scan",
+      "printed_header": "MRI BRAIN WITH AND WITHOUT IV CONTRAST",
+      "source_mrn": "02653613",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "7ed88464d2f2b43fb4dc6fc0af1b0ea8962dd2da8cd648f92ec290420d8b6e48",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "native-radiology-report",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1629,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": null
+        }
+      ],
+      "record_id": "1073",
+      "registration_anchor": "doc_01.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_21.pdf",
+      "sha256": "072044221a1c0fe98197fd04dd91021dda53ea3fe1b02ef95534c41266fc5e6d",
+      "bytes": 158327,
+      "pages": 1,
+      "instrument": "hit6",
+      "printed_header": "HIT-6TM Headache Impact Test",
+      "source_mrn": "02066814",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "dc9ba2eed80e2c49bc692e356f54217056ba3b16dd21681f2ef7d6d03dcf39b4",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1340,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            1
+          ]
+        }
+      ],
+      "record_id": "1066",
+      "registration_anchor": "doc_24.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_22.pdf",
+      "sha256": "87f2ab082c6a6d5a946b19898b86facbe3a263ecc04a30c60eb4b5a5986b720b",
+      "bytes": 352111,
+      "pages": 4,
+      "instrument": "duke_neuroradiology_headache_questionnaire_patient",
+      "printed_header": "Headache Questionnaire \u2014 Patient Self-Report",
+      "source_mrn": "02066814",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "dc9ba2eed80e2c49bc692e356f54217056ba3b16dd21681f2ef7d6d03dcf39b4",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1271,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            4
+          ]
+        },
+        {
+          "page": 2,
+          "native_text_characters": 1804,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            2,
+            4
+          ]
+        },
+        {
+          "page": 3,
+          "native_text_characters": 1951,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            3,
+            4
+          ]
+        },
+        {
+          "page": 4,
+          "native_text_characters": 1439,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            4,
+            4
+          ]
+        }
+      ],
+      "record_id": "1066",
+      "registration_anchor": "doc_24.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_23.pdf",
+      "sha256": "96d801541aa7460fe8d0301c096b22af78fd42aa251457bf224b41f1ab24922b",
+      "bytes": 157915,
+      "pages": 1,
+      "instrument": "csf_volume_provocation_form",
+      "printed_header": "CSF Volume Provocation \u2014 Procedure Record",
+      "source_mrn": "02653613",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "7ed88464d2f2b43fb4dc6fc0af1b0ea8962dd2da8cd648f92ec290420d8b6e48",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1154,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            1
+          ]
+        }
+      ],
+      "record_id": "1073",
+      "registration_anchor": "doc_01.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_24.pdf",
+      "sha256": "ac0e404e35d7fedfabbfb9788e464f38d9fda836176f983c82640ef697055404",
+      "bytes": 141138,
+      "pages": 1,
+      "instrument": "patient_records",
+      "printed_header": "Patient Registration Form",
+      "source_mrn": "02066814",
+      "printed_record_ids": [
+        "1066"
+      ],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "dc9ba2eed80e2c49bc692e356f54217056ba3b16dd21681f2ef7d6d03dcf39b4",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1296,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            1
+          ]
+        }
+      ],
+      "record_id": "1066",
+      "registration_anchor": "doc_24.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_25.pdf",
+      "sha256": "b827a45d0c4aef20191a74086b49f104ba6b8efd268c0defabf355efda3fa9a8",
+      "bytes": 153411,
+      "pages": 1,
+      "instrument": "image_information_spine_mri",
+      "printed_header": "MRI TOTAL SPINE WITHOUT IV CONTRAST",
+      "source_mrn": "07931498",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "4caa0be39594e38af15134f7e5179a8ffe02bd91602e03aaf6eba07b94b9a4a9",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "native-radiology-report",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1370,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": null
+        }
+      ],
+      "record_id": "1060",
+      "registration_anchor": "doc_04.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_26.pdf",
+      "sha256": "0e4f4ab4e2447ab1d6fa18eabdc3f4935a8bd277cf5586650ff2d6a4eaa5845c",
+      "bytes": 158320,
+      "pages": 1,
+      "instrument": "hit6",
+      "printed_header": "HIT-6TM Headache Impact Test",
+      "source_mrn": "02215819",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "5feb5d57b7919bad581ffe45902d5e3e1a74646da7ffdca6d9b4267a2acc6a3b",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1335,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            1
+          ]
+        }
+      ],
+      "record_id": "1055",
+      "registration_anchor": "doc_17.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    },
+    {
+      "file": "doc_27.pdf",
+      "sha256": "fa40113fa185c4d6f9e25d88ac18a64f981c3a1d10ae664a41d5a6a43c28f9f8",
+      "bytes": 315453,
+      "pages": 4,
+      "instrument": "duke_neuroradiology_headache_questionnaire",
+      "printed_header": "Headache History \u2014 Clinician Intake",
+      "source_mrn": "02215819",
+      "printed_record_ids": [],
+      "identity_complete_name_dob_mrn": true,
+      "identity_digest": "5feb5d57b7919bad581ffe45902d5e3e1a74646da7ffdca6d9b4267a2acc6a3b",
+      "visible_choice_families": [],
+      "visible_choice_families_note": "Physical print presence alone does not establish an unchecked zero for conditional clinic rows. Keyed families are expanded separately by the unchanged comparator.",
+      "source_format": "clinical-paper-form",
+      "acroform_fields": 0,
+      "page_features": [
+        {
+          "page": 1,
+          "native_text_characters": 1404,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            1,
+            4
+          ]
+        },
+        {
+          "page": 2,
+          "native_text_characters": 1543,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            2,
+            4
+          ]
+        },
+        {
+          "page": 3,
+          "native_text_characters": 2264,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            3,
+            4
+          ]
+        },
+        {
+          "page": 4,
+          "native_text_characters": 1536,
+          "page_size_points": [
+            612.0,
+            792.0
+          ],
+          "embedded_image_objects": 0,
+          "widget_annotations": 0,
+          "identity_matches_document": true,
+          "footer_sequence": [
+            4,
+            4
+          ]
+        }
+      ],
+      "record_id": "1055",
+      "registration_anchor": "doc_17.pdf",
+      "record_id_basis": "Printed Research Study ID on same-MRN/name/DOB registration source"
+    }
+  ]
+}

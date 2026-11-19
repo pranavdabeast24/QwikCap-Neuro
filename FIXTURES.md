@@ -1,5 +1,14 @@
 # Fictional fixtures
 
+The current [SIH clinic packet](datasets/sih-clinic-synthetic/README.md) is the owner's original `sih_clinic_dataset/`, confirmed entirely synthetic and authorized for this private repository. Its 111 original PDFs total 13,929,598 bytes and match the original files byte for byte. [INVENTORY.json](datasets/sih-clinic-synthetic/INVENTORY.json) and [SHA256SUMS](datasets/sih-clinic-synthetic/SHA256SUMS) identify every PDF. The independent `evaluation/` files preserve source censuses, literal key expectations, audits, and the separately documented test wildcard expansion. These are not app inputs.
+
+The actual native Mac app wrote both clinic workbooks below, with five rows and 512 headers each. Every exported cell matches the reviewed project, with zero manual value edits. Strict key coverage retains the documented gaps in [the clinic report](docs/testing/SIH_CLINIC_2026-11-19.md). The files were copied without regeneration or edits.
+
+| Clinic app export | SHA-256 |
+| --- | --- |
+| `examples/qwikcap-sih-clinic-train-readout.xlsx` | `7626346d973cc9a2d04c71a0f0256fc275f032527cbd708361567add07ff43ce` |
+| `examples/qwikcap-sih-clinic-test-readout.xlsx` | `5c180a6bdcb9913022e5f5e2abb2507b6a950380527840d1276c87a596966213` |
+
 The 2026-11-17 study reference assets are separate from the generated fictional record fixtures below. `study_profiles/pace.json` contains bounded field metadata derived from the user-confirmed blank codebook. `spreadsheets/pace-import-template.csv` contains only the 512 named destination headers. Neither contains patient rows. The original references are not shipped. Instrument content and commercial distribution rights still need appropriate review.
 
 | Study reference asset | SHA-256 |
@@ -9,7 +18,7 @@ The 2026-11-17 study reference assets are separate from the generated fictional 
 
 `tools/verify_pace_flow.py` generates new fictional forms for patient-bundle acceptance. Its generated source PDFs, source-bearing projects and exports remain ignored verification outputs.
 
-The original practice fixtures were generated for this prototype and contain fictional records. The separately [supplied synthetic SIH packet](datasets/sih-synthetic/README.md) is now included at the owner's request. It contains 111 unchanged original PDFs, including 28 train forms, 27 test forms, their 55 answer keys, and the index. Its hash manifest and independent evaluation files travel with the clone. This is the packet used for the actual train/test results, not the app-authored practice kit. Source-bearing projects and unreviewed outputs remain excluded.
+The original practice fixtures were generated for this prototype and contain fictional records. The separately [supplied earlier PACE printed packet](datasets/sih-synthetic/README.md) is included at the owner's request. It contains 111 unchanged original PDFs, including 28 train forms, 27 test forms, their 55 answer keys, and the index. Its hash manifest and independent evaluation files travel with the clone. This is the packet used for the historical PACE results below. Source-bearing projects and unreviewed outputs remain excluded.
 
 `examples/quickcap-actual-train-readout.xlsx` is a byte-identical copy of the native desktop export from 28 fictional train PDFs, combined into five patient rows. All 2,560 destination cells and 512 ordered headers passed independent verification, with zero manual value corrections. Its SHA-256 is `f8aae166a92cbe5815f6008cf1fc85bc90651fbd5b47cb03e21198cb5f978a03`. See [the actual-dataset report](docs/testing/actual-pace-dataset-2026-11-18.md) for the coverage limits, including nine total-score entries absent from the supplied destination template.
 

@@ -1,0 +1,130 @@
+{
+  "format": "qwikcap-sih-clinic-test-key-normalization-v1",
+  "recordedAt": "2026-11-19T10:15:18.807573+00:00",
+  "testOpenedAfterFreeze": "2026-11-19T10:10:31.871790+00:00",
+  "originalPDFsModified": false,
+  "literalExpectationsModified": false,
+  "engineOrRulesModified": false,
+  "formsOrIndexRead": false,
+  "engineOutputsRead": false,
+  "literalRows": 517,
+  "literalExactCatalogRows": 508,
+  "literalWildcardRows": 1,
+  "keyOnlyTotals": 8,
+  "comparatorRows": 532,
+  "comparatorCatalogMappedRows": 524,
+  "mappedLiteralTypes": {
+    "text": 48,
+    "date": 44,
+    "choice": 373,
+    "number": 24,
+    "integer": 19
+  },
+  "independentPDFMinerRawValueCellsChecked": 517,
+  "independentPDFMinerRawValueCellsMatched": 517,
+  "valueOrCodeIssues": [],
+  "actions": [
+    {
+      "keyFile": "doc_02_key.pdf",
+      "literalField": "scan_findings___*",
+      "literalRaw": "0",
+      "literalChoiceLabel": "(none checked)",
+      "targetFields": [
+        "scan_findings___1",
+        "scan_findings___2",
+        "scan_findings___3",
+        "scan_findings___4",
+        "scan_findings___5",
+        "scan_findings___6",
+        "scan_findings___7",
+        "scan_findings___8",
+        "scan_findings___9",
+        "scan_findings___10",
+        "scan_findings___11",
+        "scan_findings___12",
+        "scan_findings___13",
+        "scan_findings___14",
+        "scan_findings___15",
+        "scan_findings___16"
+      ],
+      "verifiedBy": [
+        "PDFium bounded cells",
+        "pypdf full-page text",
+        "rendered page visual inspection"
+      ],
+      "sourcePDFRead": false,
+      "readerChanged": false
+    }
+  ],
+  "literalExpectationsSHA256": "6ed677d65813b70cd4a21ae5089ce28d0ad285b56f279ba2682aebc319ae1a1b",
+  "comparatorExpectationsSHA256": "0472cb923090cd67fa6615bff078db155c527543cefe5353a67781febe7344bb",
+  "catalogSHA256": "e8a2c021405da7defead007e9f8e7f5f3852ae926c35f2fb687a474e6f8faf53",
+  "inputSHA256": {
+    "doc_01_key.pdf": "c9082218c920edacb2009cfd5789ce8a301067a8c15f72d7c3363699dba88ac1",
+    "doc_02_key.pdf": "aa35d3c96daf77caa554f534eab37bc8befb40ffbd73bda6f721b9799bccd11d",
+    "doc_03_key.pdf": "5e0b9b4dc2fa04b14e49277fcbf9d0d26b6d72b798a11d410bd3b50063ed5b90",
+    "doc_04_key.pdf": "223de305670b2e584214711c3e8e657965c369f395a89c1a2c12897c50aa019e",
+    "doc_05_key.pdf": "108fbcfe760f69d299caed38a868354a697090840953535ccb48de732ec79ec5",
+    "doc_06_key.pdf": "3cabda0138c47d2a0f18c2edf76af9a9d97e66e60ea23de567d523cad697f448",
+    "doc_07_key.pdf": "0a1d70c1e31153863b28049fa6d797dfec0dd15c0971443b7eb09a93c81aac53",
+    "doc_08_key.pdf": "0c039980f30b7b0646b98241d91a7730dabf79cecb495fc949ce94bd043b4330",
+    "doc_09_key.pdf": "41ae5b18aa03df6b662824e5892a6dc33700a58b424046c355af4888d0b593f0",
+    "doc_10_key.pdf": "a142268c88f858aeb2c2a8147af55dd4889371cff780bfcf496c8d5cfcf6203c",
+    "doc_11_key.pdf": "71b677f7dcf98414a991aa22f99479e30f82a522198d6e3da1fb2cc4e47ccfa2",
+    "doc_12_key.pdf": "6dae82086cef1d0e7055d154563a05db04bee8e939c6c9aea568a9bd60f8a4a2",
+    "doc_13_key.pdf": "fe86bccfdecac7040499839c87e61ff5a15f204964b4a282c461a321270fc2dd",
+    "doc_14_key.pdf": "4936c52d1443097c9ec19288a13d7c734d4b19171b511b7f03cbbe6f7ba829f5",
+    "doc_15_key.pdf": "58a1453247f15d9aaf42a984eb4894c944c07219546c8751b473719ca2bb948e",
+    "doc_16_key.pdf": "096caccdb31621d06f08d2399f705946f3e79accedaefa9b7b4b1b3363dd5ad1",
+    "doc_17_key.pdf": "315d8208bc57f7e1b059ff6bd4c78b424e338826692e20563d2c34d718e0e970",
+    "doc_18_key.pdf": "eacc267675cd6676d9c85b8123b25228b8469a4383857772f7e305f79e90b2ae",
+    "doc_19_key.pdf": "4a84d22b600204a28c26bcfa4ff205589d7c0a21ae91a61b9e59dec21a1cbcbd",
+    "doc_20_key.pdf": "a029ff6b1fd8ef2e29ffe42f9501810df31bc5d06aab5e884cd1572ef0b02d80",
+    "doc_21_key.pdf": "4e344308d4e74dd7afbdfef14d1c1d307d56b41912a3c4639d59b57938f460be",
+    "doc_22_key.pdf": "fd8688098f938837cfdea590e6ae68feaf5509fa6ff9889273e3a0838e2bffe7",
+    "doc_23_key.pdf": "4f75829b292c8e69d9d07cb13a5a184d4496cc19e317cd8830439c1220dc1947",
+    "doc_24_key.pdf": "66050eaed0e4a24888b92cc9271eb3159bf101bcb690d560552a32bf49e3edc6",
+    "doc_25_key.pdf": "d8098e9221244d93d06f6bb9b2b4e1ca9b439a2d86bb6b3244fe96d5cbba9bc1",
+    "doc_26_key.pdf": "7791e1b56abd7bb3748d3521c021a5a8d8d791cca15a4d60a3c55b466f211c36",
+    "doc_27_key.pdf": "c87ad876175e3fb70c9808541db38bb1264f33bebd25c33c724055ec3689b550"
+  },
+  "patientGroups": {
+    "1046": [
+      "doc_05.pdf",
+      "doc_06.pdf",
+      "doc_09.pdf",
+      "doc_12.pdf",
+      "doc_13.pdf",
+      "doc_18.pdf"
+    ],
+    "1055": [
+      "doc_03.pdf",
+      "doc_15.pdf",
+      "doc_17.pdf",
+      "doc_26.pdf",
+      "doc_27.pdf"
+    ],
+    "1060": [
+      "doc_04.pdf",
+      "doc_07.pdf",
+      "doc_08.pdf",
+      "doc_10.pdf",
+      "doc_11.pdf",
+      "doc_25.pdf"
+    ],
+    "1066": [
+      "doc_02.pdf",
+      "doc_21.pdf",
+      "doc_22.pdf",
+      "doc_24.pdf"
+    ],
+    "1073": [
+      "doc_01.pdf",
+      "doc_14.pdf",
+      "doc_16.pdf",
+      "doc_19.pdf",
+      "doc_20.pdf",
+      "doc_23.pdf"
+    ]
+  }
+}

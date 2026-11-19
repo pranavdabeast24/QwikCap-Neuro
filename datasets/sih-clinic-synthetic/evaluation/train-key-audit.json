@@ -1,0 +1,152 @@
+{
+  "format": "qwikcap-sih-clinic-train-key-audit-v1",
+  "documents": 28,
+  "pages": 38,
+  "literalRows": 581,
+  "physicalTableRowFragments": 583,
+  "expectedRawNormalization": "Unicode NFKC and whitespace folding only. Physical wrapped cells and continuation fragments retained in each row.",
+  "annotationDecoding": "Four PDFium U+0002 artifacts in labels or choice labels were transcribed as printed hyphens, independently checked in pypdf text. Expected raw-value cells contain no such artifacts.",
+  "catalogMappedRows": 572,
+  "keyOnlyRows": 9,
+  "keyOnlyFields": {
+    "total28": 2,
+    "hit6_total": 5,
+    "total28_v2": 2
+  },
+  "patientGroups": {
+    "1040": 6,
+    "1032": 6,
+    "1036": 5,
+    "1042": 6,
+    "1031": 5
+  },
+  "instrumentCounts": {
+    "duke_neuroradiology_headache_questionnaire_patient": 3,
+    "patient_records": 5,
+    "image_information_brain_scan": 5,
+    "duke_neuroradiology_headache_questionnaire": 2,
+    "image_information_ct_dsm_or_fluroscopic_guided": 2,
+    "image_information_spine_mri": 3,
+    "csf_volume_provocation_form": 2,
+    "image_information_ct_myelogram": 1,
+    "hit6": 5
+  },
+  "issues": [],
+  "textArtifacts": [
+    {
+      "keyFile": "doc_07_key.pdf",
+      "page": 1,
+      "field": "scan_pre_post_v2_v2_dsm",
+      "column": 1,
+      "controlCodepoints": [
+        2
+      ]
+    },
+    {
+      "keyFile": "doc_12_key.pdf",
+      "page": 1,
+      "field": "scan_pre_post",
+      "column": 1,
+      "controlCodepoints": [
+        2
+      ]
+    },
+    {
+      "keyFile": "doc_24_key.pdf",
+      "page": 1,
+      "field": "headache_quality___3",
+      "column": 3,
+      "controlCodepoints": [
+        2
+      ]
+    },
+    {
+      "keyFile": "doc_26_key.pdf",
+      "page": 1,
+      "field": "scan_pre_post_v2_v2_dsm",
+      "column": 1,
+      "controlCodepoints": [
+        2
+      ]
+    }
+  ],
+  "normalizationActions": [
+    {
+      "keyFile": "doc_06_key.pdf",
+      "field": "other_specialists___5",
+      "action": "Joined label-only continuation from next key page",
+      "page": 3
+    },
+    {
+      "keyFile": "doc_24_key.pdf",
+      "field": "prior_tves",
+      "action": "Joined wrapped variable identifier without spaces"
+    },
+    {
+      "keyFile": "doc_25_key.pdf",
+      "field": "med_topiramate_v2",
+      "action": "Joined label-only continuation from next key page",
+      "page": 3
+    }
+  ],
+  "inputSHA256": {
+    "doc_01_key.pdf": "3eab827c8e09c7a5f1cd3b8c8dadd428038695d953fe624dc2421a13cd3122d9",
+    "doc_02_key.pdf": "cbbb6161411506da6714b34e5d553915cd738a4d09302741c934ebb5b94459ff",
+    "doc_03_key.pdf": "7a5e27ecd038e64fc802bf6e8b49d07b67919b5066a389250b9002c1b3f76e4e",
+    "doc_04_key.pdf": "205d653e1b74dffa30768cdb9fc446f93774e4726f1b11d8774edf887f6fee05",
+    "doc_05_key.pdf": "de7f16e468931a9c5a4728f15b60194f1e5302f541eeb2bb15b052f16e40320b",
+    "doc_06_key.pdf": "776e3a083d3d555a05d9a76119d5922aead5977a5de68b9c498a8cb1e39f7178",
+    "doc_07_key.pdf": "317874647bfb0aac7d71a6b84fc7511265a1178be7fad1ee9cc65c49c740903f",
+    "doc_08_key.pdf": "b097c05b40c7d646d849798b4ec964c2a734f9105e98a27f2475515c5d96e802",
+    "doc_09_key.pdf": "deba105178cfaabf6e8610f1a8428ee6abf93bdd763e0e70a7f0be1f8aef9f3a",
+    "doc_10_key.pdf": "b446d20f4a254a4ca3a3da0bf1d44d326e59206bec33b6b74b8090252fe66b0b",
+    "doc_11_key.pdf": "8707a1138a4d17ea73b63c7b43888a637d775c9ced2bf220672e2977f25bc629",
+    "doc_12_key.pdf": "6e5f6469de85cc553bde3a448e211fe727b754578a994e8c938194a2d953a5cb",
+    "doc_13_key.pdf": "a68a1d2445348c21b19f2415b793fe3ef6315001f167557d2580373d37382dd8",
+    "doc_14_key.pdf": "1c498d097e68aaf47c080e887de677410f0ad27304964f51a8e2becc7c26989f",
+    "doc_15_key.pdf": "c053dcc3b80fa3d3d18b6107d9d1adfa58a4e19cc722e401d4232df6cdbf3a24",
+    "doc_16_key.pdf": "9199821fc461acac35e23447739b26adf5aa2fe032d7144bb02bd36022d2faed",
+    "doc_17_key.pdf": "73b366d7b99c7a62ddf38bba11793e846c83081d930c56ab438b52a952fd50ce",
+    "doc_18_key.pdf": "1e4270ef463c5a4b4d0afa5d326672d0953d725c2766744055fd1973e2ee3342",
+    "doc_19_key.pdf": "ab3d5126377a7215db7555461b4b8a3cda94abc14f0a0fcae921c4144863493e",
+    "doc_20_key.pdf": "e218ea01aa2e849b393ac67ba5fb9ea3099a1521ba348c80538bb29f0b9704ad",
+    "doc_21_key.pdf": "cfddb5e6c253e1236b6abed2708a3f7aa37c3b747449f74c553902649b3b9a68",
+    "doc_22_key.pdf": "a87c0ea4ec59ffd4d1c6523eefe7b7421927f61bc7972cdc8dfd36a6dc4ca5da",
+    "doc_23_key.pdf": "b728d3f48bf5dd979d6e0454d6e9238733f557de35966e744a39210738a73386",
+    "doc_24_key.pdf": "e031f127e0a8783f0ea4fe412df63a57a65ff295d99d864ec1311090f879772c",
+    "doc_25_key.pdf": "99983064a4ad352454413cd2a5ef9987e81a7896df42279d1a52052954a2f77a",
+    "doc_26_key.pdf": "2cdcc959e026b512a783f940db24cfafaebb60753c13e28bd4b955401ad9141b",
+    "doc_27_key.pdf": "8157057ea1d52b1b0c773706d3a03a826096999bd64f4d765362aafede129c36",
+    "doc_28_key.pdf": "d277af0db4bd11c5a23f80e19b834b579e187958cb2e95011c441b8d1e07f856"
+  },
+  "catalogSHA256": "e8a2c021405da7defead007e9f8e7f5f3852ae926c35f2fb687a474e6f8faf53",
+  "canonicalValidationPassed": true,
+  "expectedSHA256": "68bb280ddd065b7963bf2cb9908c1503089f081fcbe9c6e00bdb5c08d9240d2d",
+  "canonicalChoiceDateNumericChecks": "All explicit mapped key values pass the independent comparator canonical type/choice/date validators.",
+  "minimumZeroRowsFromKeyedFamilies": 483,
+  "zeroCoverageLimit": "Additional entirely unchecked source families require the independent train-form census; keys alone do not establish their visibility.",
+  "inputUnchanged": true,
+  "variableSequenceCrossCheckPassed": true,
+  "visualChecks": [
+    {
+      "keyFile": "doc_01_key.pdf",
+      "page": 1,
+      "purpose": "Four-column table and complete wrapped raw-value cells"
+    },
+    {
+      "keyFile": "doc_06_key.pdf",
+      "page": 3,
+      "purpose": "Label-only continuation has no variable or raw value"
+    },
+    {
+      "keyFile": "doc_24_key.pdf",
+      "page": 1,
+      "purpose": "Choice-label printed hyphen where PDFium emitted U+0002"
+    },
+    {
+      "keyFile": "doc_25_key.pdf",
+      "page": 3,
+      "purpose": "Topiramate label continuation does not create another value row"
+    }
+  ]
+}

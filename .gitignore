@@ -19,6 +19,7 @@ Thumbs.db
 /verification/
 /datasets/*
 !/datasets/sih-synthetic/
+!/datasets/sih-clinic-synthetic/
 /train/
 /test-splits/
 /data/
@@ -74,11 +75,18 @@ qwikcap-project.json
 !examples/quickcap-synthetic-pace-readout.xlsx
 !examples/quickcap-actual-train-readout.xlsx
 !examples/qwikcap-supplied-test-reviewed-readout.xlsx
+!examples/qwikcap-sih-clinic-train-readout.xlsx
+!examples/qwikcap-sih-clinic-test-readout.xlsx
 !/datasets/sih-synthetic/manifest.pdf
 !/datasets/sih-synthetic/train/forms/*.pdf
 !/datasets/sih-synthetic/train/answer_keys/*.pdf
 !/datasets/sih-synthetic/test/forms/*.pdf
 !/datasets/sih-synthetic/test/answer_keys/*.pdf
+!/datasets/sih-clinic-synthetic/manifest.pdf
+!/datasets/sih-clinic-synthetic/train/forms/*.pdf
+!/datasets/sih-clinic-synthetic/train/answer_keys/*.pdf
+!/datasets/sih-clinic-synthetic/test/forms/*.pdf
+!/datasets/sih-clinic-synthetic/test/answer_keys/*.pdf
 !docs/testing/SYNTHETIC_PACE_TWO_APPROVED.jpg
 !docs/testing/SYNTHETIC_PACE_MAPPING.jpg
 !docs/testing/SYNTHETIC_PACE_EXPORT.jpg
