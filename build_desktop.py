@@ -145,7 +145,7 @@ def build(work_dir: Path, dist_dir: Path) -> Path:
     for name in STATIC_RESOURCES:
         gui_options += ["--add-data", f"{ROOT / name}:{Path(name).parent.as_posix()}"]
     if sys.platform == "darwin":
-        gui_options += ["--osx-bundle-identifier", "com.capitolinusventures.quickcapcv"]
+        gui_options += ["--osx-bundle-identifier", "com.capitolinusventures.qwikcap"]
     run(common + gui_options + native_options + [str(ROOT / "desktop.py")], environment)
     result = dist_dir / (f"{APP_BASENAME}.app" if sys.platform == "darwin" else APP_BASENAME)
     executable = result / f"Contents/MacOS/{APP_BASENAME}" if sys.platform == "darwin" else result / f"{APP_BASENAME}.exe"

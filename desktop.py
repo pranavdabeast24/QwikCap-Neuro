@@ -19,7 +19,7 @@ from tkinter import ttk, filedialog, messagebox
 
 from PIL import Image, ImageTk
 
-from branding import OWNERSHIP_NOTICE, PRODUCT_NAME
+from branding import COMPANY_NAME, COPYRIGHT_NOTICE, OWNERSHIP_NOTICE, PRODUCT_NAME
 from desktop_model import DesktopSession, InputError, Cancelled
 from server import ROOT, validate_values, strict_json_loads
 from form_types import normalized_drag, percentage_region, validate_region
@@ -125,9 +125,10 @@ class DesktopApp:
         self.root.option_add("*Font", (font, 12))
         self.style.configure("TFrame", background="#f2f4f7")
         self.style.configure("TLabel", background="#f2f4f7", foreground="#253448")
-        self.style.configure("Title.TLabel", font=(font, 25, "bold"), foreground="#18314c")
+        self.style.configure("Title.TLabel", font=(font, 20, "bold"), foreground="#18314c")
         self.style.configure("Heading.TLabel", font=(font, 14, "bold"))
         self.style.configure("Small.TLabel", foreground="#617084", font=(font, 11))
+        self.style.configure("Credit.TLabel", foreground="#7d8793", font=(font, 9))
         self.style.configure("Error.TLabel", foreground="#a13b22", font=(font, 11))
         self.style.configure("Treeview", rowheight=31, font=(font, 11))
         self.style.configure("StagingQueue.Treeview", rowheight=48)
@@ -163,7 +164,6 @@ class DesktopApp:
         brand = ttk.Frame(header)
         brand.grid(row=0, column=0, sticky="w")
         ttk.Label(brand, text=PRODUCT_NAME, style="Title.TLabel").grid(row=0, column=0, sticky="w")
-        ttk.Label(brand, text=OWNERSHIP_NOTICE, style="Small.TLabel").grid(row=1, column=0, sticky="w", pady=(2, 0))
         ttk.Label(header, textvariable=self.mode_label, style="Small.TLabel", width=1).grid(row=0, column=1, sticky="ew", padx=20)
         self.project_label = ttk.Label(header, text="Unsaved project", style="Small.TLabel")
         self.project_label.grid(row=0, column=3, sticky="e")
@@ -194,6 +194,7 @@ class DesktopApp:
         ttk.Label(footer, textvariable=self.status, style="Small.TLabel").grid(row=0, column=1, sticky="ew")
         self.cancel_button = ttk.Button(footer, text="Cancel processing", command=self.cancel_processing, state="disabled")
         self.cancel_button.grid(row=0, column=2)
+        ttk.Label(footer, text=COMPANY_NAME, style="Credit.TLabel").grid(row=0, column=3, sticky="e", padx=(12, 0))
 
     def _messages(self, parent, variable, height=2):
         frame = ttk.Frame(parent)
@@ -1110,7 +1111,7 @@ class DesktopApp:
         add(sample_menu, "Friendly example", lambda: self.load_template_sample("friendly"))
         add(sample_menu, "Raw example", lambda: self.load_template_sample("raw"))
         help_menu.add_cascade(label="Fictional practice templates", menu=sample_menu)
-        help_menu.add_command(label=f"About {PRODUCT_NAME}", command=lambda: messagebox.showinfo(PRODUCT_NAME, OWNERSHIP_NOTICE + "\n\nNative local form review and spreadsheet mapping.\n\nUpload a PDF or image, draw masks around answer areas and name the fields you need. Save a reusable named extraction type containing only rules and masks.\n\nReview and confirm every answer against its source, then approve records before spreadsheet export. Matching page shapes do not establish that two documents use the same layout.\n\nProjects retain original documents, answers and unfinished type drafts; reopening requires fresh review.", parent=self.root))
+        help_menu.add_command(label=f"About {PRODUCT_NAME}", command=lambda: messagebox.showinfo(PRODUCT_NAME, OWNERSHIP_NOTICE + "\n" + COPYRIGHT_NOTICE + "\n\nNative local form review and spreadsheet mapping.\n\nUpload a PDF or image, draw masks around answer areas and name the fields you need. Save a reusable named extraction type containing only rules and masks.\n\nReview and confirm every answer against its source, then approve records before spreadsheet export. Matching page shapes do not establish that two documents use the same layout.\n\nProjects retain original documents, answers and unfinished type drafts; reopening requires fresh review.", parent=self.root))
         menu.add_cascade(label="Help", menu=help_menu)
         self.root.configure(menu=menu)
 
@@ -1748,7 +1749,7 @@ class DesktopApp:
         frame.columnconfigure(0, weight=1)
         frame.rowconfigure(3, weight=1)
         ttk.Label(frame, text="One patient, one reviewed spreadsheet row", style="Heading.TLabel").grid(row=0, column=0, sticky="w")
-        guidance = "Enter the study record ID yourself. The PACE reader checks printed identities and blocks conflicting sources." if self.snapshot.get("profile") == "pace-printed-v1" else "Enter the study record ID yourself. QuickCap does not match patient identities automatically."
+        guidance = "Enter the study record ID yourself. The PACE reader checks printed identities and blocks conflicting sources." if self.snapshot.get("profile") == "pace-printed-v1" else f"Enter the study record ID yourself. {PRODUCT_NAME} does not match patient identities automatically."
         ttk.Label(frame, text=guidance + " The ID cover is page 1; the original PDFs follow in the order below.", style="Small.TLabel", wraplength=790).grid(row=1, column=0, sticky="ew", pady=(8, 10))
         identifier = ttk.Frame(frame)
         identifier.grid(row=2, column=0, sticky="ew", pady=(0, 12))
@@ -2181,7 +2182,7 @@ class DesktopApp:
         def perform():
             path = None if save_as else self.snapshot.get("projectPath")
             if not path:
-                path = filedialog.asksaveasfilename(parent=self.root, title=f"Save {PRODUCT_NAME} project", defaultextension=".json", initialfile="quickcap-project.json", filetypes=[(f"{PRODUCT_NAME} project", "*.json")])
+                path = filedialog.asksaveasfilename(parent=self.root, title=f"Save {PRODUCT_NAME} project", defaultextension=".json", initialfile="qwikcap-project.json", filetypes=[(f"{PRODUCT_NAME} project", "*.json")])
             if not path:
                 return
             self._submit("Saving local project", lambda: self.session.save_project(path), lambda _: callback() if callback else self.status.set("Project saved. Reopening requires fresh field confirmation and approval."))

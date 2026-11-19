@@ -189,7 +189,7 @@ def verify(output, dist, report):
                 zipped.write(path, path.relative_to(dist).as_posix())
     report["package"] = {"file": archive.name, "bytes": archive.stat().st_size,
                          "sha256": hashlib.sha256(archive.read_bytes()).hexdigest()}
-    relocation = Path(tempfile.mkdtemp(prefix="QuickCap portable 測試 Café 😀 ", dir=os.environ.get("RUNNER_TEMP")))
+    relocation = Path(tempfile.mkdtemp(prefix="QwikCap portable 測試 Café 😀 ", dir=os.environ.get("RUNNER_TEMP")))
     require(APP not in relocation.resolve().parents, "Package relocation must be outside the checkout")
     with zipfile.ZipFile(archive) as zipped:
         zipped.extractall(relocation)

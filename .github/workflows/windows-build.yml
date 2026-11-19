@@ -50,8 +50,8 @@ jobs:
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: QuickCapCV-Windows-x64
-          path: dist/windows/QuickCapCV-Windows-x64.zip
+          name: QwikCap-Windows-x64
+          path: dist/windows/QwikCap-Windows-x64.zip
           if-no-files-found: error
           retention-days: 7
       - name: Record generic job outcome
@@ -65,7 +65,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: QuickCapCV-Windows-verification
+          name: QwikCap-Windows-verification
           path: work/windows-ci/reports/
           if-no-files-found: warn
           retention-days: 7

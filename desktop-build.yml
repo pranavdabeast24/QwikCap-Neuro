@@ -1,6 +1,6 @@
 # INACTIVE TEMPLATE: review paths, then copy to .github/workflows/ to enable.
 # This workflow accepts synthetic fixtures only; do not add patient/private data.
-name: Build QuickCap (CV) desktop
+name: Build QwikCap desktop
 
 on:
   workflow_dispatch:
@@ -77,15 +77,15 @@ jobs:
           PY
       - name: Archive Mac app with bundle permissions and links
         if: runner.os == 'macOS'
-        run: ditto -c -k --sequesterRsrc --keepParent dist/desktop/QuickCapCV.app dist/QuickCapCV-macOS.zip
+        run: ditto -c -k --sequesterRsrc --keepParent dist/desktop/QwikCap.app dist/QwikCap-macOS.zip
       - name: Archive complete Windows application folder
         if: runner.os == 'Windows'
         shell: pwsh
-        run: Compress-Archive -Path dist/desktop/QuickCapCV -DestinationPath dist/QuickCapCV-Windows.zip
+        run: Compress-Archive -Path dist/desktop/QwikCap -DestinationPath dist/QwikCap-Windows.zip
       - name: Retain native build for manual review
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: QuickCapCV-${{ matrix.os }}
-          path: dist/QuickCapCV-*.zip
+          name: QwikCap-${{ matrix.os }}
+          path: dist/QwikCap-*.zip
           if-no-files-found: error
           retention-days: 7
