@@ -4,7 +4,7 @@ To run the packaged Windows app without installing Python, use [WINDOWS.md](WIND
 The instructions below are for source development.
 
 The repository contains the desktop and earlier browser source, build scripts,
-tests, explicitly fictional practice files, and the [original supplied synthetic train/test packet](../datasets/sih-synthetic/README.md). Run the commands below from the
+tests, fictional practice files, the [current synthetic SIH clinic packet](../datasets/sih-clinic-synthetic/README.md), and the [earlier PACE packet](../datasets/sih-synthetic/README.md). Run the commands below from the
 repository root. Python 3.12 with Tcl/Tk support is required for the desktop UI.
 The launchers use the clone's `.venv`; they do not install dependencies.
 For the scope of this transfer and the remaining work, read [HANDOFF.md](HANDOFF.md).
@@ -52,15 +52,27 @@ On 2026-11-13, a fresh macOS arm64 environment installed the unchanged runtime
 and build pins. All 156 source tests passed with Python 3.12.14 and Tk 9.0.
 See [the environment record](testing/ENVIRONMENT_MACOS.json),
 [test output](testing/UNIT_TEST_RESULTS_MACOS.txt), and
-[BUILD_ENVIRONMENT.md](BUILD_ENVIRONMENT.md) for the current evidence and the
-historical `cfd0762` snapshot. Rerun [TESTING.md](TESTING.md) on each new machine.
-The current QwikCap build passes 283 source tests on Mac with seven Windows-only
-skips. Its Windows build uses Python 3.12.10 and passes 283 tests with one
-POSIX-only skip and all 11 acceptance stages. See [the current Windows evidence](testing/QWIKCAP_WINDOWS_2026-11-19.md).
+[BUILD_ENVIRONMENT.md](BUILD_ENVIRONMENT.md) for that historical environment.
+Rerun [TESTING.md](TESTING.md) on each new machine. The hardened clinic source
+at `da33054` passes 316 Mac tests with seven Windows-only skips. Its
+[current Windows run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44506631638)
+and final package evidence are linked in [the hardening record](testing/SIH_CLINIC_HARDENING_2026-11-19.md).
+The frozen-reader Windows run passed 311 tests and 12 stages at `e2fbd2e`.
+The older [rename evidence](testing/QWIKCAP_WINDOWS_2026-11-19.md) covers 283 tests
+and 11 stages before the clinic reader.
+
+The [actual clinic evaluation](testing/SIH_CLINIC_2026-11-19.md) completed on Mac
+with a runtime frozen before test access. Later hardening is a separate change.
+The packet is now used material, so replaying it does not provide a fresh
+held-out score. Use the [clinic delivery](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-sih-clinic-2026-11-19)
+for current Mac arm64 and Windows x64 packages. Intel Mac support, notarization,
+and an actual-packet Windows laptop walkthrough remain unverified.
 
 ## First fictional workflow
 
-For the PACE study references, follow [the patient-bundle workflow](PACE_WORKFLOW.md). It loads the optional expected-field catalog and combines ordered patient PDFs into one review row. The general custom-field route below remains available.
+For the new `sih_clinic_dataset/` packet, follow [the SIH clinic walkthrough](SIH_CLINIC_WORKFLOW.md). Select **Read SIH clinic forms** and include registration in each patient group. The reader verifies the operator's study ID against registration, then links source MRN, name, and birth date. Review and approve the patient before exporting one row with 512 destination columns.
+
+Use **Read PACE printed forms** for the earlier `sih_dataset/` packet, following [its walkthrough](PACE_PRINTED_WALKTHROUGH.md). Use **Read NEU clinic forms** for the older `Form NEU-xxx` layouts, which export separate documents into 45 staging columns. These explicit choices do not replace the custom-field default below.
 
 1. Start with a practice PDF from `samples/`. The initial workspace has no
    fields. Name a form type, create answer masks, give each field a unique
@@ -95,6 +107,7 @@ macOS:
 .venv/bin/python build_desktop.py --work-dir work/desktop-build --dist-dir dist/macos
 .venv/bin/python verify_desktop_bundle.py dist/macos/QwikCap.app --output verification/bundle
 .venv/bin/python tools/verify_custom_masks.py --bundle dist/macos/QwikCap.app --output verification/custom-masks-bundle
+.venv/bin/python tools/verify_sih_clinic.py --bundle dist/macos/QwikCap.app --output verification/sih-clinic-bundle
 ```
 
 Windows PowerShell:
@@ -105,12 +118,14 @@ Windows PowerShell:
 .venv\Scripts\python.exe build_desktop.py --work-dir work\desktop-build --dist-dir dist\windows
 .venv\Scripts\python.exe verify_desktop_bundle.py dist\windows\QwikCap --output verification\bundle
 .venv\Scripts\python.exe tools\verify_custom_masks.py --bundle dist\windows\QwikCap --output verification\custom-masks-bundle
+.venv\Scripts\python.exe tools\verify_sih_clinic.py --bundle dist\windows\QwikCap --output verification\sih-clinic-bundle
 ```
 
-The recorded Mac build produced `QuickCapCV.app`, and both the source and bundled
-worker passed the ten custom-mask acceptance groups. See [TESTING.md](TESTING.md)
-for the reports and limits. These checks do not exercise native mouse drawing
-or a complete native end-to-end workflow.
+Current builds produce `QwikCap.app` on Mac and `QwikCap\QwikCap.exe` on Windows.
+The packaged custom-mask and clinic checks generate fictional fixtures and use
+the real companion worker. They do not exercise native mouse drawing or the
+complete interactive workflow. See [TESTING.md](TESTING.md) for their scope and
+the separate supplied-packet results.
 
 The builder preserves earlier output and asks for a new destination when one
 already exists. Keep the complete macOS `.app` or Windows application directory,

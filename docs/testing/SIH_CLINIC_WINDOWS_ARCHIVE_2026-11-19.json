@@ -1,0 +1,66 @@
+{
+  "status": "passed",
+  "sourceCommit": "e2fbd2e8bbb28d31427c229ad18cae5f896c9d93",
+  "githubRun": 44501222833,
+  "package": {
+    "file": "QwikCap-Windows-x64.zip",
+    "bytes": 48471349,
+    "sha256": "4b21d4ed809c83ef5eabc3e629384c3446938363ebc16c69183223cc37dfc989"
+  },
+  "archiveEntries": 1110,
+  "acceptanceStages": 12,
+  "sourceTests": 311,
+  "sourceSkips": 1,
+  "sourceSkippedTests": [
+    "test_worker_group_cleanup_stops_child_process (test_processes.ProcessCleanupTests.test_worker_group_cleanup_stops_child_process)"
+  ],
+  "outerNativeFilesHashVerified": 76,
+  "embeddedArchiveFilesHashVerified": 125,
+  "embeddedPEFiles": 75,
+  "noticeFilesHashVerified": 32,
+  "approvedResourcesHashVerified": 24,
+  "executablesX64": true,
+  "guiWorkerCatalogsIdentical": true,
+  "catalogFields": 512,
+  "clinicModulesPresentInBothExecutables": [
+    "clinic_profile",
+    "clinic_narratives",
+    "extraction_profiles",
+    "pipeline"
+  ],
+  "guiWorkerClinicModuleBytecodeIdentical": true,
+  "clinicModuleBytecodeSHA256": {
+    "clinic_profile": "829c88728de36c3c18c37ce92e4dc229c8d77dc7974745aff0609412c193082c",
+    "clinic_narratives": "fce3ab38723d6bd62d6dc16151028dd6b796522c4f36d26c1dff3287406e7c4d",
+    "extraction_profiles": "b6b9518127282fb6f7468e4c89101af46905945278609cc7ca68ce4220c4a535",
+    "pipeline": "49befeb74df716064ab37546666936a5e6c3f727da22018c733d98d1e21c5099"
+  },
+  "generatedFixtureDocuments": 10,
+  "generatedExtractedFields": 60,
+  "generatedExportCells": 240,
+  "clinicAcceptanceGroups": 7,
+  "clinicLiteralFields": 14,
+  "clinicPatientRows": 1,
+  "clinicCSVXLSXCellsMatched": 1024,
+  "manifestSHA256": "32f217a080707d7f8a5da3c7ed2414e7e3bada2b6a2fda7740f4344986019ee1",
+  "dependencies": {
+    "Pillow": "12.3.0",
+    "pypdfium2": "5.14.0",
+    "reportlab": "4.4.9",
+    "pypdf": "6.10.0",
+    "openpyxl": "3.1.5",
+    "defusedxml": "0.7.1",
+    "pyinstaller": "6.22.3"
+  },
+  "python": "3.12.10",
+  "tesseractVersion": "tesseract v5.5.3.20260724",
+  "ocrBundled": false,
+  "windowsExecutionPerformedByAudit": false,
+  "scope": "Static audit on macOS of downloaded native Windows CI artifacts. CI checks use generated fixtures. No supplied clinic train or test packet was accessed or evaluated by this audit.",
+  "limitations": [
+    "Unsigned development artifact",
+    "OCR engine installed separately",
+    "No actual clinic dataset Windows GUI walkthrough",
+    "Component inventory is not an SPDX or CycloneDX SBOM"
+  ]
+}

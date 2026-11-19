@@ -1,0 +1,85 @@
+{
+  "status": "passed",
+  "sourceCommit": "da33054561d836ff336e9ad72fec07e49bac21de",
+  "archive": "/Users/aorta/Documents/Codex/2026-10-25/re/work/qwikcap-sih-clinic-2026-11-19/mac-wrapper-hardened/QwikCap-Mac-arm64.zip",
+  "archiveBytes": 43017313,
+  "archiveSHA256": "609a0fa6681bae0eba6071f028c2fc8df30392e4e13945445ce5abea1d412dd8",
+  "archiveCRCVerified": true,
+  "archiveEntries": 427,
+  "manifestSHA256": "69496ce38bcf903d6c62729ffd29a49c0015236c05fa4809468fe7905e622b97",
+  "regularAppFiles": 286,
+  "appSymlinks": 46,
+  "nativeFiles": 27,
+  "embeddedHelperPayloads": 24,
+  "embeddedHelperMachOFiles": 24,
+  "noticeFiles": 32,
+  "installedNoticePackages": 9,
+  "python": "3.12.14",
+  "architecture": "arm64",
+  "tclVersion": "9.0.4",
+  "tkVersion": "9.0.4",
+  "appModified": false,
+  "signaturePreserved": true,
+  "zipRoundtripBytesModesAndSymlinksVerified": true,
+  "catalogFields": 512,
+  "guiWorkerCatalogIdentical": true,
+  "sourceCodeVerified": {
+    "GUI": {
+      "sourceCodeMatches": [
+        "branding",
+        "desktop_model",
+        "runtime_paths",
+        "form_types",
+        "pipeline",
+        "templates",
+        "server",
+        "neurology_profile",
+        "pace_profile",
+        "clinic_profile",
+        "clinic_narratives",
+        "extraction_profiles",
+        "field_catalog",
+        "limits",
+        "desktop"
+      ],
+      "clinicBytecodeSHA256": {
+        "clinic_profile": "829c88728de36c3c18c37ce92e4dc229c8d77dc7974745aff0609412c193082c",
+        "clinic_narratives": "0b9bf199841ff7cef62e2602bb8c2426dd73eb23f9460ccfe6d555c39e277f56",
+        "extraction_profiles": "b6b9518127282fb6f7468e4c89101af46905945278609cc7ca68ce4220c4a535",
+        "pipeline": "49befeb74df716064ab37546666936a5e6c3f727da22018c733d98d1e21c5099"
+      }
+    },
+    "worker": {
+      "sourceCodeMatches": [
+        "branding",
+        "pipeline",
+        "worker",
+        "templates",
+        "template_worker",
+        "neurology_profile",
+        "pace_profile",
+        "clinic_profile",
+        "clinic_narratives",
+        "extraction_profiles",
+        "field_catalog",
+        "limits",
+        "source_bundle",
+        "bundle_worker",
+        "desktop_worker"
+      ],
+      "clinicBytecodeSHA256": {
+        "clinic_profile": "829c88728de36c3c18c37ce92e4dc229c8d77dc7974745aff0609412c193082c",
+        "clinic_narratives": "0b9bf199841ff7cef62e2602bb8c2426dd73eb23f9460ccfe6d555c39e277f56",
+        "extraction_profiles": "b6b9518127282fb6f7468e4c89101af46905945278609cc7ca68ce4220c4a535",
+        "pipeline": "49befeb74df716064ab37546666936a5e6c3f727da22018c733d98d1e21c5099"
+      }
+    }
+  },
+  "packagedClinicChecks": 7,
+  "packagedClinicLiteralFields": 14,
+  "packagedClinicExportCells": 1024,
+  "notarized": false,
+  "intelSupported": false,
+  "legalClearanceClaimed": false,
+  "scope": "Mac arm64 post-evaluation hardening wrapper and static inventory. Generated packaged clinic checks are separate from actual supplied-dataset native GUI acceptance. This does not replace the completed frozen evaluation or create a fresh holdout."
+}

@@ -1,12 +1,53 @@
 # Testing and portable evidence
 
-## Current QwikCap packages, 2026-11-19
+## Current SIH clinic validation, 2026-11-19
+
+The current target is the supplied `sih_clinic_dataset/` packet, copied as [datasets/sih-clinic-synthetic](../datasets/sih-clinic-synthetic/README.md). Select **Read SIH clinic forms**, the `sih-clinic-v1` profile. The [clinic walkthrough](SIH_CLINIC_WORKFLOW.md) covers patient grouping, source review, mapping, and export. The older PACE and NEU packets require their own readers.
+
+The [master clinic report](testing/SIH_CLINIC_2026-11-19.md) records the frozen evaluation at source `e2fbd2e`. Native train acceptance preceded a 72-file freeze at `2026-11-19T10:10:31.871790Z`. The freeze commit `e5bf722` preceded test and index access. All 72 files remained unchanged through the native test export at `2026-11-19T10:28:00.534537Z`. The [completion snapshot](testing/SIH_CLINIC_FROZEN_EVALUATION_COMPLETE_2026-11-19.json) records that historical boundary.
+
+Train covers 28 forms, 43 pages, and five patients. Test covers 27 forms, 42 pages, and five patients. Native Mac review confirmed 926 train and 893 test fields, approved every patient, confirmed the mapping, and exported five rows with 512 columns per split. There were zero manual value edits. Independent [train](testing/SIH_CLINIC_TRAIN_NATIVE_2026-11-19.json) and [test](testing/SIH_CLINIC_TEST_NATIVE_2026-11-19.json) audits match all 2,560 typed cells in each workbook to the actual saved project and verify every original PDF hash.
+
+Strict train agreement is 558/572 mapped key values, 97.55%, and 2,379/2,560 full-grid cells. Strict test agreement is 495/508 original exact-key destination values, 97.44%. Expanding one test-key wildcard to 16 catalog checkbox columns yields 500/524, 95.42%, and 2,439/2,560 full-grid cells. Both strict complete-key comparisons fail. Export fidelity remains 2,560/2,560 for each actual reviewed project. Keep these measures separate.
+
+The [train](testing/SIH_CLINIC_TRAIN_RECONCILIATION_2026-11-19.json) and [test](testing/SIH_CLINIC_TEST_RECONCILIATION_2026-11-19.json) reconciliations explain unsupported reader codes, retained source punctuation, conservative blanks for unasserted findings, and three threshold-negative coverage gaps per split. The master report records the literal and normalized key denominators. Neither answer keys nor absent assertions supply app values.
+
+## Post-evaluation hardening and current packages
+
+Independent invented cases found false positives for uncertain narrative findings and negated procedure terms after the frozen evaluation ended. The regression commit is `4c41fb3`; the fix is `da33054`. The current Mac source suite passes 316 tests with seven Windows-only skips. The [hardening record](testing/SIH_CLINIC_HARDENING_2026-11-19.md) records the regression cases, all-55-form replay, current package checks, and archive hashes. This later replay is a regression check on used material, not a fresh held-out evaluation.
+
+The [current Windows run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44506631638) targets the hardened runtime. The earlier [frozen-source run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44501222833) passed 311 tests with one POSIX-only skip and all 12 gates. The [clinic release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-sih-clinic-2026-11-19) uses the hardened runtime rather than that earlier binary. Windows generated-fixture checks do not establish an actual-packet Windows GUI walkthrough. Mac arm64 is the packaged Mac target; Intel Mac support and notarization remain unverified.
+
+## Reproduce the generated clinic check
+
+Run from the source environment described in [GETTING_STARTED.md](GETTING_STARTED.md).
+
+```sh
+.venv/bin/python -B tools/verify_sih_clinic.py --output verification/sih-clinic-source
+.venv/bin/python -B tools/verify_sih_clinic.py --bundle dist/macos/QwikCap.app --output verification/sih-clinic-bundle
+```
+
+On Windows, use `.venv\Scripts\python.exe`, `tools\verify_sih_clinic.py`, and `--bundle dist\windows\QwikCap`. The tool generates invented registration and HIT-6 forms. It reads no supplied documents, answer keys, or manifest. Its seven groups check the explicit profile, transactional identity rejection, 14 literal fields, confirmation and mapping gates, independently reopened CSV and XLSX, and project reopening. Each export has one patient row and 512 columns. The two exports provide 1,024 cell comparisons.
+
+`--bundle` exercises the actual packaged companion through `DesktopSession`. It does not launch the native UI or establish that menus and file dialogs work. Native testing found a separate clinic import guard that rejected the reader before file selection. The regression in `tests/test_desktop_reader_ui.py` now calls the actual callback, and `desktop.py` uses the shared patient-profile predicate.
+
+For raw diagnostics on the supplied clinic train forms, run:
+
+```sh
+.venv/bin/python -B tools/extract_pace_dataset.py --profile sih-clinic-v1 --forms-dir datasets/sih-clinic-synthetic/train/forms --output verification/clinic-train-raw.json
+```
+
+The default profile of this historical tool remains `pace-printed-v1`. Always pass `--profile sih-clinic-v1` for the clinic packet. The command reads forms, not keys, and creates neither approvals nor an app export. Compare actual app projects or workbooks separately with `tools/verify_actual_pace_readout.py` and the clinic packet's audited expectations.
+
+The clinic pages contain native text and handwriting-style fonts, circled options, checkbox marks, tables, and report narratives. They do not measure real handwriting or scan-only OCR. Do not fill source omissions from answer keys, infer every unmentioned finding as zero, or manufacture REDCap completion and reader codes. Keep raw suggestions, source-confirmed manual edits, and reviewed export fidelity separate.
+
+## Historical QwikCap packages, 2026-11-19
 
 The [rename and supplied-packet regression](testing/QWIKCAP_REBRAND_2026-11-19.md) records native Mac startup, 283 passing source tests with seven Windows-only skips, packaged printed-reader checks, and unchanged extraction on all 55 supplied forms. The [QwikCap Windows record](testing/QWIKCAP_WINDOWS_2026-11-19.md) records all 11 acceptance stages, 283 tests with one POSIX-only skip, and an independent audit of the actual portable ZIP. These presentation and packaging changes do not claim a fresh held-out evaluation.
 
-## Supplied evaluation packet in the clone
+## Earlier PACE evaluation packet in the clone
 
-The [original supplied SIH packet](../datasets/sih-synthetic/README.md) now includes 111 unchanged PDFs, seven independent evaluation JSON files, hash manifests, and reproduction commands. The [train app export](../examples/quickcap-actual-train-readout.xlsx) and [reviewed test app export](../examples/qwikcap-supplied-test-reviewed-readout.xlsx) are included unchanged. These are the sources for the supplied-packet rates in the [README](../README.md#results-on-your-supplied-traintest-packet). The earlier generated practice kit is separate.
+The [earlier supplied PACE packet](../datasets/sih-synthetic/README.md) includes 111 unchanged PDFs, seven independent evaluation JSON files, hash manifests, and reproduction commands. The [train app export](../examples/quickcap-actual-train-readout.xlsx) and [reviewed test app export](../examples/qwikcap-supplied-test-reviewed-readout.xlsx) are included unchanged. These are the sources for the historical PACE rates in the [README](../README.md#results-on-your-supplied-traintest-packet). The generated practice kit and the new clinic packet are separate.
 
 The dated reports below retain their historical build names and runtime freeze. Current QwikCap naming and packaging changes do not relabel those measurements as another fresh held-out test. The test set has been used. Future tuning requires fresh held-out material for an independent score.
 
@@ -163,8 +204,9 @@ packaged helper without relying on a Swift command at runtime.
 
 ## Native workflow checks still required
 
-The current build record includes checks of the app name, header, and About
-dialog. Those checks establish branding only.
+Historical build records include checks of the app name, header, and About
+dialog. Those checks establish branding only. The clinic's complete native
+source-to-export runs are recorded in the separate train and test evidence above.
 
 Earlier macOS verification exercised the native coordinate-entry path and
 source-to-export flow. Mouse-drag mask creation was not verified. The model

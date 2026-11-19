@@ -1,0 +1,36 @@
+{
+  "inventedOnly": true,
+  "suppliedDatasetRead": false,
+  "checks": [
+    {
+      "case": "A CSF-venous fistula cannot be excluded.",
+      "field": "scan_findings_v2_v2___4",
+      "value": null,
+      "fieldSpecificIssue": true
+    },
+    {
+      "case": "CSF-venous fistula may be present.",
+      "field": "scan_findings_v2_v2___4",
+      "value": null,
+      "fieldSpecificIssue": true
+    },
+    {
+      "case": "negated procedure descriptor",
+      "field": "baseline_pain_localization___8",
+      "value": null,
+      "fieldSpecificIssue": true
+    },
+    {
+      "case": "negated procedure descriptor",
+      "field": "baseline_pain_quality___4",
+      "value": null,
+      "fieldSpecificIssue": true
+    }
+  ],
+  "frozenFilesUnchanged": 70,
+  "postEvaluationFilesChanged": [
+    "clinic_narratives.py",
+    "tests/test_clinic_narratives.py"
+  ],
+  "mode": "expect safe"
+}

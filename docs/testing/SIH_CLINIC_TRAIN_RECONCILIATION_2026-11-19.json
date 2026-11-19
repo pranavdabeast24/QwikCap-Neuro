@@ -1,0 +1,1494 @@
+{
+  "blank_expected_zero_by_family": [
+    {
+      "blank_expected_zero_cells": 25,
+      "family": "baseline_pain_localization",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "blank_expected_zero_cells": 25,
+      "family": "baseline_pain_localization_2",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "blank_expected_zero_cells": 25,
+      "family": "baseline_pain_localization_3",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "blank_expected_zero_cells": 12,
+      "family": "baseline_pain_localization_4",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "blank_expected_zero_cells": 8,
+      "family": "baseline_pain_quality",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "blank_expected_zero_cells": 8,
+      "family": "baseline_pain_quality_2",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "blank_expected_zero_cells": 8,
+      "family": "baseline_pain_quality_3",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "blank_expected_zero_cells": 4,
+      "family": "baseline_pain_quality_4",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "blank_expected_zero_cells": 4,
+      "family": "prov_associated_symptoms",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "blank_expected_zero_cells": 38,
+      "family": "scan_findings",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "blank_expected_zero_cells": 6,
+      "family": "scan_findings_dsm",
+      "instrument": "image_information_ct_dsm_or_fluroscopic_guided"
+    },
+    {
+      "blank_expected_zero_cells": 4,
+      "family": "scan_findings_v2_v2",
+      "instrument": "image_information_ct_myelogram"
+    }
+  ],
+  "blank_expected_zero_categories": {
+    "broad_negative_impression_not_expanded": 1,
+    "free_text_option_not_individually_negated": 163,
+    "measurement_negative_not_derived": 3
+  },
+  "blank_expected_zero_details": [
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_03.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___10",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_03.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___11",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_03.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___12",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_03.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___13",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_03.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___14",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_03.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___15",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_03.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___16",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_04.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___10",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_04.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___11",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_04.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___12",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_04.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___13",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_04.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___14",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_04.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___15",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_04.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___16",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_05.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___10",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_05.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___11",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_05.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___12",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_05.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___13",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_05.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___14",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_05.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___15",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_05.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___16",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_07.pdf",
+      "family": "scan_findings_dsm",
+      "field": "scan_findings_dsm___3",
+      "instrument": "image_information_ct_dsm_or_fluroscopic_guided"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_07.pdf",
+      "family": "scan_findings_dsm",
+      "field": "scan_findings_dsm___5",
+      "instrument": "image_information_ct_dsm_or_fluroscopic_guided"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_07.pdf",
+      "family": "scan_findings_dsm",
+      "field": "scan_findings_dsm___6",
+      "instrument": "image_information_ct_dsm_or_fluroscopic_guided"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_10.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___10",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_10.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___11",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_10.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___12",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_10.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___13",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_10.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___14",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_10.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___15",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_10.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___16",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_12.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___10",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_12.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___11",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_12.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___12",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_12.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___13",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_12.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___14",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_12.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___15",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "measurement_negative_not_derived",
+      "document": "doc_12.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___5",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "measurement_negative_not_derived",
+      "document": "doc_12.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___6",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "measurement_negative_not_derived",
+      "document": "doc_12.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___7",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "broad_negative_impression_not_expanded",
+      "document": "doc_12.pdf",
+      "family": "scan_findings",
+      "field": "scan_findings___9",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___1",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___10",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___11",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___12",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___13",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___14",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___15",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___2",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___6",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___7",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___8",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___9",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___1",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___10",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___11",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___12",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___13",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___14",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___15",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___2",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___6",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___7",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___8",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___9",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___1",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___10",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___11",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___12",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___13",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___14",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___15",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___2",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___6",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___7",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___8",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___9",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_quality_2",
+      "field": "baseline_pain_quality_2___2",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_quality_2",
+      "field": "baseline_pain_quality_2___3",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_quality_2",
+      "field": "baseline_pain_quality_2___4",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_quality_2",
+      "field": "baseline_pain_quality_2___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_quality_3",
+      "field": "baseline_pain_quality_3___2",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_quality_3",
+      "field": "baseline_pain_quality_3___3",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_quality_3",
+      "field": "baseline_pain_quality_3___4",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_quality_3",
+      "field": "baseline_pain_quality_3___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_quality",
+      "field": "baseline_pain_quality___2",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_quality",
+      "field": "baseline_pain_quality___3",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_quality",
+      "field": "baseline_pain_quality___4",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_13.pdf",
+      "family": "baseline_pain_quality",
+      "field": "baseline_pain_quality___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_16.pdf",
+      "family": "scan_findings_v2_v2",
+      "field": "scan_findings_v2_v2___2",
+      "instrument": "image_information_ct_myelogram"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_16.pdf",
+      "family": "scan_findings_v2_v2",
+      "field": "scan_findings_v2_v2___3",
+      "instrument": "image_information_ct_myelogram"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_16.pdf",
+      "family": "scan_findings_v2_v2",
+      "field": "scan_findings_v2_v2___4",
+      "instrument": "image_information_ct_myelogram"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_16.pdf",
+      "family": "scan_findings_v2_v2",
+      "field": "scan_findings_v2_v2___5",
+      "instrument": "image_information_ct_myelogram"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___1",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___10",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___11",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___12",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___13",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___14",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___15",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___2",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___3",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___4",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_2",
+      "field": "baseline_pain_localization_2___9",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___1",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___10",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___11",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___12",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___13",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___14",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___15",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___2",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___3",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___4",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_3",
+      "field": "baseline_pain_localization_3___9",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_4",
+      "field": "baseline_pain_localization_4___1",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_4",
+      "field": "baseline_pain_localization_4___10",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_4",
+      "field": "baseline_pain_localization_4___11",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_4",
+      "field": "baseline_pain_localization_4___12",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_4",
+      "field": "baseline_pain_localization_4___13",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_4",
+      "field": "baseline_pain_localization_4___14",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_4",
+      "field": "baseline_pain_localization_4___15",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_4",
+      "field": "baseline_pain_localization_4___2",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_4",
+      "field": "baseline_pain_localization_4___3",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_4",
+      "field": "baseline_pain_localization_4___4",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_4",
+      "field": "baseline_pain_localization_4___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization_4",
+      "field": "baseline_pain_localization_4___9",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___1",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___10",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___11",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___12",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___13",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___14",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___15",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___2",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___3",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___4",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_localization",
+      "field": "baseline_pain_localization___9",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality_2",
+      "field": "baseline_pain_quality_2___1",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality_2",
+      "field": "baseline_pain_quality_2___3",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality_2",
+      "field": "baseline_pain_quality_2___4",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality_2",
+      "field": "baseline_pain_quality_2___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality_3",
+      "field": "baseline_pain_quality_3___1",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality_3",
+      "field": "baseline_pain_quality_3___3",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality_3",
+      "field": "baseline_pain_quality_3___4",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality_3",
+      "field": "baseline_pain_quality_3___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality_4",
+      "field": "baseline_pain_quality_4___1",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality_4",
+      "field": "baseline_pain_quality_4___3",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality_4",
+      "field": "baseline_pain_quality_4___4",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality_4",
+      "field": "baseline_pain_quality_4___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality",
+      "field": "baseline_pain_quality___1",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality",
+      "field": "baseline_pain_quality___3",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality",
+      "field": "baseline_pain_quality___4",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "baseline_pain_quality",
+      "field": "baseline_pain_quality___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "prov_associated_symptoms",
+      "field": "prov_associated_symptoms___1",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "prov_associated_symptoms",
+      "field": "prov_associated_symptoms___3",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "prov_associated_symptoms",
+      "field": "prov_associated_symptoms___4",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_23.pdf",
+      "family": "prov_associated_symptoms",
+      "field": "prov_associated_symptoms___5",
+      "instrument": "csf_volume_provocation_form"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_26.pdf",
+      "family": "scan_findings_dsm",
+      "field": "scan_findings_dsm___3",
+      "instrument": "image_information_ct_dsm_or_fluroscopic_guided"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_26.pdf",
+      "family": "scan_findings_dsm",
+      "field": "scan_findings_dsm___5",
+      "instrument": "image_information_ct_dsm_or_fluroscopic_guided"
+    },
+    {
+      "category": "free_text_option_not_individually_negated",
+      "document": "doc_26.pdf",
+      "family": "scan_findings_dsm",
+      "field": "scan_findings_dsm___6",
+      "instrument": "image_information_ct_dsm_or_fluroscopic_guided"
+    }
+  ],
+  "counts": {
+    "actual_nonblank_cells": 877,
+    "blank_inferred_zero_cells": 167,
+    "columns": 512,
+    "documents": 28,
+    "expected_nonblank_cells": 1055,
+    "explicit_mapped_rows": 572,
+    "explicit_matched_rows": 558,
+    "explicit_reader_code_unavailable": 11,
+    "explicit_terminal_period_retained": 3,
+    "full_grid_cells": 2560,
+    "full_grid_matched": 2379,
+    "full_grid_mismatched": 181,
+    "inferred_checkbox_zero_cells": 483,
+    "key_only_total_rows_not_destinations": 9,
+    "matched_inferred_zero_cells": 316,
+    "patients": 5,
+    "zero_blanks_with_broad_negative_impression_only": 1,
+    "zero_blanks_with_measurement_threshold_available": 3,
+    "zero_blanks_without_individual_negation": 163
+  },
+  "explicit_discrepancies": [
+    {
+      "category": "printed_signer_absent_from_catalog_reader_choices",
+      "document": "doc_03.pdf",
+      "field": "brain_reader",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "printed_signer_absent_from_catalog_reader_choices",
+      "document": "doc_04.pdf",
+      "field": "brain_reader",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "printed_signer_absent_from_catalog_reader_choices",
+      "document": "doc_05.pdf",
+      "field": "brain_reader",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "printed_signer_absent_from_catalog_reader_choices",
+      "document": "doc_07.pdf",
+      "field": "dsm_reader",
+      "instrument": "image_information_ct_dsm_or_fluroscopic_guided"
+    },
+    {
+      "category": "source_terminal_period_retained",
+      "document": "doc_07.pdf",
+      "field": "scan_findings_other_v2_v2_dsm",
+      "instrument": "image_information_ct_dsm_or_fluroscopic_guided"
+    },
+    {
+      "category": "printed_signer_absent_from_catalog_reader_choices",
+      "document": "doc_08.pdf",
+      "field": "spine_reader",
+      "instrument": "image_information_spine_mri"
+    },
+    {
+      "category": "printed_signer_absent_from_catalog_reader_choices",
+      "document": "doc_09.pdf",
+      "field": "spine_reader",
+      "instrument": "image_information_spine_mri"
+    },
+    {
+      "category": "printed_signer_absent_from_catalog_reader_choices",
+      "document": "doc_10.pdf",
+      "field": "brain_reader",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "printed_signer_absent_from_catalog_reader_choices",
+      "document": "doc_12.pdf",
+      "field": "brain_reader",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "source_terminal_period_retained",
+      "document": "doc_12.pdf",
+      "field": "scan_findings_other",
+      "instrument": "image_information_brain_scan"
+    },
+    {
+      "category": "printed_signer_absent_from_catalog_reader_choices",
+      "document": "doc_16.pdf",
+      "field": "myelogram",
+      "instrument": "image_information_ct_myelogram"
+    },
+    {
+      "category": "printed_signer_absent_from_catalog_reader_choices",
+      "document": "doc_22.pdf",
+      "field": "spine_reader",
+      "instrument": "image_information_spine_mri"
+    },
+    {
+      "category": "printed_signer_absent_from_catalog_reader_choices",
+      "document": "doc_26.pdf",
+      "field": "dsm_reader",
+      "instrument": "image_information_ct_dsm_or_fluroscopic_guided"
+    },
+    {
+      "category": "source_terminal_period_retained",
+      "document": "doc_26.pdf",
+      "field": "scan_findings_other_v2_v2_dsm",
+      "instrument": "image_information_ct_dsm_or_fluroscopic_guided"
+    }
+  ],
+  "format": "qwikcap-sih-clinic-train-reconciliation-v1",
+  "independent_source_review": "Complete text and rendered pages for the eleven radiology reports and two procedure records behind the discrepancies.",
+  "input_unchanged": true,
+  "inputs_sha256": {
+    "catalog": "e8a2c021405da7defead007e9f8e7f5f3852ae926c35f2fb687a474e6f8faf53",
+    "comparator": "fe9d39d4aedba81387f959dd8f890afb5bb4913b5a024a855b1159adcb4a4cdd",
+    "final_comparison": "176b780d96f6ca2304e5a6a81e51d46d12dd7d273eba06fea5f182b96c7dda2a",
+    "narratives": "c5e12090cd4deb6d04f0d3361e4b8211f20784ba90f0bf8ea88b7630bfd96640",
+    "train-comparison-v2.json": "50bf1d24667b5fdf60f556fa3ecf481ba56114a19c6ad2817430d36295334a81",
+    "train-expected.json": "68bb280ddd065b7963bf2cb9908c1503089f081fcbe9c6e00bdb5c08d9240d2d",
+    "train-form-census.json": "715cad3288edd5074a5656298eda24c8b182d0cc441c339e397d05ae9711a155",
+    "train-key-audit.json": "b69420f87206cb2b32f5728890e4040d829197ecdaf919ab3d2a4138a5ee0033",
+    "train-raw-final.json": "6e86227dbf6f6c5911d6f7e09bbec1f05445de71fa3097d4d76441bae77e7281",
+    "train-raw-model-final.json": "f587e8beee5793420dbac0e556d36ade3bd2da6aa29e42376e588248c8ddb1ef",
+    "train-raw-model-v2.json": "0852854bd2b0d80ca8aef42e071f7276202288bf9ea9d77a201150718c2f2251",
+    "train-raw-v2.json": "05b77eea4f76752189fdd735838977ed8108e607f26c1f121ff6b933672f8085"
+  },
+  "notes": [
+    "The 167 zeros come from key-family inference, not explicit negative rows in the answer keys.",
+    "Procedure free-text descriptions list positive terms. They contain no checkbox controls establishing the other 119 options as unchecked.",
+    "The 48 radiology zero blanks comprise 44 unmentioned individual findings, one broad negative impression, and three uncomputed threshold negatives.",
+    "Source signatures identify people outside the catalog's six reader choices. Never substitute a coded reader from an answer key.",
+    "Native UI review and actual app-generated Excel export are separate acceptance checks owned by the parent agent."
+  ],
+  "original_train_key_hashes_verified": 28,
+  "primary_comparator_unchanged": true,
+  "primary_rates": {
+    "explicit_mapped_literal_percent": 97.55244755244755,
+    "full_grid_literal_percent": 92.9296875,
+    "inferred_checkbox_zero_literal_percent": 65.42443064182196
+  },
+  "raw_diagnostics_passed": false,
+  "readout_passed": false,
+  "scope": "TRAIN only. No test forms, test keys, manifest, index, runtime changes or expectation changes.",
+  "secondary_observability": {
+    "limitation": "This source-fidelity classification does not change the primary literal comparator or make the full grid pass.",
+    "source_faithful_terminal_period_retained_within_that_subset": 3,
+    "source_observable_explicit_rows_after_excluding_reader_codes": 561,
+    "strict_literal_matches_within_that_subset": 558
+  },
+  "source_forms_sha256": {
+    "doc_01.pdf": "059f3b65da29b46d96ddd26fd23a1f5728706f3a94c7ef8abf1c8951d523349f",
+    "doc_02.pdf": "651635146041f107ab66273b183bcca1afad9690f01f56d219b3c0a8cc26bb0c",
+    "doc_03.pdf": "9273fee94ddfc374fb18aee0f0cd421d51d656ecbf3904abf7de22dc6e7a97df",
+    "doc_04.pdf": "197d5e78d4ceee48eb6465e40c16a7b3e59f7e7d8197ce86f2426de3ca7bdf2e",
+    "doc_05.pdf": "0862a8fd1f95af43bc3e8e502fdfe252fb3ff2d054b37b026a98e4363c746d24",
+    "doc_06.pdf": "c9a7b4c0c10be9e20a79aa7b7956c88cbe0178a4c41050711b6676b2d25ba98b",
+    "doc_07.pdf": "930ee411f272397125e2946ed83de5d237897129d9d1d62766802e5a3a141261",
+    "doc_08.pdf": "3759f6f3bbd43e7c6da477cc7a90b515413a469cfc23144142ee0249dc6919cb",
+    "doc_09.pdf": "cc60e788564fd63dd1ce3d77934cd7fa459f006b0abb93e9246b92da6c17327d",
+    "doc_10.pdf": "c1066c2317eca9df20bfa50006260229f99583116f261c2b5ed810359fc5120e",
+    "doc_11.pdf": "cf0a3d98434b95b10f71dd14b96370b47634ff7cb081940fa901342528b30a0c",
+    "doc_12.pdf": "90ed079cddb928c4ea85350b42bd844e827d8d9f907a02ff92ba5fc179f59c18",
+    "doc_13.pdf": "b29828be834be9f799b82ec83b5bbc86ba82d1fe68bafa869b5102559484f347",
+    "doc_14.pdf": "3fc8f4d10e9bd20582bfbbc24a684c645fd5cd6e5e13f16a168184fe5792b5d1",
+    "doc_15.pdf": "7d2298d01515b098146a3255f80cad3a2e17d21fcf7c1b5ee2dd1ffd00b71e52",
+    "doc_16.pdf": "7f66859a270f693f7136e81d9a4ceae7fdc93f434ddc0dc8e1d183bd0c057d47",
+    "doc_17.pdf": "2655594c651e3ae4ea332c34de8504330913b120af1263547c23b26e3a9cc823",
+    "doc_18.pdf": "24d3748ef26383c45bc09250672001d900c9052c22c70b12420756f01b3cd6f7",
+    "doc_19.pdf": "d2446ddcf983e2e4c322e19a69b5901eebc190cfc562aef5571f7774bc12b2dd",
+    "doc_20.pdf": "9062a05957dea08ab0d1d8af080b4726e38b3e5bded7e1b266116c2f30011992",
+    "doc_21.pdf": "390b1bd60d0c7e390c75945558effc366bd6057ef2e6310e741fbfe3ca8e6803",
+    "doc_22.pdf": "61a9d036566e56eff32f0cdba8395e909511559f33c85b66cb5ca70fd0cf4a25",
+    "doc_23.pdf": "3706ca996abd3e4f5685961794af37aa3fed86633cfe74dd9048c52a9aff9077",
+    "doc_24.pdf": "89786cf52baaa922d7aba742ba03beeec23b65bfa80f014fb31d7a21eb12189c",
+    "doc_25.pdf": "e279bf1503be45f2c2fd1013cc4aec05bee7bf0d5ad862d9f5fb39555f75e2ef",
+    "doc_26.pdf": "da661e2271dceebb8c70ab28af36da706713a53a999d1baad6d151935e4f4ef1",
+    "doc_27.pdf": "25090f04d5e8ae5220bf3c774d7ab246d7a1354af3db47bb54efbe0a6a9a8720",
+    "doc_28.pdf": "1219325b915a383ea117c2b229abad0463e383dcee22f2fc688f420b89cc81b4"
+  },
+  "source_pages_inspected": [
+    "doc_03.pdf",
+    "doc_04.pdf",
+    "doc_05.pdf",
+    "doc_07.pdf",
+    "doc_08.pdf",
+    "doc_09.pdf",
+    "doc_10.pdf",
+    "doc_12.pdf",
+    "doc_13.pdf",
+    "doc_16.pdf",
+    "doc_22.pdf",
+    "doc_23.pdf",
+    "doc_26.pdf"
+  ],
+  "synthetic_authorized": true,
+  "train_reference_metadata_refinement": [
+    {
+      "choice_label": "Photophobia",
+      "field": "prov_associated_symptoms___2",
+      "scope": "Clinic procedure literal source-cell match. Generic catalog unchanged. Training key supplied the clipped label meaning; no patient-specific answers or test references."
+    },
+    {
+      "choice_label": "Visual aura / halos",
+      "field": "prov_associated_symptoms___6",
+      "scope": "Clinic procedure literal source-cell match. Generic catalog unchanged. Training key supplied the clipped label meaning; no patient-specific answers or test references."
+    }
+  ],
+  "v2_stability": {
+    "document_values_applicability_context_issues_equal": true,
+    "evidence_changed_fields": [
+      {
+        "document": "doc_01.pdf",
+        "fields": [
+          "prior_fibrin_glue_success_v2",
+          "prior_surgeries_success_v2",
+          "prior_tve_success_v2"
+        ]
+      },
+      {
+        "document": "doc_06.pdf",
+        "fields": [
+          "prev_bloodpatches_improv",
+          "prior_surgeries_success"
+        ]
+      },
+      {
+        "document": "doc_21.pdf",
+        "fields": [
+          "prior_fibrin_glue_success_v2",
+          "prior_surgeries_success_v2",
+          "prior_tve_success_v2"
+        ]
+      },
+      {
+        "document": "doc_24.pdf",
+        "fields": [
+          "lying_down_improve_time",
+          "prev_bloodpatches_improv",
+          "prior_fibrin_glue_success",
+          "prior_surgeries_success",
+          "prior_tve_success"
+        ]
+      },
+      {
+        "document": "doc_25.pdf",
+        "fields": [
+          "prior_fibrin_glue_success_v2",
+          "prior_surgeries_success_v2",
+          "prior_tve_success_v2"
+        ]
+      }
+    ],
+    "limitation": "Some evidence snippets or regions differ across runs. Model records were reordered. No extraction-value or validation changes occurred.",
+    "patient_keyed_values_equal": true,
+    "whole_artifact_bytes_equal": false
+  }
+}

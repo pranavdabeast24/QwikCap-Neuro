@@ -1,145 +1,116 @@
 # Continue QwikCap on another computer
 
-The private repository is [pranavdabeast24/capitolinus-form-extraction](https://github.com/pranavdabeast24/capitolinus-form-extraction). QwikCap is the current working name, with ownership recorded in [OWNERSHIP.md](../OWNERSHIP.md). Commercial name clearance has not been established. Read [the naming record](COMPETITORS_AND_NAME.md) before public distribution.
+Clone the private [pranavdabeast24/capitolinus-form-extraction repository](https://github.com/pranavdabeast24/capitolinus-form-extraction). Start with [source setup](GETTING_STARTED.md), then use the [SIH clinic walkthrough](SIH_CLINIC_WORKFLOW.md) for the current packet. New commits use Pranav Mukund's GitHub identity. Historical author aliases remain in `.mailmap` without a history rewrite.
 
-## Current handoff, 2026-11-19
+QwikCap is a native Python and Tk desktop app for macOS and Windows. It reads local documents, proposes answers with source evidence, and exports approved records through a confirmed spreadsheet mapping. It has no LLM extraction, cloud fallback, camera capture, learning from corrections, or live REDCap connection.
 
-The current name is QwikCap, with quieter ownership branding. Original-code ownership remains recorded in the About dialog and ownership notice. The [supplied synthetic packet](../datasets/sih-synthetic/README.md) now travels in this clone with the original train and test PDFs, answer keys, index, hashes, and independently audited evaluation JSON. The [reviewed test workbook](../examples/qwikcap-supplied-test-reviewed-readout.xlsx) is also included unchanged. Use that packet for the supplied-dataset results below. The app-authored practice kit is a separate regression fixture.
+The working name and quiet Capitolinus Ventures ownership notice do not establish commercial name clearance. See [OWNERSHIP.md](../OWNERSHIP.md) and [the naming record](COMPETITORS_AND_NAME.md).
 
-Software commit `d150f75` changes display and packaging only. The [rename regression](testing/QWIKCAP_REBRAND_2026-11-19.md) replays all 55 supplied forms with unchanged extraction. Of the earlier 37 freeze files, 33 remain identical. The four changed files concern branding, UI copy, bundle naming, and the release verifier's relocation label. The [current private release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-2026-11-19) supersedes the older QuickCap downloads. Its [Windows run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44473031594) passed all 11 stages and 283 tests with one POSIX-only skip. See the [current archive evidence](testing/QWIKCAP_WINDOWS_2026-11-19.md). New commits are authored and committed as Pranav Mukund. Historical aliases are mapped without rewriting history.
+## Current SIH clinic work, 2026-11-19
 
-The evaluation counts and frozen-runtime claims below describe the completed 2026-11-18 run. Later display and package naming changes do not constitute another held-out evaluation. Preserve the original freeze record and raw failure.
+Choose **Advanced > Form type > Read SIH clinic forms**, the explicit `sih-clinic-v1` profile. Custom masks remain the default for a new project. The [current packet](../datasets/sih-clinic-synthetic/README.md) was supplied as `Neuro Synthetic Forms/sih_clinic_dataset/`. Its owner confirmed that the forms and answer keys are synthetic and authorized the private repository copy. The [clinic delivery](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-sih-clinic-2026-11-19) replaces the earlier pre-clinic download for this workflow.
 
-The native Python and Tk app processes documents locally, reviews values, and exports approved records to a confirmed spreadsheet mapping. It does not use an LLM, a cloud extraction account, a model download, or a remote fallback.
+The [frozen evaluation](testing/SIH_CLINIC_2026-11-19.md) used source `e2fbd2e`. Native Mac train acceptance preceded the 72-file freeze at `2026-11-19T10:10:31.871790Z`. The freeze was committed as `e5bf722` before any test or index access. All 72 hashes remained unchanged through the native test export at `2026-11-19T10:28:00.534537Z`, as recorded in the [completion snapshot](testing/SIH_CLINIC_FROZEN_EVALUATION_COMPLETE_2026-11-19.json).
 
-The app includes an opt-in `pace-printed-v1` reader for the supplied printed PACE layouts. Custom masks remain the default. The reader uses native PDF text, row separators, and visible control outlines to decode radios, checkboxes, and matrix columns. Its schema contains all 512 destination fields, while each processed record has a source-derived applicable subset. The confirmed patient bundle path accepts variable instrument lengths without an absolute-page mask type.
+Both native Mac workflows imported every original form, confirmed the applicable fields, approved five patients, confirmed the 512-column mapping, and exported Excel with zero manual value edits. The [train](testing/SIH_CLINIC_TRAIN_NATIVE_2026-11-19.json) and [test](testing/SIH_CLINIC_TEST_NATIVE_2026-11-19.json) audits each verify 2,560 typed export cells against the saved project. That is export fidelity, not complete-key accuracy.
 
-Independent train diagnostics cover the actual supplied 28 PDFs and 45 pages. All 600 explicit key values with destination columns match, as do 483 expected checkbox zeroes. Two visible unmarked rows remain blank. Nine key-only totals, named `total28`, `total28_v2`, and `hit6_total`, have no destination column and remain outside the export. See [the actual-dataset report](testing/actual-pace-dataset-2026-11-18.md) for the measured scope.
+| Frozen evaluation measure | Train | Test |
+| --- | --- | --- |
+| Forms and applicable field confirmations | 28 and 926 | 27 and 893 |
+| Strict original exact-key destination agreement | 558/572, 97.55% | 495/508, 97.44% |
+| Strict agreement after documented key shorthand expansion | 558/572, 97.55% | 500/524, 95.42% |
+| Strict patient grid, including expected blanks and zeroes | 2,379/2,560 | 2,439/2,560 |
+| Export cells matching actual reviewed project values | 2,560/2,560 | 2,560/2,560 |
 
-The native desktop imported all 28 PDFs into five confirmed patient bundles, confirmed all 1,085 applicable fields, approved all five rows, confirmed the 512-column mapping, and exported [the train workbook](../examples/quickcap-actual-train-readout.xlsx). The app-saved raw project and app-written workbook each match all 2,560 expected destination cells with zero manual value corrections. The final workbook has zero verification issues. Its hash is in [the actual-dataset report](testing/actual-pace-dataset-2026-11-18.md).
+The test shorthand expands one wildcard into 16 catalog checkbox columns. The [master report](testing/SIH_CLINIC_2026-11-19.md) preserves both denominators and explains every difference. Eleven reader codes per split cannot be derived from the named signing physicians. Three train and two test narratives retain source terminal periods omitted by keys. Conservative blanks and a three-field measurement-to-negative gap also remain. The strict complete-key comparisons fail. Do not fill those gaps from answer keys or describe reviewed export fidelity as extraction accuracy.
 
-Train acceptance is complete. The runtime was frozen at `26fb90eaea6c4a2255c681ad9947e9ab0739c3a5` on `2026-11-18T23:45:26.040166Z`, before any held-out access. The [freeze snapshot](testing/actual-pace-freeze-2026-11-18.json) records hashes for 37 source, rule, and dependency files. All 37 hashes were verified unchanged before and after the authorized held-out raw run. The pushed revision `b139c4656c2f9f9ce356c278830b4699a81beecd` retains the frozen runtime files.
+## Post-evaluation hardening
 
-**The held-out raw reader has one known error.** The supplied 27 PDFs cover 40 pages, nine instruments, and five patient groups. Raw extraction matches 550 of 551 mapped key values and all 390 additional checkbox zeroes. The `personal_ctdisorder_v2` suggestion omits `Joint` from the fictional source text `Joint hypermobility`. Eight key-only total entries remain outside the 512-column destination. The app-saved raw project matches 2,559 of 2,560 destination cells. The native Mac workflow corrected exactly that one suggestion from the visible source, confirmed 941 applicable fields, approved five patient rows, confirmed all 512 column assignments, and exported XLSX. Independent verification matches all 2,560 reviewed cells with zero issues. All other values and original source data remain unchanged. No engine or rule tuning was made, and all 37 frozen file hashes still match after final evaluation. See [the held-out report](testing/heldout-pace-2026-11-18.md) for the reviewed workbook hash and evidence.
+After the frozen evaluation, independent invented cases exposed false positives for uncertain findings and negated procedure terms. Commit `4c41fb3` adds regressions, and `da33054` fixes those cases in `clinic_narratives.py`. The hardened source passes 316 Mac tests with seven Windows-only skips. See [the hardening record](testing/SIH_CLINIC_HARDENING_2026-11-19.md) for the supplied-packet replay, current package checks, and archive hashes.
 
-The Mac source suite ran 283 tests with seven Windows-specific skips and no failures. An independent review passes 27 adapter and session tests, including a forged-project check that preserves the required-answer gate. The final packaged PACE helper passes 16 invented fields and 512 destination values. Independent audit of the [new Windows run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44424411229) at `b139c4656c2f9f9ce356c278830b4699a81beecd` confirms 283 source tests with one POSIX-only skip and all 11 acceptance checks passing. The portable ZIP has SHA-256 `2da5c9fe56ace1a01373b49764511c152268173c75ea415217a9dc40246881f7`. Its GUI and worker have identical 512-field catalogs. All inventory hashes match across 76 native components, 125 embedded components, and 32 notices; this inventory is not a separate SPDX or CycloneDX SBOM. The historical release below is not a download for these new changes.
+The [new Windows run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44506631638) targets the hardened source. The earlier [311-test Windows run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44501222833) passed all 12 gates for the frozen reader. Keep those source revisions separate. The latest runtime differs from the frozen evaluation, and the supplied test set is now used. A regression replay is not a fresh held-out score. Any further accuracy claim after test-informed development needs new held-out material.
 
-Actual train and held-out desktop QA used the Mac `research-mac-dist` app with the frozen runtime. Windows acceptance uses generated fixtures and packaged gates; it does not establish an actual-dataset Windows GUI walkthrough. The [published private prerelease](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/quickcap-cv-printed-pace-2026-11-18) targets the verified CI commit. The uploaded ZIP digest matches the independently checked package. Use the current [Windows guide](WINDOWS.md) for delivery instructions.
+The [clinic development record](history/SIH_CLINIC_2026-11-19.md) preserves the implementation sequence. [TESTING.md](TESTING.md) separates source checks, generated package fixtures, frozen supplied-document evaluation, and later hardening.
 
-The interface has three menus and two tabs. Advanced controls default to hidden. The review action is **Confirm & next**, and the main export button follows the template format. Patient bundle rows use their confirmed IDs in the document queue. A new bundle opens for review after import.
+## Keep the three packets separate
 
-## Earlier practice-kit evidence
+The filenames overlap across packets. A HIT-6 title alone does not select a reader.
 
-The completed synthetic PACE run uses two fictional cases and 18 PDFs. Each case covers all 253 source entries and all 512 destination columns. Raw extraction matched 512 of 512 text cells and 506 of 512 scan cells. The native Mac workflow corrected six scan values, confirmed every field, entered a reviewer, approved both records, confirmed the mapping, and saved the XLSX export. The [actual app readout](../examples/quickcap-synthetic-pace-readout.xlsx) has two data rows and 512 ordered columns. Independent checks matched all 1,024 cells, with no formulas, spreadsheet errors, or hidden rows or columns. All 38 date cells, 832 choice cells, 343 expected zeroes, and eight expected blanks were preserved. See [the run report](testing/SYNTHETIC_PACE_GUI_2026-11-18.md). The corrected export result must remain separate from raw OCR accuracy.
+| Packet | Explicit reader | Output |
+| --- | --- | --- |
+| `sih_clinic_dataset/`, copied to `datasets/sih-clinic-synthetic/` | **Read SIH clinic forms**, `sih-clinic-v1` | Several source PDFs become one patient row with 512 exact destination columns. |
+| Earlier `sih_dataset/`, copied to `datasets/sih-synthetic/` | **Read PACE printed forms**, `pace-printed-v1` | The earlier printed PACE layouts become one patient row with 512 columns. |
+| Older `dataset/`, with printed `Form NEU-101`, `NEU-210`, `NEU-215`, `NEU-330`, or `NEU-410` | **Read NEU clinic forms**, `neurology-training-v1` | Import separate documents into 45 staging columns. |
 
-The earlier source suite at `0793411` passed 238 tests with seven skips. Its OCR change retained block mode for single-column forms and used sparse mode for overlapping side-by-side masks. Native checks recovered all 30 fields across five legacy scans and preserved the dense case at 506 of 512 before review. The Mac run uses separately installed Tesseract 5.5.3_1. The [earlier private Windows prerelease](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/quickcap-cv-pace-2026-11-18) contains revision `0793411`. Its [Windows acceptance run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44407671706) passed 238 source tests with one POSIX-only skip and all ten then-current acceptance stages. That release predates the PACE printed-form reader and simplified UI. A person-driven Windows laptop walkthrough remains a pilot check.
+For another layout, create custom fields and answer masks, then save an extraction type. Reader selection stays explicit. **File > New project** clears the previous reader choice.
+
+## Preserve the clinic identity and interpretation rules
+
+Each patient bundle needs exactly one registration source with a printed **Research Study ID**. The operator-entered ID must match registration. Every original PDF must share registration's MRN, full name, and birth date. MRN is a separate literal identifier and keeps leading zeroes. A non-registration page need not print the study ID, but a printed conflicting ID blocks the bundle.
+
+The reader derives applicability and identity from original sources. Project reopening reconstructs that context and clears field confirmations, approvals, and mapping confirmation. Saved values cannot relax source identity, complete-page, repeated-instrument, or required-answer checks. Keep these checks at review, preview, approval, and export boundaries.
+
+The clinic packet contains native PDF text, including handwriting-style fonts. The reader uses text placement, font information, circled options, checkbox marks, tables, and narrative wording. These results do not measure real handwriting, scanned-paper OCR, or camera capture.
+
+Leave an unmentioned narrative finding blank. An absent assertion is not an observed negative. A report marked FINAL does not establish a REDCap completion code. A radiologist's signature does not establish a catalog-specific reader code. Do not add defaults, filename lookups, patient-specific mappings, or answer-key recovery.
+
+The destination is a wide patient staging table. Repeating instruments and longitudinal events need a separate validated conversion. Live-study import requires an authorized REDCap test project and its own verification.
 
 ## Source map
 
 | File or directory | Responsibility |
 | --- | --- |
-| `desktop.py` | Tk widgets, menus, focus, dialogs, review controls, and the serial command queue. |
-| `desktop_model.py` | `DesktopSession`, type drafts, projects, patient bundles, and review operations. |
-| `pipeline.py` | Bounded rendering, text extraction, local OCR, masks, typed candidates, and source evidence. |
-| `pace_profile.py` | PACE printed-row extraction, native control association, matrix codes, and immutable source context. |
-| `extraction_profiles.py` | Canonical profile dispatch, source-derived applicability, identity checks, and instrument boundaries. |
+| `desktop.py` | Tk widgets, menus, dialogs, keyboard commands, review controls, and the serial command queue. |
+| `desktop_model.py` | `DesktopSession`, projects, extraction types, patient bundles, review, and export operations. |
+| `pipeline.py` | Bounded rendering, native text and geometry, local OCR, masks, candidates, and evidence. |
+| `clinic_profile.py` | SIH clinic layouts, registration anchors, native controls, tables, and source context. |
+| `clinic_narratives.py` | Source-supported clinic radiology findings and measurements. |
+| `pace_profile.py`, `neurology_profile.py` | The earlier PACE printed and NEU readers. |
+| `extraction_profiles.py` | Canonical profile dispatch, the patient-profile family, applicability, identity, and instrument checks. |
 | `form_types.py` | Strict extraction-type parsing, page geometry, and normalized masks. |
-| `server.py` | Shared `Workspace`, validation, worker boundaries, spreadsheet state, and legacy browser endpoints. |
+| `server.py` | Shared workspace, validation, worker boundaries, spreadsheet state, and legacy browser endpoints. |
 | `worker.py`, `template_worker.py`, `bundle_worker.py` | Separate document, spreadsheet, and PDF-bundle jobs. |
 | `desktop_worker.py`, `runtime_paths.py` | Packaged worker dispatch and resource lookup. |
-| `templates.py`, `field_catalog.py`, `neurology_profile.py` | Spreadsheet inspection, field metadata, and the earlier neurology profile. |
-| `study_profiles/pace.json`, `spreadsheets/pace-import-template.csv` | Reference field metadata and exact destination headers, without patient rows. |
+| `field_catalog.py`, `study_profiles/pace.json`, `spreadsheets/pace-import-template.csv` | Reference metadata and the exact 512 destination headers. |
 | `native_ocr.swift` | Apple Vision adapter compiled into Mac packages. |
-| `branding.py`, `build_desktop.py` | Product identity and target-OS packaging with pinned installed tools. |
-| `tests/`, `tools/`, `verify_*.py` | Synthetic source tests and portable acceptance checks. |
+| `branding.py`, `build_desktop.py` | Product identity and packaging on the target OS. |
+| `tools/verify_sih_clinic.py` | Generated clinic fixtures, packaged companion checks, and independent CSV and XLSX readback. |
+| `tools/extract_pace_dataset.py` | Read-only raw diagnostics with an explicit patient-reader profile. |
+| `tools/verify_actual_pace_readout.py` | Independent comparison against audited expectations and source census. |
+| `tools/verify_windows_release.py` | Native Windows build, relocation, OCR, source checks, and packaged acceptance. |
 
-The Mac bundle identifier is `com.capitolinusventures.qwikcap`. Older Formbridge builds use a different identifier. Target the intended executable and window explicitly when testing. Saved project and type formats keep their `formbridge-*` identifiers. `FormbridgeWorker` and `FORMBRIDGE_TESSERACT` also remain stable. Renaming the app does not migrate stored data.
+The Mac bundle identifier is `com.capitolinusventures.qwikcap`. Target the intended app path when several builds coexist. Saved formats retain `formbridge-*` identifiers. `FormbridgeWorker` and `FORMBRIDGE_TESSERACT` remain compatible.
 
-## Set up and build
+## Build and verify a change
 
-Clone while authenticated to an account with repository access:
+Use Python 3.12 with working Tk and the pinned requirements. Follow [GETTING_STARTED.md](GETTING_STARTED.md) for Mac and Windows commands. Build on the target OS into a new distribution directory. Keep the complete `.app` or Windows directory, including its companion worker and resources. The builder preserves earlier outputs and does not install dependencies.
 
-```sh
-git clone https://github.com/pranavdabeast24/capitolinus-form-extraction.git
-cd capitolinus-form-extraction
-```
+Run the source suite and relevant acceptance tools after changing shared extraction code. Check the actual packaged companion when changing resource lists or dispatch. `tools/verify_sih_clinic.py --bundle` generates invented fixtures. It does not read a supplied packet or establish GUI acceptance.
 
-Use Python 3.12 with working Tk. Follow the root [README](../README.md) for separate macOS and Windows environment, dependency, launch, and build commands. [GETTING_STARTED.md](GETTING_STARTED.md) adds first-run guidance. Install the exact requirements explicitly. Neither launcher nor builder installs dependencies.
+Open the real app after UI changes. The clinic reader initially appeared in the menu while a PACE-only guard blocked **Combine patient PDFs** before its file picker. A callback regression and the shared `is_patient_profile` predicate fix that path. Model and packaged extraction checks alone did not catch the menu-to-picker defect.
 
-Source Mac OCR needs an existing Swift toolchain or Tesseract. Packaged Mac apps include the compiled Vision adapter. Optional Tesseract needs English language data. Discovery checks `PATH` and standard platform locations. `FORMBRIDGE_TESSERACT` can specify an executable, and an invalid explicit path blocks fallback. Windows packages include neither OCR engine. See [WINDOWS.md](WINDOWS.md) for the existing portable download and its limits.
+For a supplied packet run, record raw diagnostics before corrections. Record every manual edit from the source, confirm applicable fields, approve patients, confirm the mapping, and export through the app. Independently inspect headers, cell values, blanks, types, and original PDF hashes. Keep extraction coverage, review corrections, and export fidelity as separate measurements.
 
-Build on the target operating system after explicitly installing `requirements-build.txt`. Use a new distribution directory for each build. Keep the complete Mac `.app` or Windows application directory, including its worker and resources. Signing and Mac notarization remain unfinished.
+## Historical PACE acceptance
 
-Both the GUI and the one-file document worker need `study_profiles/pace.json`. Adding the resource only to the GUI lets the source tests pass while packaged extraction fails. `tools/verify_pace_printed.py` tests the actual companion executable to preserve this requirement.
+These measurements concern `datasets/sih-synthetic/`, not the new clinic packet.
 
-## Continue from completed PACE acceptance
+The [2026-11-18 train report](testing/actual-pace-dataset-2026-11-18.md) records 600 of 600 mapped key values, 483 additional checkbox zeroes, and a native Mac export matching all 2,560 destination cells. No manual value corrections were needed. Nine key-only total entries have no destination column.
 
-The native Mac train and reviewed held-out workflows each pass their independent 2,560-cell workbook check. The held-out reader still has its documented raw omission and required one manual correction. Preserve those separate results:
+The reader was frozen at `26fb90eaea6c4a2255c681ad9947e9ab0739c3a5` before held-out access. The [freeze record](testing/actual-pace-freeze-2026-11-18.json) covers 37 files. The [held-out report](testing/heldout-pace-2026-11-18.md) records 550 of 551 mapped key values and 390 additional checkbox zeroes. Raw extraction omitted `Joint` from `Joint hypermobility` in `personal_ctdisorder_v2`. One source-confirmed edit through the native Mac app produced a reviewed workbook matching all 2,560 cells. Eight key-only total entries remain outside the destination.
 
-1. Keep raw extraction, the pre-correction project comparison, the single source-reviewed correction, and final workbook comparison as separate evidence. Do not report reviewed export accuracy as raw extraction accuracy.
-2. Preserve the 37-file freeze record. Do not adjust extraction rules, the engine, or verifier to erase the held-out failure. Later development based on these answers requires a new evaluation scope and fresh held-out material.
-3. Use the published printed PACE private prerelease and verify its recorded package hash. The historical `0793411` release predates the current reader and interface.
-4. Perform a person-driven Windows laptop walkthrough, including the actual supplied fictional dataset, before claiming equivalent desktop acceptance there. Live-study REDCap import and production research approval remain separate work.
+The [train workbook](../examples/quickcap-actual-train-readout.xlsx) and [reviewed test workbook](../examples/qwikcap-supplied-test-reviewed-readout.xlsx) preserve those app exports. The test set has been used. Later tuning requires a fresh holdout for a new independent score.
 
-The PACE reader rejects missing or conflicting source identities, unknown instrument boundaries, repeated complete instruments, and conflicting values in a patient merge. It rebuilds source metadata from original PDFs on project reopening. Review values cannot alter field applicability or relax these checks. Keep those constraints in `extraction_profiles.py` and use record-aware validation at review, preview, approval, and export boundaries.
+The [QwikCap rename regression](testing/QWIKCAP_REBRAND_2026-11-19.md) replays all 55 earlier PACE forms. Its [Windows package record](testing/QWIKCAP_WINDOWS_2026-11-19.md) covers source `d150f75`, 283 tests with one POSIX-only skip, and 11 acceptance stages. Those checks do not measure the clinic reader.
 
-A checkbox zero requires a visible identified control. Missing or branch-hidden questions stay blank and inactive. Visible unanswered radios stay blank and applicable. Do not add an empty-to-zero default, infer a matrix code from its ordinal column, or resolve clipped labels through an answer lookup. Any alias must map authentic printed wording to a source field or choice code, without a patient ID or document filename.
+The separate [generated practice run](testing/SYNTHETIC_PACE_GUI_2026-11-18.md) used 18 PDFs and two fictional patients. Raw scan extraction matched 506 of 512 cells. Six manual scan corrections produced a reviewed 1,024-cell export. Keep generated practice evidence separate from either supplied packet.
 
-Preserve the catalog's 14 required flags and the required record ID. A source-confirmed missing-answer exception requires a truly unmarked row, immutable `unansweredFields` metadata, matching `pace-unmarked-radio` evidence, and explicit field confirmation. Reopening a project requires fresh confirmation. An arbitrary blank or forged project metadata cannot satisfy that exception. The two blank periods rows in the actual train set are optional and do not need the exception.
+## Data and distribution boundaries
 
-## Reproduce the full practice-kit workflow
+The repository carries source, pinned dependencies, fictional regression fixtures, and the explicitly authorized supplied synthetic packets. Keep answer keys and indexes out of app upload. Keep credentials, environments, caches, compiled outputs, raw screenshots, and source-bearing projects outside Git. A project embeds original documents. An extraction type contains reusable rules and geometry.
 
-Extract [examples/pace-synthetic-practice.zip](../examples/pace-synthetic-practice.zip) into a local scratch directory. The kit contains its own `README.txt`, 18 PDFs, `synthetic-pace-extraction-type.json`, independent JSON and CSV answer keys, source-coverage ledgers, and generation proof. It contains no supplied train or held-out test documents.
+Local processing does not provide encryption at rest, managed access controls, tamper-evident audit trails, or a compliance determination. Read [SECURITY.md](../SECURITY.md) and [LLM_PRIVACY.md](LLM_PRIVACY.md) before any real-study or model integration. Do not send patient-like data to an external model without the applicable data authorization and deployment controls.
 
-1. Open the actual app and load `synthetic-pace-extraction-type.json` through **Advanced > Form type > Load extraction type…**. Do not import an answer key as extraction input.
-2. Combine the nine PDFs in `text/forms/` in filename order, 01 through 09, under study ID `SYNTH-PACE-0001`. Explicitly confirm that the sources belong together.
-3. Combine the nine `scan/forms/` PDFs in the same order under `SYNTH-PACE-0002`. Each case has 26 source pages plus the app's operator ID cover.
-4. Compare every suggested value with its source and the independent answer key. Correct errors through the app. Confirm each field, enter a reviewer name, and approve each patient row.
-5. Open **Map & export**, choose **Use fields as columns**, inspect all 512 assignments, and confirm the mapping. Export XLSX through the app.
-6. Independently reopen the workbook. Require exactly two data rows, the exact 512 ordered headers, and all 1,024 expected cells. Preserve blanks, zeroes, choice codes, and normalized dates. Record raw extraction and manual corrections separately.
+Mac development builds use ad hoc signing and are not notarized. Windows builds are unsigned. Generated Windows acceptance does not establish a person-driven workflow on a Windows laptop with the supplied packet. [COLLABORATION.md](COLLABORATION.md) and [PILOT_PLAN.md](PILOT_PLAN.md) remain proposals and grant no repository access or product approval.
 
-The included readout is the accepted result from this native workflow. Long headers and identifiers can clip or wrap at the default column widths. Excel AutoFit and adjusted row heights improve readability without changing the data.
-
-Useful shortcuts use Command on Mac and Ctrl on Windows. Shift-U selects the PACE printed reader. Shift-I opens patient PDF selection. Shift-N and Shift-P move between records. Shift-B opens **Map & export**. K confirms the current field and advances. Shift-R edits the reviewer, Shift-A approves, Shift-C creates field columns, Shift-M confirms mapping, and Shift-E exports XLSX. L focuses the current answer. Choice fields accept an exact code or a displayed option, and invalid codes remain blocked by validation.
-
-The fixture exercises all branches for software coverage without asserting clinical applicability. Six display, calculation, or unavailable-attachment references stay outside the export. The 69 option columns with clipped or uncertain source labels test exact code transport without resolving missing wording. Printed checkbox codes are explicit observations, not checkbox-mark recognition. The output is a reviewed patient staging sheet. Repeating instruments, longitudinal events, and live REDCap import still need a separate validated conversion.
-
-## Run portable checks
-
-From the repository root on macOS:
-
-```sh
-.venv/bin/python -B -m unittest discover -s tests -v
-.venv/bin/python verify_samples.py
-.venv/bin/python verify_spreadsheet_flow.py
-.venv/bin/python tools/verify_custom_masks.py
-.venv/bin/python tools/verify_pace_flow.py
-.venv/bin/python tools/verify_synthetic_pace_readout.py examples/quickcap-synthetic-pace-readout.xlsx
-```
-
-On Windows, use `.venv\Scripts\python.exe` in place of `.venv/bin/python`. [TESTING.md](TESTING.md) describes evidence directories and packaged-worker arguments. The existing `tools/verify_pace_flow.py` generates a smaller patient-bundle smoke test. It does not reproduce the full 512-field, two-case GUI practice run above. The new `tools/verify_synthetic_pace_readout.py` reads the practice kit's literal expected rows and checks the XLSX headers, types, and values. It creates no app session, changes no approvals, and preserves the workbook bytes. Pass a newly exported workbook instead of the included readout to validate a repeat run. Keep generated source-bearing projects and raw verification output outside commits.
-
-For a built Mac application:
-
-```sh
-.venv/bin/python verify_desktop_bundle.py dist/macos/QwikCap.app --output verification/bundle
-.venv/bin/python tools/verify_pace_flow.py --bundle dist/macos/QwikCap.app --output verification/pace-bundle
-```
-
-These commands exercise the packaged worker without establishing GUI interaction. Recheck menus, focus, choice edits, drawing, approval, save prompts, and exports in the actual app after UI changes. Record the source revision, platform, dependencies, command, result, and skipped checks.
-
-The actual-dataset tools accept explicit local paths. `inventory_dataset.py` checks one split without reading document text. `extract_pace_dataset.py` produces local raw diagnostics without opening answer keys, creating reviews, approving records, or exporting a workbook. `verify_actual_pace_readout.py` compares an app-saved project or an app-written workbook with independently audited expectations. Its optional extraction input reports raw coverage separately. See [the actual-dataset report](testing/actual-pace-dataset-2026-11-18.md) for commands and report semantics.
-
-## Data and security boundaries
-
-This clone includes generated fictional practice inputs, selected evidence, and the explicitly authorized original [supplied synthetic packet](../datasets/sih-synthetic/README.md). Keep other original attachments, private documents, source-bearing projects, reviewer details, raw screenshots, logs, credentials, environments, caches, and compiled packages outside Git. A saved project embeds source documents. An extraction type contains reusable rules and geometry instead of answers or source bytes.
-
-The supplied packet is under `datasets/sih-synthetic/`, with `train/forms`, `test/forms`, sibling `answer_keys` directories, and unchanged `manifest.pdf`. The user confirmed that all of its forms and keys are entirely fictional or synthetic and requested the GitHub copy. Train acceptance used the actual forms and audited keys. The runtime freeze preceded all held-out access. The user authorized final test evaluation with that reader. The test set is now used and does not support another fresh held-out claim. Keep answer keys, index, and evaluation JSON out of app upload. The generated practice kit remains separate from this dataset.
-
-Processing remains local, but the app does not provide managed access controls, encryption at rest, tamper-evident audit trails, or a compliance determination. Read [SECURITY.md](../SECURITY.md) and [LLM_PRIVACY.md](LLM_PRIVACY.md) before expanding use. Existing limits include 600 fields or destination columns, 32 pages per combined document, 16 source PDFs per patient bundle, a 1 MiB rule definition, 120 megapixels of aggregate rendering, and 128 MiB of generated assets. OCR calls retain a 45-second timeout and document workers a 180-second timeout. These are processing limits, not clinical validation.
-
-## Next steps and historical context
-
-The current QwikCap Windows artifact is independently audited at `d150f75`, with all 11 acceptance checks passing. The original printed-reader evidence at `b139c46` remains historical. Native Mac held-out export is complete after one documented source-reviewed correction. Retain the raw failure when continuing development. Repeat relevant scan and custom-mask regressions after later changes to the shared pipeline. Any future work based on the held-out answers needs a new evaluation scope and fresh holdout. Mouse-drag mask creation, handwriting, camera capture, learning from corrections, and live-study REDCap import remain unverified or unimplemented.
-
-[history/CONVERSATION.md](history/CONVERSATION.md) and [history/WINDOWS_2026-11-18.md](history/WINDOWS_2026-11-18.md) preserve earlier sanitized context. Treat historical names, experiments, and test counts as records of their revisions. Current source and dated evidence take precedence. [COLLABORATION.md](COLLABORATION.md) and [PILOT_PLAN.md](PILOT_PLAN.md) remain proposals, without granting repository access or product approval.
+The earlier [conversation digest](history/CONVERSATION.md) and [Windows history](history/WINDOWS_2026-11-18.md) retain sanitized project context. Current source and dated evidence take precedence over historical plans and names.

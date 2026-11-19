@@ -6,25 +6,60 @@ The current working name replaces QuickCap (CV). Commercial name clearance has n
 
 The current packages are `QwikCap.app` on Mac and `QwikCap\QwikCap.exe` on Windows. The Mac bundle identifier is `com.capitolinusventures.qwikcap`. Saved project and type formats retain their `formbridge-*` identifiers. `FORMBRIDGE_TESSERACT` and the `FormbridgeWorker` helper stay compatible. Historical reports retain the names of the builds they tested.
 
-For downloads and setup, use [the Windows guide](docs/WINDOWS.md), [developer handoff](docs/HANDOFF.md), and [source setup](docs/GETTING_STARTED.md). This clone includes the [original supplied synthetic train/test packet](datasets/sih-synthetic/README.md), independent evaluation files, and actual app-written readouts. Saved projects and private documents need a separate approved transfer.
+Start with the [SIH clinic walkthrough](docs/SIH_CLINIC_WORKFLOW.md) for the current `sih_clinic_dataset` forms. The [new clinic packet](datasets/sih-clinic-synthetic/README.md) is separate from the [earlier PACE printed packet](datasets/sih-synthetic/README.md). For downloads and setup, use [the Windows guide](docs/WINDOWS.md), [developer handoff](docs/HANDOFF.md), and [source setup](docs/GETTING_STARTED.md). Saved projects and private documents need a separate approved transfer.
 
-The [QwikCap pilot release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-2026-11-19) contains the current Windows download and complete source packet. Mac users can build from the source instructions below. Its [Windows acceptance](docs/testing/QWIKCAP_WINDOWS_2026-11-19.md) passed all 11 stages and 283 tests with one platform-specific skip. The [Mac rename and regression record](docs/testing/QWIKCAP_REBRAND_2026-11-19.md) verifies that all 55 supplied forms retain their frozen extraction results. New commits use Pranav Mukund's GitHub identity. Existing author aliases resolve through `.mailmap` without rewriting shared history.
+The [clinic release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-sih-clinic-2026-11-19) provides Mac arm64 and Windows x64 packages plus a source-and-dataset packet. Use a build that offers **Read SIH clinic forms**. The earlier `qwikcap-2026-11-19` release predates that reader. New commits use Pranav Mukund's GitHub identity. Historical aliases resolve through `.mailmap` without rewriting shared history.
 
-The app starts without preset fields. You can draw custom answer masks and save a reusable extraction type. For the supplied PACE forms, an optional printed-form reader recognizes questions, marked choices, and matrix columns from native PDF text and control geometry. You still confirm the source group, review its answers, and approve one patient row before export. The destination keeps the supplied template's exact 512 headers. Repeating-instrument REDCap upload needs a separate validated conversion.
+The app starts without preset fields. You can draw custom answer masks and save a reusable extraction type. Built-in readers are explicit choices for their supported layouts. The SIH clinic and PACE patient workflows keep the supplied template's exact 512 headers. You still confirm the source group, review its answers, and approve each patient row before export. Repeating-instrument REDCap upload needs a separate validated conversion.
 
 ## Choose the reader for your packet
 
-The two supplied packets use different layouts and export schemas. Check the printed form and folder before selecting a reader.
+The supplied packets have similar filenames but different layouts. Check the folder and printed form before selecting a reader.
 
 | Your documents | Reader under **Advanced > Form type** | Import and output |
 | --- | --- | --- |
+| Current `Neuro Synthetic Forms/sih_clinic_dataset/` packet, copied as `datasets/sih-clinic-synthetic/`. Registration is marked `REG-100`; clinic pages use `HA-210C`, `HA-220P`, `HA-230`, `PROC-310`, or radiology exam titles. | **Read SIH clinic forms** | Include registration and combine one patient's PDFs. One reviewed patient per row, with 512 destination columns. |
 | Original `Neuro Synthetic Forms/dataset/train/forms/` clinic packet, with printed `Form NEU-101`, `NEU-210`, `NEU-215`, `NEU-330`, or `NEU-410` | **Read NEU clinic forms** | Import separate forms. One reviewed document per row, with 45 staging columns. |
 | Separate `Neuro Synthetic Forms/sih_dataset/` packet, copied into this repository as `datasets/sih-synthetic/` | **Read PACE printed forms** | Combine the listed PDFs for one confirmed patient. One reviewed patient per row, with 512 destination columns. |
 | Another form layout | Start a new project and design custom fields and masks. | Use an extraction type for that layout and review its suggestions. |
 
-The NEU clinic reader recognizes intake, HIT-6, MIDAS, NIHSS, and seizure-history forms by their printed `Form NEU` codes. A HIT-6 clinic sheet is not interchangeable with a PACE printed form. QwikCap does not switch readers automatically.
+QwikCap does not switch readers automatically. A HIT-6 page can occur in more than one packet and does not identify the reader by itself.
 
-### Review the original NEU clinic packet
+## Review SIH clinic forms
+
+This walkthrough uses the new `sih_clinic_dataset` packet. The [full clinic guide](docs/SIH_CLINIC_WORKFLOW.md) includes all five train groups, spreadsheet options, and troubleshooting. The earlier PACE accuracy table below does not measure this clinic reader.
+
+1. Open a clinic-enabled QwikCap build. Save an existing project, then choose **File > New project**.
+2. Choose **Advanced > Form type > Read SIH clinic forms**. If that menu item is absent, the build predates this reader.
+3. Choose **Add documents… > Combine PDFs for one patient…**. From `datasets/sih-clinic-synthetic/train/forms/`, select `doc_11.pdf`, `doc_12.pdf`, `doc_13.pdf`, `doc_18.pdf`, and `doc_24.pdf`.
+4. Enter `1031` in **Study record_id**. Check the **Research Study ID** in registration `doc_11.pdf`. Verify that the other PDFs have the same MRN, name, and birth date. Those pages do not each print the study ID. Keep the listed order, check the same-patient confirmation, and click **Combine into one patient row**.
+5. Review each suggested answer beside its original source. Correct an error, then click **Confirm & next**. A missing or unmentioned answer is not automatically `0` or No. Follow the displayed validation message if a required value cannot be verified.
+6. Enter your **Reviewer** name and click **Approve document**. The queue should show one approved patient row for `1031`.
+7. Open **Map & export** and click **Use fields as columns**. The 512 field names map to matching columns automatically. Inspect the populated preview, then click **Confirm column mapping** and **Export XLSX…**.
+8. Open your new workbook. The first trial should contain one data row and 512 headers. Compare it with the original PDFs and the matching train answer keys. Keep a note of raw extraction errors and your corrections. Save the project separately if you want to retain sources and review work.
+
+The registration sheet supplies the study-ID link. MRN is a separate identifier and keeps leading zeroes. Unprinted completion fields and unmentioned narrative findings must not be filled from assumptions. The current source packet uses native PDF text, including handwriting-style fonts. It does not establish real handwriting or scan-only recognition.
+
+## Results on the supplied SIH clinic packet
+
+These results use your actual `sih_clinic_dataset` packet. All 111 original PDFs, including forms, answer keys, and index, are included byte for byte with [hashes and independent expectations](datasets/sih-clinic-synthetic/README.md). Generated practice fixtures remain separate.
+
+| Check | Train | Held-out test |
+| --- | --- | --- |
+| Actual forms / pages / patient rows | 28 / 43 / 5 | 27 / 42 / 5 |
+| Strict original exact-key destination values | 558 / 572, **97.55%** | 495 / 508, **97.44%** |
+| Mapped values after documented test-key shorthand expansion | 558 / 572, **97.55%** | 500 / 524, **95.42%** |
+| Strict complete patient-grid cells, including blanks and zeroes | 2,379 / 2,560, **92.93%** | 2,439 / 2,560, **95.27%** |
+| App-written export cells faithful to reviewed project | 2,560 / 2,560 | 2,560 / 2,560 |
+| Manual value edits | 0 | 0 |
+
+The test key contains one `none checked` wildcard, expanded into 16 exact catalog columns for comparison. Strict complete-key checks remain **failing**, with 181 train and 121 test grid differences. Missing reader codes, unmentioned negative findings, three uncomputed threshold negatives in each split, and retained source punctuation explain those differences. The [dated report](docs/testing/SIH_CLINIC_2026-11-19.md) gives every denominator and the coverage reconciliation. Export fidelity does not mean every key field was extracted.
+
+Both native Mac workflows loaded every original form, confirmed applicable fields, approved five patient rows, confirmed the 512-column mapping, and exported Excel. The [train](examples/qwikcap-sih-clinic-train-readout.xlsx) and [test](examples/qwikcap-sih-clinic-test-readout.xlsx) readouts preserve those app outputs. The reader was frozen at `e2fbd2e` before test access. Later hardening from invented uncertainty and negation examples is documented separately, with regression replay rather than a new held-out claim. The test set has now been used.
+
+Windows uses native CI and packaged generated-fixture checks. A person-driven workflow with this packet on a Windows laptop remains unverified. Repeating-instrument REDCap import and real-study approval remain separate work.
+
+## Review the original NEU clinic packet
 
 1. Save your current project. Choose **File > New project**, then **Advanced > Form type > Read NEU clinic forms**. The banner reads **NEU clinic forms · review required**.
 2. Choose **Add documents… > Import separate forms…**. Select PDFs from the original `dataset/train/forms/` folder. For an initial trial, select `doc_01.pdf` and `doc_03.pdf`. Keep answer keys and the index out of document upload.
@@ -39,91 +74,13 @@ The NEU output is document staging. It does not combine the forms into the PACE 
 
 ## Review supplied PACE forms
 
-You will create an Excel file with one reviewed patient row, then repeat the same steps for the rest of the packet. No camera is needed for these PDFs.
+Use **Read PACE printed forms** only for the earlier `sih_dataset` packet in `datasets/sih-synthetic/`. The [complete PACE printed walkthrough](docs/PACE_PRINTED_WALKTHROUGH.md) retains its patient groups, source review, Excel export, and verification commands.
 
-### Open the app and find the packet
-
-1. Open your current **QwikCap** app. On Windows, download `QwikCap-Windows-x64.zip` from the [private release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-2026-11-19), extract the whole folder, and open `QwikCap/QwikCap.exe`. Mac users can use their existing local app or the source setup below.
-2. Download and extract `QwikCap-Source-and-Supplied-Packet.zip` from that release, or use your clone. Find the folder containing this README. The original forms are in `datasets/sih-synthetic/train/forms/` and `datasets/sih-synthetic/test/forms/`. Your original Desktop copy of the same packet also works.
-3. Keep the sibling `answer_keys/` folders available for checking your results. The dataset index and answer keys are references. Upload only PDFs from a `forms/` folder.
-
-### Export your first patient
-
-1. If another project is open, save it and choose **File > New project**. Choose **Advanced > Form type > Read PACE printed forms**. On Mac you can press Command-Shift-U. On Windows use Ctrl-Shift-U. Check that the mode reads **PACE printed forms · review required**. This selects the reader for these supplied layouts. You do not need to draw masks or load a separate extraction type for this walkthrough.
-2. Choose **Add documents… > Combine PDFs for one patient…**. In `train/forms/`, select `doc_11.pdf`, `doc_12.pdf`, `doc_13.pdf`, `doc_18.pdf`, and `doc_24.pdf`. Hold Command on Mac or Ctrl on Windows to select the five files.
-3. In **Combine patient PDFs**, enter `1031` in **Study record_id**. Check each PDF's printed identity against this ID. Keep the files in the order listed above. Use **Move selected PDF up** or **Move selected PDF down** if needed.
-4. Check **I verified every PDF is for this patient and this is the intended source order.** Click **Combine into one patient row** and wait for processing. The document queue should show **Patient 1031**. Its combined source starts with an operator-entered ID cover, followed by the original PDFs.
-5. In **Design & review**, select a field to see its suggested answer beside the source. Check the whole answer and the marked option. Edit the answer box or choice dropdown when needed, then click **Confirm & next**. Command-K on Mac or Ctrl-K on Windows does the same thing. Use **Expand…** for long text. Confirm every applicable field against the source; clicking through without reading does not check extraction accuracy.
-6. Enter your name in **Reviewer**, then click **Approve document**. The queue should show **Approved** for Patient 1031. Only source-observed fields need confirmation. A question absent from these forms stays blank in the destination. A visibly unanswered question also stays blank; do not invent an answer to complete the row.
-7. Open **Map & export** and click **Use fields as columns**. QwikCap creates an XLSX destination with all 512 exact field names and automatically assigns each field to its matching column. You do not need to drag 512 fields manually. Inspect the assignments and **Populated preview**. **Next columns** shows the next portion of the wide row; the export includes every column.
-8. Click **Confirm column mapping**, then **Export XLSX…**. Save a new file such as `my-train-1031.xlsx` in your own output folder. Open it in Excel or another spreadsheet viewer. It should contain one data row for `record_id` 1031 and 512 headers. Blank cells are expected for instruments or questions absent from this patient's documents.
-9. Compare your results with `doc_11_key.pdf`, `doc_12_key.pdf`, `doc_13_key.pdf`, `doc_18_key.pdf`, and `doc_24_key.pdf` in `train/answer_keys/`. Check identifiers, choice codes, checkbox zeroes, dates, and complete text. Dates may appear in normalized `YYYY-MM-DD` form. The keys include some total-score entries without destination columns; those are not exported.
-10. Choose **File > Save project as…** to keep your sources and review work. Save outside the repository. A project is different from the Excel export. Reopening the project preserves its sources and values but requires fresh confirmations, patient approval, and mapping confirmation.
-
-The primary interface has **File**, **Advanced**, and **Help** menus and two tabs. You can use the menu commands above while **Show advanced controls** is off. If controls fall below the visible area, enlarge the window or scroll the assignment panel.
-
-### Finish all five train patients
-
-In the same train project, repeat the combine, review, and approval steps for the remaining four patients. Patient 1031 is already present from the first trial; do not import that group a second time. Import one group at a time. Use the listed source order, and verify the printed IDs before confirming each group.
-
-| Study record_id | PDFs from `train/forms/`, in order |
-| --- | --- |
-| 1031 | `doc_11.pdf`, `doc_12.pdf`, `doc_13.pdf`, `doc_18.pdf`, `doc_24.pdf` |
-| 1032 | `doc_02.pdf`, `doc_06.pdf`, `doc_07.pdf`, `doc_10.pdf`, `doc_17.pdf`, `doc_23.pdf` |
-| 1036 | `doc_03.pdf`, `doc_08.pdf`, `doc_15.pdf`, `doc_25.pdf`, `doc_28.pdf` |
-| 1040 | `doc_01.pdf`, `doc_04.pdf`, `doc_09.pdf`, `doc_14.pdf`, `doc_20.pdf`, `doc_26.pdf` |
-| 1042 | `doc_05.pdf`, `doc_16.pdf`, `doc_19.pdf`, `doc_21.pdf`, `doc_22.pdf`, `doc_27.pdf` |
-
-Return to **Map & export**, inspect all five patient rows, confirm the mapping, and export a new `my-train-readout.xlsx`. Check that all five patients are approved. Exports include approved rows only. The complete train export has five data rows and 512 columns, or 2,560 destination cells. It does not have 28 patient rows.
-
-### Repeat with the supplied test set
-
-Save the train project, choose **File > New project**, and select **Read PACE printed forms** again. Use `test/forms/` for this project. The test folder reuses filenames such as `doc_01.pdf`, so check the folder before selecting files.
-
-| Study record_id | PDFs from `test/forms/`, in order |
-| --- | --- |
-| 1046 | `doc_05.pdf`, `doc_06.pdf`, `doc_09.pdf`, `doc_12.pdf`, `doc_13.pdf`, `doc_18.pdf` |
-| 1055 | `doc_03.pdf`, `doc_15.pdf`, `doc_17.pdf`, `doc_26.pdf`, `doc_27.pdf` |
-| 1060 | `doc_04.pdf`, `doc_07.pdf`, `doc_08.pdf`, `doc_10.pdf`, `doc_11.pdf`, `doc_25.pdf` |
-| 1066 | `doc_02.pdf`, `doc_21.pdf`, `doc_22.pdf`, `doc_24.pdf` |
-| 1073 | `doc_01.pdf`, `doc_14.pdf`, `doc_16.pdf`, `doc_19.pdf`, `doc_20.pdf`, `doc_23.pdf` |
-
-Combine each group, review every applicable answer, enter your reviewer name, and approve each patient. Create the 512-column destination, confirm its mapping, and export a separate `my-test-readout.xlsx`. Expect five data rows. Compare against `test/answer_keys/`, not the train keys.
-
-The current reader has one known test error. In patient 1046's `doc_18.pdf`, field `personal_ctdisorder_v2` suggests `hypermobility` while the source reads `Joint hypermobility`. Check the source and correct the full text before confirming it. Keep notes on any manual correction so you can distinguish raw extraction from your reviewed export. This test set has already been evaluated and is now regression material.
-
-### Use the supplied CSV template or your own spreadsheet
-
-For a CSV output, choose **Advanced > Spreadsheet > Import XLSX / CSV…** and select `spreadsheets/pace-import-template.csv`. Then choose **Advanced > Spreadsheet > Use suggested assignments**. Inspect the populated preview and assignments, click **Confirm column mapping**, then **Export CSV…**. These menu actions remain available when advanced controls are hidden. CSV templates produce CSV output. Use **Use fields as columns** or a supported blank XLSX template when you want an Excel workbook.
-
-For another blank template, first import it with **Advanced > Spreadsheet > Import XLSX / CSV…**. Drag a source field onto a destination column, or select the destination and choose its source from the assignment dropdown. Inspect the preview after each change. Every destination needs an assignment or an explicit **Leave blank** choice before the full mapping can be confirmed. Keep the record identifier mapped exactly once.
-
-The output is a reviewed patient staging table. Repeating-instrument REDCap import still requires a separate validated conversion. This walkthrough does not submit anything to REDCap.
-
-### Check a complete export with the independent verifier
-
-Manual source review and the answer-key PDFs are sufficient to walk through the app without a terminal. Developers with the pinned Python environment can also check a complete five-patient workbook. From the repository root, replace the output path with your file:
-
-```sh
-python tools/verify_actual_pace_readout.py --expected-json datasets/sih-synthetic/evaluation/train-expected.json --census-json datasets/sih-synthetic/evaluation/train-form-census.json --xlsx "/path/to/my-train-readout.xlsx"
-python tools/verify_actual_pace_readout.py --expected-json datasets/sih-synthetic/evaluation/test-expected-comparator.json --census-json datasets/sih-synthetic/evaluation/test-form-census.json --xlsx "/path/to/my-test-readout.xlsx"
-```
-
-Use `.venv/bin/python` on Mac or `.venv\Scripts\python.exe` on Windows if your environment is not activated. A correct complete reviewed workbook reports `readout_passed: true`, `full_checked_cells: 2560`, `patient_rows_matched: 5`, and no issues. These complete-split commands will report missing patients for the one-patient trial. They inspect the exported workbook and do not prove that you reviewed it through the app.
-
-### If a step is blocked
-
-- If the mask designer appears, select **Advanced > Form type > Read PACE printed forms** for these supplied layouts. **Load PACE fields** only loads reference metadata and does not activate the printed-form reader.
-- If combining is blocked, check the folder, selected filenames, printed patient IDs, source order, and confirmation checkbox. Keep different patients and repeated assessments in separate groups.
-- If approval is blocked, review the displayed validation message, confirm every applicable field, and enter a reviewer name. Keep source-observed missing answers blank when appropriate.
-- If export is disabled, check patient approval, resolve any unsaved answer edit, and click **Confirm column mapping**. Only approved patient rows are exported.
-- If **Export XLSX…** is unavailable after loading a CSV template, click **Use fields as columns** or choose a supported blank XLSX destination, then review and confirm its mapping.
-
-The reader checks printed record IDs and demographics against the confirmed patient bundle. Unknown instruments, conflicting source identities, repeated assessments of one instrument, and conflicting source values block the one-row merge. A visibly unchecked checkbox can produce `0`. An absent question stays blank, and a visible unanswered radio stays blank and remains part of the review. Editing an answer cannot hide an observed field.
-
-The shorter [PACE workflow reference](docs/PACE_WORKFLOW.md) describes the reader and custom-mask alternatives.
+For the current `sih_clinic_dataset`, follow the [SIH clinic walkthrough](docs/SIH_CLINIC_WORKFLOW.md) and select **Read SIH clinic forms**. Similar filenames do not make the layouts interchangeable.
 
 ## Results on your supplied train/test packet
+
+These historical results belong to the earlier PACE printed packet, `sih_dataset`. They are not accuracy results for the new `sih_clinic_dataset` reader. Clinic results require their own train and test evaluation record.
 
 The [included packet](datasets/sih-synthetic/README.md) contains the original user-supplied forms and answer keys, copied byte for byte. It is entirely fictional. It contains 28 train forms, 27 test forms, 55 matching answer-key PDFs, and the original index. These results come from that packet, not the app-authored practice forms.
 
@@ -183,7 +140,7 @@ On macOS, open `QwikCap.app`. Keep the whole app bundle together. On Windows, op
 
 The macOS build compiles the included `native_ocr.swift` adapter into an executable and bundles it with Apple Vision OCR. It does not need Swift on the computer running the packaged app. Optional Tesseract discovery checks `PATH`, then the standard Homebrew locations on macOS or standard installations on Windows. An explicit `FORMBRIDGE_TESSERACT` executable path takes precedence. An invalid explicit path disables OCR instead of silently selecting another engine. Tesseract needs English language data and is not bundled or downloaded by the app. Tesseract 5.5.3_1 was installed with operator approval for the current Mac run. Without a working OCR engine, scans remain available for manual review and entry; text PDFs can still use their text layers.
 
-These are development builds without distribution signing or notarization. The current Windows x64 portable ZIP passed automated native Windows and packaged-worker checks on 2026-11-19, including all five fictional scans and independently reopened spreadsheet exports. See [the Windows evidence](docs/testing/QWIKCAP_WINDOWS_2026-11-19.md). A complete person-driven workflow on a Windows laptop remains a pilot check.
+These are development builds without distribution signing or notarization. The current Windows x64 runtime passes all 12 native and packaged checks, including five fictional scans and independently reopened spreadsheet exports. The current source suite passes 316 tests on both platforms, with platform-specific skips. See [the current package evidence](docs/testing/SIH_CLINIC_HARDENING_2026-11-19.md) for the verified runtime, documentation-only Windows repack, and download hashes. A complete person-driven workflow on a Windows laptop remains a pilot check.
 
 On 2026-11-13, a fresh macOS arm64 environment installed the unchanged runtime and build pins and passed all 156 source tests. That earlier `QuickCapCV.app` built, and the source and packaged-worker custom-mask checks each passed all ten groups. Later PACE and Windows work has separate [recorded results and limits](docs/TESTING.md). Mouse-drag mask creation and real-study REDCap import remain unverified.
 
@@ -246,7 +203,7 @@ The result is `dist\windows\QwikCap\QwikCap.exe` with its adjacent dependencies.
 
 The builder checks that the GUI, companion worker, source modules, samples, and spreadsheet directory exist before building. It requires the installed PyInstaller version pinned in `requirements-build.txt`. Each run uses a new intermediate directory. If the selected destination already contains `QwikCap` or `QwikCap.app`, choose another `--dist-dir`; the builder preserves existing output. Retained work directories can be inspected or removed manually after review.
 
-The manually dispatched [Windows workflow](.github/workflows/windows-build.yml) builds and verifies the portable ZIP on Windows with fictional fixtures. Its 11 checks include native startup, required local OCR, custom masks, patient bundles, the packaged PACE printed-form reader, and spreadsheet values after extraction outside the checkout. It retains notices and a component inventory. It has no push, pull-request, or schedule trigger and does not publish releases. `desktop-build.yml` remains an older inactive matrix template.
+The manually dispatched [Windows workflow](.github/workflows/windows-build.yml) builds and verifies the portable ZIP on Windows with fictional fixtures. Its 12 checks include native startup, required local OCR, custom masks, patient bundles, both packaged PACE and SIH clinic readers, and spreadsheet values after extraction outside the checkout. It retains notices and a component inventory. It has no push, pull-request, or schedule trigger and does not publish releases. `desktop-build.yml` remains an older inactive matrix template.
 
 ## Local data and review limits
 

@@ -1,0 +1,15 @@
+{
+  "format": "qwikcap-hardened-native-regression-v1",
+  "sourceCommit": "da33054561d836ff336e9ad72fec07e49bac21de",
+  "nativeDesktopUIUsed": true,
+  "originalRepositoryCopyPDFsImported": 5,
+  "confirmedFields": 200,
+  "approvedPatientRows": 1,
+  "confirmedMappingColumns": 512,
+  "headersMatched": 512,
+  "typedDataCellsUnchangedFromFrozenExport": 512,
+  "manualValueEdits": 0,
+  "notAnIndependentHeldoutEvaluation": true,
+  "workbookSHA256": "b2e2d5c4dc7adde73b0db1b8ad7a6a1ef6a1ffec1a8cf8e2706e76769b06a02c",
+  "passed": true
+}

@@ -1,0 +1,40 @@
+{
+  "format": "qwikcap-clinic-post-evaluation-replay-v1",
+  "recordedAt": "2026-11-19T10:34:19.488995+00:00",
+  "sourceCommit": "da33054561d836ff336e9ad72fec07e49bac21de",
+  "evaluatedFrozenSourceCommit": "e2fbd2e8bbb28d31427c229ad18cae5f896c9d93",
+  "scope": "Regression replay after invented qualifier fixes; not a new independent held-out evaluation.",
+  "frozenFilesStillIdentical": 70,
+  "postEvaluationFilesChanged": {
+    "clinic_narratives.py": "f979e26492e028d7b0f8fd8876c5626e715bfe8f0b9f38172a62e58adc09da0f",
+    "tests/test_clinic_narratives.py": "e619e43479bd86a19cd9530443006c7da0c8316fd26a36cf990180f536b128f5"
+  },
+  "answerKeysReadByReplay": false,
+  "desktopUIUsed": false,
+  "checks": [
+    {
+      "split": "train",
+      "originalFormsChecked": 28,
+      "valuesIdentical": true,
+      "applicabilityIdentical": true,
+      "sourceContextIdentical": true,
+      "issuesIdentical": true,
+      "beforeSHA256": "6e86227dbf6f6c5911d6f7e09bbec1f05445de71fa3097d4d76441bae77e7281",
+      "afterSHA256": "6e86227dbf6f6c5911d6f7e09bbec1f05445de71fa3097d4d76441bae77e7281",
+      "evidenceBytesCompared": false
+    },
+    {
+      "split": "test",
+      "originalFormsChecked": 27,
+      "valuesIdentical": true,
+      "applicabilityIdentical": true,
+      "sourceContextIdentical": true,
+      "issuesIdentical": true,
+      "beforeSHA256": "dd8a27d5ff6be0bcc6ff3bd5a0d31c09f8a9e3756dd036bc106b87362e0d30de",
+      "afterSHA256": "dd8a27d5ff6be0bcc6ff3bd5a0d31c09f8a9e3756dd036bc106b87362e0d30de",
+      "evidenceBytesCompared": false
+    }
+  ],
+  "originalFormsChecked": 55,
+  "passed": true
+}

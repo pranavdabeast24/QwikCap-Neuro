@@ -1,0 +1,159 @@
+{
+  "status": "passed",
+  "format": "qwikcap-windows-delivery-overlay-audit-v1",
+  "runtimeSourceCommit": "da33054561d836ff336e9ad72fec07e49bac21de",
+  "documentationSourceCommit": "5530aa95b71cd692d585a618b95c91cdfbc739e8",
+  "originalCIRun": 44506631638,
+  "originalCIZipSHA256": "37913faac47496bf2ec5400a66f31205f964db4baa58838a2d5ad3aa55088f1e",
+  "originalIndependentAuditSHA256": "f8132330ddb9af0e7b18a22e481f9a638f95c58942918679c67161aa1d4d3ca1",
+  "archive": "/Users/aorta/Documents/Codex/2026-10-25/re/work/qwikcap-sih-clinic-2026-11-19/windows-delivery/QwikCap-Windows-x64.zip",
+  "archiveBytes": 48479877,
+  "archiveSHA256": "0bb1f8a570b3315006d9b3eb044beb7d4059926aec6c0bdc39c301452424f245",
+  "archiveEntries": 1112,
+  "unchangedOriginalEntries": 1109,
+  "unchangedBytesMetadataAndCompressedLocalRecords": true,
+  "crcVerified": true,
+  "modifiedOriginalEntries": [
+    "QwikCap/WINDOWS_README.md"
+  ],
+  "addedEntries": [
+    "QwikCap/SIH_CLINIC_WALKTHROUGH.md",
+    "QwikCap/DELIVERY_PROVENANCE.json"
+  ],
+  "exactChanges": [
+    {
+      "operation": "replace",
+      "path": "QwikCap/WINDOWS_README.md",
+      "source": "docs/WINDOWS.md",
+      "originalSHA256": "077ee2c4e2777f0067e06b2f0c0acfde5bb764798540bfd3c3390a205668fc1f",
+      "sourceSHA256": "63212f47de305f6da21e2f35ede2fb7b349ade3e403feaf869421a9f07c5c7c0",
+      "deliveredSHA256": "f22a009213926334eaf192b225e9123b3a048004e4a674d7492a7dd443049e0a"
+    },
+    {
+      "operation": "add",
+      "path": "QwikCap/SIH_CLINIC_WALKTHROUGH.md",
+      "source": "docs/SIH_CLINIC_WORKFLOW.md",
+      "sourceSHA256": "bb125dd8086f43b0220e7968604870607682ce71186a89edd4948ca611f990e5",
+      "deliveredSHA256": "38669c11b40a9269df796e6a3be2edc37e1883d8aacb70bd4399dd248e280093"
+    },
+    {
+      "operation": "add",
+      "path": "QwikCap/DELIVERY_PROVENANCE.json",
+      "purpose": "Record the documentation-only overlay without changing the original CI manifest"
+    }
+  ],
+  "relativeLinksRewritten": 11,
+  "links": [
+    {
+      "original": "testing/SIH_CLINIC_HARDENING_2026-11-19.md",
+      "repositoryPath": "docs/testing/SIH_CLINIC_HARDENING_2026-11-19.md",
+      "absolute": "https://github.com/pranavdabeast24/capitolinus-form-extraction/blob/main/docs/testing/SIH_CLINIC_HARDENING_2026-11-19.md",
+      "targetVerifiedAtCommit": null,
+      "pendingTargetCommit": true,
+      "workspacePathExists": true,
+      "anchor": null
+    },
+    {
+      "original": "SIH_CLINIC_WORKFLOW.md",
+      "repositoryPath": "docs/SIH_CLINIC_WORKFLOW.md",
+      "absolute": "https://github.com/pranavdabeast24/capitolinus-form-extraction/blob/main/docs/SIH_CLINIC_WORKFLOW.md",
+      "targetVerifiedAtCommit": "5530aa95b71cd692d585a618b95c91cdfbc739e8",
+      "pendingTargetCommit": false,
+      "workspacePathExists": true,
+      "anchor": null
+    },
+    {
+      "original": "testing/SIH_CLINIC_2026-11-19.md",
+      "repositoryPath": "docs/testing/SIH_CLINIC_2026-11-19.md",
+      "absolute": "https://github.com/pranavdabeast24/capitolinus-form-extraction/blob/main/docs/testing/SIH_CLINIC_2026-11-19.md",
+      "targetVerifiedAtCommit": null,
+      "pendingTargetCommit": true,
+      "workspacePathExists": true,
+      "anchor": null
+    },
+    {
+      "original": "testing/QWIKCAP_WINDOWS_2026-11-19.md",
+      "repositoryPath": "docs/testing/QWIKCAP_WINDOWS_2026-11-19.md",
+      "absolute": "https://github.com/pranavdabeast24/capitolinus-form-extraction/blob/main/docs/testing/QWIKCAP_WINDOWS_2026-11-19.md",
+      "targetVerifiedAtCommit": "5530aa95b71cd692d585a618b95c91cdfbc739e8",
+      "pendingTargetCommit": false,
+      "workspacePathExists": true,
+      "anchor": null
+    },
+    {
+      "original": "SIH_CLINIC_WORKFLOW.md",
+      "repositoryPath": "docs/SIH_CLINIC_WORKFLOW.md",
+      "absolute": "https://github.com/pranavdabeast24/capitolinus-form-extraction/blob/main/docs/SIH_CLINIC_WORKFLOW.md",
+      "targetVerifiedAtCommit": "5530aa95b71cd692d585a618b95c91cdfbc739e8",
+      "pendingTargetCommit": false,
+      "workspacePathExists": true,
+      "anchor": null
+    },
+    {
+      "original": "PACE_PRINTED_WALKTHROUGH.md",
+      "repositoryPath": "docs/PACE_PRINTED_WALKTHROUGH.md",
+      "absolute": "https://github.com/pranavdabeast24/capitolinus-form-extraction/blob/main/docs/PACE_PRINTED_WALKTHROUGH.md",
+      "targetVerifiedAtCommit": null,
+      "pendingTargetCommit": true,
+      "workspacePathExists": true,
+      "anchor": null
+    },
+    {
+      "original": "../datasets/sih-clinic-synthetic/README.md",
+      "repositoryPath": "datasets/sih-clinic-synthetic/README.md",
+      "absolute": "https://github.com/pranavdabeast24/capitolinus-form-extraction/blob/main/datasets/sih-clinic-synthetic/README.md",
+      "targetVerifiedAtCommit": null,
+      "pendingTargetCommit": true,
+      "workspacePathExists": true,
+      "anchor": null
+    },
+    {
+      "original": "testing/SIH_CLINIC_2026-11-19.md",
+      "repositoryPath": "docs/testing/SIH_CLINIC_2026-11-19.md",
+      "absolute": "https://github.com/pranavdabeast24/capitolinus-form-extraction/blob/main/docs/testing/SIH_CLINIC_2026-11-19.md",
+      "targetVerifiedAtCommit": null,
+      "pendingTargetCommit": true,
+      "workspacePathExists": true,
+      "anchor": null
+    },
+    {
+      "original": "WINDOWS.md",
+      "repositoryPath": "docs/WINDOWS.md",
+      "absolute": "https://github.com/pranavdabeast24/capitolinus-form-extraction/blob/main/docs/WINDOWS.md",
+      "targetVerifiedAtCommit": "5530aa95b71cd692d585a618b95c91cdfbc739e8",
+      "pendingTargetCommit": false,
+      "workspacePathExists": true,
+      "anchor": null
+    },
+    {
+      "original": "GETTING_STARTED.md",
+      "repositoryPath": "docs/GETTING_STARTED.md",
+      "absolute": "https://github.com/pranavdabeast24/capitolinus-form-extraction/blob/main/docs/GETTING_STARTED.md",
+      "targetVerifiedAtCommit": "5530aa95b71cd692d585a618b95c91cdfbc739e8",
+      "pendingTargetCommit": false,
+      "workspacePathExists": true,
+      "anchor": null
+    },
+    {
+      "original": "testing/SIH_CLINIC_2026-11-19.md",
+      "repositoryPath": "docs/testing/SIH_CLINIC_2026-11-19.md",
+      "absolute": "https://github.com/pranavdabeast24/capitolinus-form-extraction/blob/main/docs/testing/SIH_CLINIC_2026-11-19.md",
+      "targetVerifiedAtCommit": null,
+      "pendingTargetCommit": true,
+      "workspacePathExists": true,
+      "anchor": null
+    }
+  ],
+  "originalCIArchiveAndReportsUnchanged": true,
+  "originalBuildManifestUnchanged": true,
+  "buildManifestSHA256": "315dc6ebfb7e0dc5f2141f140612477d672eeb8bb36418d3b38d025e7e717e0e",
+  "buildManifestGuideCoverage": false,
+  "nativeFilesHashVerified": 76,
+  "noticesHashVerified": 32,
+  "allRuntimeResourceAndHelperBytesUnchanged": true,
+  "runtimeCodeVerification": "Inherited from exact unchanged CI package and independent archive audit. Every runtime/helper/resource entry is byte-identical.",
+  "noBinaryRebuild": true,
+  "noRuntimeChange": true,
+  "noNewHeldOutEvaluation": true,
+  "checksumPolicy": "Final delivery archive checksum is external. Original CI checksum remains attached to the original CI archive."
+}

@@ -1,0 +1,72 @@
+{
+  "format": "qwikcap-sih-clinic-acceptance-v1",
+  "status": "passed",
+  "worker": "real packaged companion",
+  "desktopUIUsed": false,
+  "inventedFixturesOnly": true,
+  "suppliedDatasetRead": false,
+  "answerKeysRead": false,
+  "manifestRead": false,
+  "notice": "Invented software fixtures only. This does not evaluate any supplied train or test packet.",
+  "checks": [
+    {
+      "check": "explicit clinic reader retains canonical destination",
+      "status": "passed",
+      "destinationColumns": 512
+    },
+    {
+      "check": "grouping, wrong study ID and conflicting MRN reject transactionally",
+      "status": "passed",
+      "rejectionCases": 3
+    },
+    {
+      "check": "source anchor, native circle and six native table marks match literal values",
+      "status": "passed",
+      "fieldsMatched": 14
+    },
+    {
+      "check": "observed field approval and column mapping require separate confirmation",
+      "status": "passed",
+      "mappedFields": 512
+    },
+    {
+      "check": "independently reopened CSV matches every destination cell",
+      "status": "passed",
+      "headersMatched": 512,
+      "cellsMatched": 512
+    },
+    {
+      "check": "independently reopened XLSX matches every destination cell",
+      "status": "passed",
+      "headersMatched": 512,
+      "cellsMatched": 512
+    },
+    {
+      "check": "saved project preserves original PDFs and reopens with fresh review gates",
+      "status": "passed",
+      "originalsPreserved": 2
+    }
+  ],
+  "exports": [
+    {
+      "format": "csv",
+      "records": 1,
+      "headersMatched": 512,
+      "cellsMatched": 512
+    },
+    {
+      "format": "xlsx",
+      "records": 1,
+      "headersMatched": 512,
+      "cellsMatched": 512
+    }
+  ],
+  "bundle": "QwikCap.app",
+  "documents": 2,
+  "originalForms": 2,
+  "destinationColumns": 512,
+  "patientRows": 1,
+  "extractedMatches": 14,
+  "mappedFields": 512,
+  "exportedCellsMatched": 1024
+}

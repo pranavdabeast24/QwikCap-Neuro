@@ -1,0 +1,103 @@
+{
+  "status": "passed",
+  "sourceCommit": "da33054561d836ff336e9ad72fec07e49bac21de",
+  "githubRun": 44506631638,
+  "package": {
+    "file": "QwikCap-Windows-x64.zip",
+    "bytes": 48473227,
+    "sha256": "37913faac47496bf2ec5400a66f31205f964db4baa58838a2d5ad3aa55088f1e"
+  },
+  "archiveEntries": 1110,
+  "acceptanceStages": 12,
+  "sourceTests": 316,
+  "sourceSkips": 1,
+  "sourceSkippedTests": [
+    "test_worker_group_cleanup_stops_child_process (test_processes.ProcessCleanupTests.test_worker_group_cleanup_stops_child_process)"
+  ],
+  "outerNativeFilesHashVerified": 76,
+  "embeddedArchiveFilesHashVerified": 125,
+  "embeddedPEFiles": 75,
+  "noticeFilesHashVerified": 32,
+  "approvedResourcesHashVerified": 24,
+  "executablesX64": true,
+  "guiWorkerCatalogsIdentical": true,
+  "catalogFields": 512,
+  "clinicModulesPresentInBothExecutables": [
+    "clinic_profile",
+    "clinic_narratives",
+    "extraction_profiles",
+    "pipeline"
+  ],
+  "guiWorkerClinicModuleBytecodeIdentical": true,
+  "clinicModuleBytecodeSHA256": {
+    "clinic_profile": "829c88728de36c3c18c37ce92e4dc229c8d77dc7974745aff0609412c193082c",
+    "clinic_narratives": "0b9bf199841ff7cef62e2602bb8c2426dd73eb23f9460ccfe6d555c39e277f56",
+    "extraction_profiles": "b6b9518127282fb6f7468e4c89101af46905945278609cc7ca68ce4220c4a535",
+    "pipeline": "49befeb74df716064ab37546666936a5e6c3f727da22018c733d98d1e21c5099"
+  },
+  "sourceCodeMatches": {
+    "GUI": [
+      "branding",
+      "desktop_model",
+      "runtime_paths",
+      "form_types",
+      "pipeline",
+      "templates",
+      "server",
+      "neurology_profile",
+      "pace_profile",
+      "clinic_profile",
+      "clinic_narratives",
+      "extraction_profiles",
+      "field_catalog",
+      "limits",
+      "desktop"
+    ],
+    "worker": [
+      "branding",
+      "pipeline",
+      "worker",
+      "templates",
+      "template_worker",
+      "neurology_profile",
+      "pace_profile",
+      "clinic_profile",
+      "clinic_narratives",
+      "extraction_profiles",
+      "field_catalog",
+      "limits",
+      "source_bundle",
+      "bundle_worker",
+      "desktop_worker"
+    ]
+  },
+  "generatedFixtureDocuments": 10,
+  "generatedExtractedFields": 60,
+  "generatedExportCells": 240,
+  "clinicAcceptanceGroups": 7,
+  "clinicLiteralFields": 14,
+  "clinicPatientRows": 1,
+  "clinicCSVXLSXCellsMatched": 1024,
+  "manifestSHA256": "315dc6ebfb7e0dc5f2141f140612477d672eeb8bb36418d3b38d025e7e717e0e",
+  "dependencies": {
+    "Pillow": "12.3.0",
+    "pypdfium2": "5.14.0",
+    "reportlab": "4.4.9",
+    "pypdf": "6.10.0",
+    "openpyxl": "3.1.5",
+    "defusedxml": "0.7.1",
+    "pyinstaller": "6.22.3"
+  },
+  "python": "3.12.10",
+  "tesseractVersion": "tesseract v5.5.3.20260724",
+  "ocrBundled": false,
+  "windowsExecutionPerformedByAudit": false,
+  "scope": "Static audit on macOS of post-evaluation hardened Windows CI artifacts. CI checks use generated fixtures. This does not replace the completed frozen evaluation or create a fresh holdout. No supplied clinic train or test packet was accessed or evaluated by this audit.",
+  "limitations": [
+    "Unsigned development artifact",
+    "OCR engine installed separately",
+    "No actual clinic dataset Windows GUI walkthrough",
+    "Component inventory is not an SPDX or CycloneDX SBOM",
+    "Embedded Windows guide retains older release metadata and PACE guidance; use the current SIH clinic repository instructions"
+  ]
+}
