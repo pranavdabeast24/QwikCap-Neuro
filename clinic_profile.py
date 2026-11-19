@@ -131,6 +131,28 @@ def _proof_words(page, value, fallback=None):
     return fallback or []
 
 
+def _visible_options(page, region, options):
+    """Require a separate printed phrase for every unmarked radio option."""
+    text = normalized(_read_words(_region_words(page, region))).casefold()
+    matches = []
+    for code, aliases in options.items():
+        aliases = aliases if isinstance(aliases, list) else [aliases]
+        for alias in aliases:
+            tokens = re.findall(r"[a-z0-9]+", normalized(alias).casefold())
+            if not tokens:
+                continue
+            pattern = r"\b" + r"[\W_]*".join(re.escape(token) for token in tokens) + r"\b"
+            matches.extend((match.start(), match.end(), str(code)) for match in re.finditer(pattern, text))
+    found, occupied = set(), []
+    # Do not use the word "completely" inside "near completely" to prove two
+    # different printed options. Each code needs its own non-overlapping span.
+    for left, right, code in sorted(matches, key=lambda match: (match[1] - match[0]), reverse=True):
+        if code not in found and not any(left < end and right > start for start, end in occupied):
+            found.add(code)
+            occupied.append((left, right))
+    return bool(options) and found == {str(code) for code in options}
+
+
 def _recognize(page):
     text = _text(page)
     codes = {code for code in FORM_INSTRUMENTS if re.search(r"\b" + re.escape(code) + r"\b", text)}
@@ -206,6 +228,7 @@ class _Reader:
         self.evidence, self.candidates = {}, {}
         self.active = {"record_id"}
         self.issues = []
+        self.declared_pages = {}
         self.context = {"profile": PROFILE, "recordIds": [], "identities": [], "instruments": [],
                         "instrumentStarts": [], "registrationAnchors": [], "unansweredFields": [], "blockingIssues": []}
 
@@ -264,7 +287,12 @@ class _Reader:
         if len({value for value, _ in matches}) == 1:
             self.put(name, matches[0][0], page, matches[0][1], "clinic-circled-choice")
         elif not matches:
-            self.blank(name, page, words or _region_words(page, region))
+            if _visible_options(page, region, options):
+                self.blank(name, page, _region_words(page, region))
+            else:
+                self.active.add(name)
+                self.context["blockingIssues"].append(
+                    f"{name}: Printed radio options are missing or ambiguous; no source-blank waiver was issued.")
         else:
             self.active.add(name)
             self.issues.append(f"{name}: Multiple circled choices need source review.")
@@ -527,20 +555,31 @@ class _Reader:
         date = re.search(r"(?:^|\n)Date\s+(\d{1,2}/\d{1,2}/\d{4})", text)
         if date:
             self.put("hit6_date", _iso(date[1]), page, _proof_words(page, date[1]))
-        columns = []
-        for code, label in (("6", "Never"), ("8", "Rarely"), ("10", "Sometimes"), ("11", "Very"), ("13", "Always")):
-            word = next((word for word in _words(page) if word["text"] == label), None)
-            if word:
-                columns.append((code, word["x"] + word["width"] / 2))
         names = ("severity", "limitactivities", "liedown", "tired", "irritated", "limitconcentration")
+        self.active.update("hit6_" + suffix for suffix in names)
+        columns, headers = [], []
+        for code, label in (("6", "Never"), ("8", "Rarely"), ("10", "Sometimes"), ("11", "Very"), ("13", "Always")):
+            matches = [word for word in _words(page) if word["text"] == label]
+            if len(matches) == 1:
+                word = matches[0]
+                columns.append((code, word["x"] + word["width"] / 2))
+                headers.append(word)
+        if (len(columns) != 5 or [x for _, x in columns] != sorted(x for _, x in columns)
+                or any(right - left < .02 for (_, left), (_, right) in zip(columns, columns[1:]))
+                or max(word["y"] for word in headers) - min(word["y"] for word in headers) > .025):
+            self.context["blockingIssues"].append("HIT-6 frequency headers are missing, ambiguous or misaligned; use a complete matching table.")
+            return
         question_anchors = ("painsevere", "limityourabilitytodousualdailyactivities", "wishyoucouldliedown",
                             "felttootired", "feduporirritated", "limityourabilitytoconcentrate")
         row_words = [word for word in _words(page) if word["text"] in {str(i) for i in range(1, 7)} and word["x"] < .1]
+        if len(row_words) != 6 or {word["text"] for word in row_words} != {str(i) for i in range(1, 7)}:
+            self.context["blockingIssues"].append("HIT-6 must contain all six uniquely numbered question rows.")
+            return
         centers = sorted(word["y"] + word["height"] / 2 for word in row_words)
+        left_edge = columns[0][1] - (columns[1][1] - columns[0][1]) / 2
+        right_edge = columns[-1][1] + (columns[-1][1] - columns[-2][1]) / 2
         for index, suffix in enumerate(names, 1):
             marker = next((word for word in row_words if word["text"] == str(index)), None)
-            if marker is None or len(columns) != 5:
-                continue
             center = marker["y"] + marker["height"] / 2
             previous = max([y for y in centers if y < center - .005] or [center - .05])
             following = min([y for y in centers if y > center + .005] or [center + .05])
@@ -548,22 +587,30 @@ class _Reader:
                           "width": min(x for _, x in columns) - .06, "height": (following - previous) / 2}
             name = "hit6_" + suffix
             if question_anchors[index - 1] not in _key(_read_words(_region_words(page, row_region))):
-                self.active.add(name)
-                self.issues.append(f"{name}: The printed question label needs manual review; no table answer selected.")
+                self.context["blockingIssues"].append(f"{name}: The printed question label is missing or changed; no table answer selected.")
                 continue
             marks = [word for word in _words(page) if word["text"] in _MARKS
                      and (previous + center) / 2 <= word["y"] + word["height"] / 2 < (center + following) / 2]
             if len(marks) == 1:
                 mark_x = marks[0]["x"] + marks[0]["width"] / 2
+                if not left_edge <= mark_x <= right_edge:
+                    self.context["blockingIssues"].append(f"{name}: A row-aligned mark lies outside the printed frequency columns.")
+                    continue
                 code = min(columns, key=lambda column: abs(column[1] - mark_x))[0]
                 self.put(name, code, page, marks, "clinic-table-column")
             elif not marks:
-                self.blank(name, page, [marker])
+                self.blank(name, page, _region_words(page, row_region) + headers)
             else:
                 self.active.add(name)
                 self.issues.append(f"{name}: Multiple marked table cells need source review.")
 
     def finish(self):
+        for instrument, declarations in self.declared_pages.items():
+            total = declarations[0][1]
+            if (any(count != total for _, count in declarations) or len(declarations) != total
+                    or [number for number, _ in declarations] != list(range(1, total + 1))):
+                self.context["blockingIssues"].append(
+                    f"{instrument}: Printed page numbers are incomplete, repeated or out of order; include every original page in order.")
         for name, items in self.candidates.items():
             distinct = {value for value, _ in items}
             if len(distinct) == 1:
@@ -649,6 +696,10 @@ def extract(pages):
             reader.context["instruments"].append(instrument)
         if start:
             reader.context["instrumentStarts"].append({"instrument": instrument, "page": page["page"]})
+        if instrument in FORM_INSTRUMENTS.values():
+            declaration = re.search(r"\bPage\s+(\d+)\s+of\s+(\d+)\b", text, re.I)
+            if declaration:
+                reader.declared_pages.setdefault(instrument, []).append((int(declaration[1]), int(declaration[2])))
         identity, identity_issues = _identity(page, instrument == "patient_records")
         reader.context["blockingIssues"].extend(f"Page {page['page']}: {issue}" for issue in identity_issues)
         reader.context["identities"].append(identity)
