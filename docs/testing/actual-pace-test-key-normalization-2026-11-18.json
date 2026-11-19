@@ -1,0 +1,37 @@
+{
+  "format": "held-out-key-wildcard-normalization-v1",
+  "measurementOnly": true,
+  "literalKeyRows": 544,
+  "wildcardRows": 1,
+  "expandedRows": 559,
+  "literalArtifactSHA256": "4ad450bda3e1162833840cb44144023294f7862d5f0bc252f6f37b41773240a1",
+  "comparatorArtifactSHA256": "222b4863396af9a2addbf21fc3192b5cf9d531c0d720812c99a6fe1e16a887b0",
+  "catalogSHA256": "e8a2c021405da7defead007e9f8e7f5f3852ae926c35f2fb687a474e6f8faf53",
+  "expansion": {
+    "formFile": "doc_02.pdf",
+    "originalName": "scan_findings___*",
+    "raw": "0",
+    "label": "(none checked)",
+    "canonicalDestinations": [
+      "scan_findings___1",
+      "scan_findings___2",
+      "scan_findings___3",
+      "scan_findings___4",
+      "scan_findings___5",
+      "scan_findings___6",
+      "scan_findings___7",
+      "scan_findings___8",
+      "scan_findings___9",
+      "scan_findings___10",
+      "scan_findings___11",
+      "scan_findings___12",
+      "scan_findings___13",
+      "scan_findings___14",
+      "scan_findings___15",
+      "scan_findings___16"
+    ]
+  },
+  "independentVisibleFamilyConfirmed": true,
+  "independentSelectedCheckboxMarks": 0,
+  "frozenRuntimeUnchanged": true
+}

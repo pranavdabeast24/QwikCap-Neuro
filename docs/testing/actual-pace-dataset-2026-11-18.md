@@ -4,7 +4,7 @@ This report concerns the separately supplied synthetic dataset. The earlier dens
 
 ## Acceptance status
 
-Train acceptance is complete. The native desktop imported all 28 PDFs into five patient bundles, confirmed all 1,085 applicable fields, approved all five rows, confirmed the 512-column mapping, and wrote [the train workbook](../../examples/quickcap-actual-train-readout.xlsx). Independent checks of both its saved raw project and final workbook match all 2,560 destination cells. The workbook has zero issues and required zero manual value corrections. The source freeze is complete. Held-out evaluation and the new Windows release run have no reported result yet.
+Train acceptance is complete. The native desktop imported all 28 PDFs into five patient bundles, confirmed all 1,085 applicable fields, approved all five rows, confirmed the 512-column mapping, and wrote [the train workbook](../../examples/quickcap-actual-train-readout.xlsx). Independent checks of both its saved raw project and final workbook match all 2,560 destination cells. The workbook has zero issues and required zero manual value corrections. The frozen held-out raw run has one known text omission; native Mac review corrected it and the reviewed export passes all 2,560 cells. Independent Windows artifact audit confirms all 11 acceptance checks. These later results are detailed in [the held-out report](heldout-pace-2026-11-18.md).
 
 The user confirmed that the forms and answer keys are entirely fictional or synthetic. The user authorized final held-out evaluation after train fixes and acceptance. The runtime was frozen at `26fb90eaea6c4a2255c681ad9947e9ab0739c3a5` on `2026-11-18T23:45:26.040166Z`, before any test access. The [freeze snapshot](actual-pace-freeze-2026-11-18.json) records hashes for 37 source, rule, and dependency files. Extraction code and rules remain unchanged during held-out evaluation. The [train workbook comparison](actual-pace-train-xlsx-2026-11-18.json) and [separate raw coverage report](actual-pace-train-raw-2026-11-18.json) contain value-free diagnostics.
 
@@ -23,8 +23,9 @@ The user confirmed that the forms and answer keys are entirely fictional or synt
 | Native review and export | All 1,085 applicable fields confirmed, five rows approved, and 512-column mapping confirmed through the GUI. | Synthetic QA workflow. No production or clinical-use claim. |
 | Native train workbook | App-written XLSX passes all 2,560 destination cells with zero issues. | Five patient rows and 512 exact headers. Nine key-only totals remain outside the destination. |
 | Source freeze | Commit `26fb90eaea6c4a2255c681ad9947e9ab0739c3a5`, with 37 recorded file hashes, before any test access. | No extraction changes during evaluation. |
-| Held-out evaluation | No result reported yet. | Evaluate with the frozen reader. |
-| New Windows acceptance | Pending. | The current runner has 11 checks. The earlier release has ten. |
+| Held-out raw evaluation | 550 of 551 mapped key values and all 390 additional checkbox zeroes match. Raw app project matches 2,559 of 2,560 cells. | One source text loses a word; see [the held-out report](heldout-pace-2026-11-18.md). |
+| Held-out reviewed export | Native Mac workflow confirms 941 applicable fields, approves five rows, and exports a verified 2,560-cell XLSX after exactly one manual correction. | Reviewed result is separate from raw extraction accuracy. Eight key-only totals remain outside the destination. |
+| New Windows acceptance | Independently audited [run 44424411229](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44424411229) at `b139c46`: 283 source tests, one POSIX-only skip, all 11 acceptance checks passing. | Generated-fixture and packaged checks; actual-dataset desktop QA was on Mac. |
 
 ## Extraction behavior
 
@@ -109,8 +110,8 @@ python tools/verify_pace_printed.py \
 
 On Windows, point `--helper` at the packaged `FormbridgeWorker.exe`. `tools/verify_windows_release.py` runs this check after extraction and relocation with the other Windows acceptance checks. Keep the complete application folder together.
 
-## Held-out and Windows completion
+## Held-out and Windows continuation
 
-The train desktop export has passed and the runtime freeze preceded all test access. Evaluate the held-out inputs and independently audited keys once with the reader at `26fb90eaea6c4a2255c681ad9947e9ab0739c3a5`. Report failures without tuning the reader from test answers. Any later development using those answers requires a new evaluation scope and a new holdout.
+The train desktop export has passed and the runtime freeze preceded all test access. The authorized held-out raw evaluation found one text omission. The native Mac workflow corrected exactly that suggestion from the visible source, and its app-written reviewed workbook independently passes all 2,560 destination cells. All other values and original source data remain unchanged. All 37 frozen file hashes still match after final evaluation. No extraction engine, rule, or verifier changes were made to remove the raw failure. See [the separate report](heldout-pace-2026-11-18.md). Any later development using these answers requires a new evaluation scope and a new holdout.
 
-Run the Windows acceptance workflow against the final revision. The historical prerelease at `0793411` predates this reader and UI. Update this report with the actual source revision, platform, artifact hashes, cell counts, manual corrections, Windows run, and any skipped checks after those stages finish.
+Independent audit of the new Windows workflow at `b139c4656c2f9f9ce356c278830b4699a81beecd` confirms 283 source tests with one POSIX-only skip and all 11 acceptance checks passing. Its ZIP has SHA-256 `2da5c9fe56ace1a01373b49764511c152268173c75ea415217a9dc40246881f7`. The [printed PACE private prerelease](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/quickcap-cv-printed-pace-2026-11-18) is published, and its uploaded digest matches that ZIP. The historical prerelease at `0793411` predates this reader and UI. Actual-dataset desktop QA used the Mac build, and a person-driven Windows actual-dataset walkthrough remains outstanding.

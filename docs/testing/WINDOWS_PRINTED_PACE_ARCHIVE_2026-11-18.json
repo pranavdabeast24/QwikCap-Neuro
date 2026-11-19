@@ -1,0 +1,15 @@
+{
+  "zipHash": true,
+  "manifestHash": true,
+  "outerNativeFiles": 76,
+  "embeddedNativeFiles": 125,
+  "noticeFiles": 32,
+  "catalogSharedInGUIAndWorker": true,
+  "catalogSHA256": "e8a2c021405da7defead007e9f8e7f5f3852ae926c35f2fb687a474e6f8faf53",
+  "containsSPDXorCycloneDXFile": false,
+  "archiveFiles": 1110,
+  "uncompressedBytes": 76003883,
+  "sourceCommit": "b139c4656c2f9f9ce356c278830b4699a81beecd",
+  "ocrBundled": false,
+  "status": "passed"
+}

@@ -1,10 +1,16 @@
 # Testing and portable evidence
 
-## Current PACE and OCR preview, 2026-11-18
+## Printed PACE reader and actual-dataset checks, 2026-11-18
+
+The [actual train report](testing/actual-pace-dataset-2026-11-18.md) and [held-out report](testing/heldout-pace-2026-11-18.md) distinguish raw suggestions from reviewed desktop exports. Train used 28 PDFs and no manual value corrections. Held-out evaluation used 27 PDFs and one source-confirmed text correction. Each native Mac workbook contains five patient rows and the exact 512 headers, with all 2,560 destination cells independently verified. The reader was frozen before held-out access; the one raw word omission remains a known failure.
+
+The [Windows printed-reader record](testing/WINDOWS_PRINTED_PACE_2026-11-18.md) covers source `b139c46`, with the same frozen runtime as `26fb90e`. Its 283 tests ran with one POSIX-only skip and all 11 acceptance stages passed. The packaged printed-form fixture verifies the catalog inside the companion worker. Generated Windows fixtures and Mac actual-dataset UI acceptance are separate scopes.
+
+## Earlier PACE and OCR preview, 2026-11-18
 
 Source `0793411` passed [Windows acceptance](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44407671706) with 238 tests and one POSIX-only skip. The [private prerelease](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/quickcap-cv-pace-2026-11-18) retains the verified portable ZIP and checksum. Its [summary record](testing/SYNTHETIC_PACE_WINDOWS_2026-11-18.json) separates source tests, packaged fixtures and the smaller PACE smoke check. All ten stages passed, including native startup, Unicode paths, a separate no-OCR path, and source/packaged custom-mask checks.
 
-The full [Mac GUI practice run](testing/SYNTHETIC_PACE_GUI_2026-11-18.md) used 18 fictional PDFs and two patients with all 512 fields. Its app-written Excel matches all 1,024 values after six manual scan corrections; raw scan extraction is 506/512. The Windows PACE smoke test maps 12 fields into one 512-column patient row and checks CSV and XLSX separately. Do not equate those two test scopes. The later Mac package reopened and saved the reviewed project with all 1,024 values preserved and approvals reset as designed. The current Mac source suite passes 238 tests with seven Windows-only skips.
+The full [Mac GUI practice run](testing/SYNTHETIC_PACE_GUI_2026-11-18.md) used 18 fictional PDFs and two patients with all 512 fields. Its app-written Excel matches all 1,024 values after six manual scan corrections; raw scan extraction is 506/512. The Windows PACE smoke test maps 12 fields into one 512-column patient row and checks CSV and XLSX separately. Do not equate those two test scopes. The later Mac package reopened and saved the reviewed project with all 1,024 values preserved and approvals reset as designed. That earlier Mac source suite passed 238 tests with seven Windows-only skips.
 
 ## Windows portable build, 2026-11-18
 

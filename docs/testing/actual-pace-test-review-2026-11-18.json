@@ -1,0 +1,13 @@
+{
+  "format": "quickcap-heldout-review-audit-v1",
+  "sourceCommit": "26fb90eaea6c4a2255c681ad9947e9ab0739c3a5",
+  "frozenFilesChecked": 37,
+  "frozenFilesUnchanged": true,
+  "sourceDocumentsUnchanged": true,
+  "patientRows": 5,
+  "manualValueCorrections": 1,
+  "correctedField": "personal_ctdisorder_v2",
+  "reason": "Restored the first word visible in the original source through the native review editor.",
+  "nativeConfirmations": 941,
+  "nativeApprovals": 5
+}

@@ -4,9 +4,9 @@ Property of Capitolinus Ventures
 
 ## Current tested preview
 
-Use the [PACE OCR and review prerelease](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/quickcap-cv-pace-2026-11-18) from source revision `0793411`. The [native Windows acceptance run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44407671706) passed 238 source tests with one POSIX-only skip and all ten packaging/verification stages. This build includes direct choice-code entry, review/export shortcuts and geometry-based OCR layout selection. Earlier releases remain historical downloads.
+Use the [printed PACE pilot prerelease](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/quickcap-cv-printed-pace-2026-11-18) from built source revision `b139c46`. The [native Windows acceptance run](https://github.com/pranavdabeast24/capitolinus-form-extraction/actions/runs/44424411229) ran 283 source tests with one POSIX-only skip and passed all 11 packaging and verification stages. This build includes the local printed-form reader, source identity and instrument checks, and the simpler three-menu, two-tab interface. Earlier releases remain historical downloads.
 
-The portable ZIP SHA-256 is `b2668a238f5f94c0b7c774db106c78a5a4501b02ea3bc4e88620856cb6b6f2fe`. The release includes `SHA256SUMS.txt`. A complete person-driven Windows laptop workflow remains unverified.
+The portable ZIP SHA-256 is `2da5c9fe56ace1a01373b49764511c152268173c75ea415217a9dc40246881f7`. The release includes `SHA256SUMS.txt`. Its archive and component hashes were checked independently. Windows acceptance used generated fixtures; actual train and held-out desktop QA ran on Mac. A complete person-driven Windows laptop workflow remains unverified. See [the Windows record](testing/WINDOWS_PRINTED_PACE_2026-11-18.md).
 
 ## Open the portable app
 
@@ -35,6 +35,7 @@ to approve it under the institution's software policy.
 
 For the supplied PACE destination, follow
 [PACE_WORKFLOW.md](https://github.com/pranavdabeast24/capitolinus-form-extraction/blob/main/docs/PACE_WORKFLOW.md).
+Choose **Advanced > Form type > Read PACE printed forms** for the supported native-text layouts, then **Add documents > Combine PDFs for one patient**. The reader checks the printed identities against the ID you confirm. Custom masks remain available for other layouts.
 Several PDFs can become one reviewed patient row. Repeating REDCap instruments
 still need a separate validated conversion before import into a live project.
 

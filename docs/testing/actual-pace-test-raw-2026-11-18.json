@@ -1,0 +1,59 @@
+{
+  "documents_expected": 27,
+  "documents_present": 27,
+  "raw_key_rows_expected": 559,
+  "raw_key_rows_checked": 551,
+  "raw_key_rows_matched": 550,
+  "key_only_rows": 8,
+  "key_only_rows_checked": 0,
+  "key_only_rows_matched": 0,
+  "mapped_key_rows": 551,
+  "inferred_zero_rows_checked": 390,
+  "issues": [
+    {
+      "document": "doc_08.pdf",
+      "field": "hit6_total",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_11.pdf",
+      "field": "total28",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_13.pdf",
+      "field": "hit6_total",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_16.pdf",
+      "field": "hit6_total",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_18.pdf",
+      "field": "total28_v2",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_18.pdf",
+      "field": "personal_ctdisorder_v2",
+      "reason": "Normalized value mismatch"
+    },
+    {
+      "document": "doc_21.pdf",
+      "field": "hit6_total",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_22.pdf",
+      "field": "total28_v2",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    },
+    {
+      "document": "doc_26.pdf",
+      "field": "hit6_total",
+      "reason": "Key-only expectation was not supplied by extraction diagnostics"
+    }
+  ]
+}
