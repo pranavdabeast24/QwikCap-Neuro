@@ -101,6 +101,15 @@ class ClinicNarrativeTests(unittest.TestCase):
         self.assertTrue(any("scan_findings_v2_v2___2" in issue for issue in issues))
         self.assertTrue(any("scan_findings_v2_v2___4" in issue for issue in issues))
 
+    def test_passive_and_modal_uncertainty_do_not_assert_a_fistula(self):
+        for sentence in ("A CSF-venous fistula cannot be excluded.",
+                         "CSF-venous fistula may be present."):
+            with self.subTest(sentence=sentence):
+                self.values.clear()
+                issues = self.extract_radiology(radiology("CT MYELOGRAM, TOTAL SPINE", [sentence]), self.put)
+                self.assertNotIn("scan_findings_v2_v2___4", self.values)
+                self.assertTrue(any("scan_findings_v2_v2___4" in issue for issue in issues))
+
     def test_dsm_specific_fistula_description_keeps_literal_source_detail(self):
         detail = "Right T7 CSF-venous fistula draining into a paraspinal venous plexus."
         page = radiology("DIGITAL SUBTRACTION MYELOGRAM", [detail])
@@ -113,8 +122,10 @@ class ClinicNarrativeTests(unittest.TestCase):
         self.extract_radiology(page, self.put)
         self.assertNotIn("scan_findings_other_v2_v2_dsm", self.values)
 
-    def test_native_procedure_signed_volume_and_not_performed(self):
+    def read_native_procedure(self, location="temporal", quality="throbbing"):
         from pipeline import _make_pdf_pages
+        self.values.clear()
+        self.proofs.clear()
         output = io.BytesIO()
         pdf = canvas.Canvas(output, pagesize=(612, 792), invariant=1)
         pdf.setFont("Helvetica", 10)
@@ -127,7 +138,7 @@ class ClinicNarrativeTests(unittest.TestCase):
         for x, label in headers:
             pdf.drawString(x, 650, label)
         rows = [
-            ("A. Baseline", "", "12.5", "Analog", "5/10", "temporal", "throbbing", "none"),
+            ("A. Baseline", "", "12.5", "Analog", "5/10", location, quality, "none"),
             ("B. Provocation #1", "-15 mL CSF", "8.0", "Digital", "4/10", "neck", "aching", "photophobia, visual aura"),
             ("C. Provocation #2", "Not performed", "", "", "", "", "", ""),
             ("D. Provocation #3", "Not performed", "", "", "", "", "", ""),
@@ -142,12 +153,15 @@ class ClinicNarrativeTests(unittest.TestCase):
                 pdf.drawString(40, y, row[0])
             pdf.setFont("Courier-Bold", 7)
             for (x, _), value in zip(headers[1:], row[1:]):
-                pdf.setFont("Courier-Bold", 3 if x == 555 else 7)
+                pdf.setFont("Courier-Bold", 3 if x >= 420 else 7)
                 pdf.drawString(x, y - (4 if index else 0), value)
         pdf.save()
         with tempfile.TemporaryDirectory() as folder:
             page = _make_pdf_pages(output.getvalue(), Path(folder), capture_geometry=True, capture_clinic=True)[0]
-            self.extract_procedure(page, self.put)
+            return self.extract_procedure(page, self.put)
+
+    def test_native_procedure_signed_volume_and_not_performed(self):
+        self.read_native_procedure()
         self.assertEqual(self.values["form_date"], "2026-04-05")
         self.assertEqual(self.values["baseline_opening_pressure"], "12.5")
         self.assertEqual(self.values["opening_headache_aod"], "1")
@@ -160,6 +174,36 @@ class ClinicNarrativeTests(unittest.TestCase):
         self.assertEqual(self.values["prov_associated_symptoms___6"], "1")
         self.assertNotIn("baseline_opening_pressure_3", self.values)
         self.assertNotIn("csf_volume_provocation_form_complete", self.values)
+
+    def test_negated_procedure_location_does_not_assert_the_location(self):
+        issues = self.read_native_procedure(location="no neck pain")
+        self.assertNotIn("baseline_pain_localization___8", self.values)
+        self.assertTrue(any("baseline_pain_localization___8" in issue for issue in issues))
+
+    def test_negated_procedure_quality_does_not_fall_back_to_other(self):
+        issues = self.read_native_procedure(quality="not burning")
+        self.assertNotIn("baseline_pain_quality___4", self.values)
+        self.assertNotIn("baseline_pain_quality___5", self.values)
+        self.assertNotIn("baseline_pain_other", self.values)
+        self.assertTrue(any("baseline_pain_quality___4" in issue for issue in issues))
+
+    def test_no_headache_remains_a_positive_location_option(self):
+        self.read_native_procedure(location="no headache")
+        self.assertEqual(self.values["baseline_pain_localization___1"], "1")
+
+    def test_mixed_procedure_descriptors_preserve_only_positive_terms(self):
+        for location, quality in (("temporal, no neck pain", "throbbing, not burning"),
+                                  ("no neck pain; temporal", "not burning; throbbing")):
+            with self.subTest(location=location, quality=quality):
+                issues = self.read_native_procedure(location=location, quality=quality)
+                self.assertEqual(self.values["baseline_pain_localization___3"], "1")
+                self.assertEqual(self.values["baseline_pain_quality___1"], "1")
+                self.assertNotIn("baseline_pain_localization___8", self.values)
+                self.assertNotIn("baseline_pain_quality___4", self.values)
+                self.assertNotIn("baseline_pain_quality___5", self.values)
+                self.assertNotIn("baseline_pain_other", self.values)
+                self.assertTrue(any("baseline_pain_localization___8" in issue for issue in issues))
+                self.assertTrue(any("baseline_pain_quality___4" in issue for issue in issues))
 
 
 if __name__ == "__main__":
