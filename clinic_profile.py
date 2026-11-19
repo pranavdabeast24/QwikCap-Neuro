@@ -190,9 +190,12 @@ def _identity(page, registration=False):
             anchor = _box(dob_line["words"])
             for line in page.get("lines", []):
                 literal = re.split(r"\s+Accession\s*#", normalized(line["text"]), flags=re.I)[0]
-                name = re.fullmatch(r"(?:Patient\s+)?([A-Za-z][A-Za-z .’'\-]*),\s*([A-Za-z][A-Za-z .’'\-]*)", literal)
+                name = re.fullmatch(r"(?:Patient\s+)?([^,]+),\s*([^,]+)", literal)
+                valid_name = name and all(
+                    part[0].isalpha() and all(char.isalpha() or char in " .’'-" for char in part)
+                    for part in name.groups())
                 box = _box(line.get("words", []))
-                if (name and 0 < anchor["y"] - box["y"] < .055
+                if (valid_name and 0 < anchor["y"] - box["y"] < .055
                         and abs(anchor["x"] - box["x"]) < .035):
                     candidates.append(name)
         if len(candidates) == 1:
