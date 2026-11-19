@@ -67,7 +67,7 @@ def _uncertain(text, start, end):
     left = before[-1].end() if before else max(0, start - 100)
     following = re.search(r"[.!?](?:\s|$)", text[end:])
     right = end + following.end() if following else min(len(text), end + 100)
-    return bool(re.search(r"\b(?:possible|suspected|equivocal|may represent|cannot exclude|does not exclude|do not exclude|not excluded|question of)\b",
+    return bool(re.search(r"\b(?:possible|suspected|equivocal|(?:may|might|could)\s+(?:be|represent)|cannot(?:\s+be)?\s+excluded?|does not exclude|do not exclude|not excluded|question of)\b",
                           text[left:right], re.I))
 
 
@@ -78,6 +78,16 @@ def _unhandled_negation(text, start, end):
     right = end + following.end() if following else min(len(text), end + 80)
     return bool(re.search(r"\b(?:no|without|absence of|negative for|not)\b", text[left:start], re.I)
                 or re.search(r"\b(?:not\s+(?:identified|seen|present|demonstrated)|absent)\b", text[end:right], re.I))
+
+
+def _unresolved_descriptor(text, match):
+    left = max(text.rfind(",", 0, match.start()), text.rfind(";", 0, match.start())) + 1
+    stops = [position for separator in (",", ";")
+             if (position := text.find(separator, match.end())) != -1]
+    right = min(stops) if stops else len(text)
+    clause = text[left:right]
+    start, end = match.start() - left, match.end() - left
+    return _uncertain(clause, start, end) or _unhandled_negation(clause, start, end)
 
 
 def _assertion(section, name, positive, negative, page, put, issues):
@@ -324,12 +334,24 @@ def extract_procedure(page, put):
             elif strings[0]:
                 issues.append(f"Provocation {index}: Volume or unit needs source review.")
         for number, pattern in _LOCATION_TERMS.items():
-            if re.search(pattern, strings[4], re.I):
-                put(f"baseline_pain_localization{suffix}___{number}", "1", page, cells[4], "clinic-procedure-literal")
-        qualities = [number for number, pattern in _QUALITY_TERMS.items() if re.search(pattern, strings[5], re.I)]
-        for number in qualities:
-            put(f"baseline_pain_quality{suffix}___{number}", "1", page, cells[5], "clinic-procedure-literal")
-        if strings[5] and not qualities:
+            matches = list(re.finditer(pattern, strings[4], re.I))
+            name = f"baseline_pain_localization{suffix}___{number}"
+            if matches:
+                if any(_unresolved_descriptor(strings[4], match) for match in matches):
+                    issues.append(f"{name}: Uncertain or negated location needs source review.")
+                else:
+                    put(name, "1", page, cells[4], "clinic-procedure-literal")
+        quality_mentioned = False
+        for number, pattern in _QUALITY_TERMS.items():
+            matches = list(re.finditer(pattern, strings[5], re.I))
+            name = f"baseline_pain_quality{suffix}___{number}"
+            if matches:
+                quality_mentioned = True
+                if any(_unresolved_descriptor(strings[5], match) for match in matches):
+                    issues.append(f"{name}: Uncertain or negated quality needs source review.")
+                else:
+                    put(name, "1", page, cells[5], "clinic-procedure-literal")
+        if strings[5] and not quality_mentioned:
             put(f"baseline_pain_quality{suffix}___5", "1", page, cells[5], "clinic-procedure-literal")
             put("baseline_pain_other" + suffix, strings[5], page, cells[5], "clinic-procedure-literal")
         other_name = "baseline_other" if index == 0 else "prov_other" + ("" if index == 1 else "_" + str(index))
