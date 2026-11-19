@@ -97,5 +97,61 @@ class ReaderPresentationTests(unittest.TestCase):
         self.assertEqual(len(session.snapshot()["schema"]), 45)
 
 
+class PatientBundleReaderTests(unittest.TestCase):
+    def app_for(self, session):
+        app = DesktopApp.__new__(DesktopApp)
+        app.root = Mock()
+        app.busy = False
+        app.bundle_dialog = None
+        app.snapshot = session.snapshot()
+        app._open_patient_bundle_dialog = Mock()
+        return app
+
+    def test_patient_readers_open_the_pdf_picker_and_pass_selected_sources_to_the_dialog(self):
+        for reader in ("use_sih_clinic_profile", "use_pace_profile"):
+            with self.subTest(reader=reader):
+                session = DesktopSession()
+                self.addCleanup(session.close)
+                getattr(session, reader)()
+                app = self.app_for(session)
+                before = deepcopy(app.snapshot)
+                paths = ("registration.pdf", "questionnaire.pdf")
+                with patch("desktop.messagebox.showinfo") as info, patch(
+                    "desktop.filedialog.askopenfilenames", return_value=paths
+                ) as picker:
+                    app.combine_patient_pdfs()
+                picker.assert_called_once_with(
+                    parent=app.root, title="Choose this patient's PDFs in source order",
+                    filetypes=[("PDF documents", "*.pdf")],
+                )
+                app._open_patient_bundle_dialog.assert_called_once_with(paths)
+                info.assert_not_called()
+                self.assertEqual(app.snapshot, before)
+
+    def test_incompatible_categories_and_ordinary_records_require_a_new_project(self):
+        for kind in ("neu", "custom", "clinic-ordinary", "pace-ordinary"):
+            with self.subTest(kind=kind):
+                session = DesktopSession()
+                self.addCleanup(session.close)
+                if kind == "custom":
+                    session.set_schema([{"name": "record_id", "type": "text"}])
+                elif kind == "neu":
+                    session.use_neurology_profile()
+                else:
+                    getattr(session, "use_sih_clinic_profile" if kind == "clinic-ordinary" else "use_pace_profile")()
+                    session.add_document(b"Fictional unsupported layout", "ordinary.txt")
+                app = self.app_for(session)
+                before = deepcopy(app.snapshot)
+                with patch("desktop.messagebox.showinfo") as info, patch(
+                    "desktop.filedialog.askopenfilenames"
+                ) as picker:
+                    app.combine_patient_pdfs()
+                self.assertEqual(info.call_args.args[0], "Start a patient bundle project")
+                self.assertIn("File > New project", info.call_args.args[1])
+                picker.assert_not_called()
+                app._open_patient_bundle_dialog.assert_not_called()
+                self.assertEqual(app.snapshot, before)
+
+
 if __name__ == "__main__":
     unittest.main()
