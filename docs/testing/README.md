@@ -3,6 +3,8 @@
 Use [the short test summary](../TESTING.md) first.
 These records preserve the evidence behind it.
 
+- [Four-patient field coverage](FIELD_COVERAGE_2026-11-20.md) explains blank columns and preserves the original four intake PDFs.
+
 - [Preview and review controls](PREVIEW_REVIEW_2026-11-20.md) checks page zoom, correction boxes, and laptop window sizes.
 
 - [PACE automatic review](PACE_AUTO_2026-11-20.md) checks patient grouping, reusable corrections and the new desktop workflow.

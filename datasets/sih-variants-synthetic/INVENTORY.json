@@ -1,0 +1,39 @@
+{
+  "format": "qwikcap-sih-variants-synthetic-packet-v1",
+  "syntheticAndRepositoryInclusionConfirmedByOwner": true,
+  "originalPDFs": 4,
+  "byteForByteCopiesVerified": 4,
+  "fictionalPatients": 4,
+  "totalPages": 16,
+  "totalBytes": 1417384,
+  "files": [
+    {
+      "file": "forms/patient_01.pdf",
+      "originalBasename": "patient_01.pdf",
+      "bytes": 365024,
+      "sha256": "5db08ee0584bd468b8d7884437f8fecf1a67c0100d17824d7c0a6bdb136fb87d",
+      "pages": 4
+    },
+    {
+      "file": "forms/patient_02.pdf",
+      "originalBasename": "patient_02.pdf",
+      "bytes": 345982,
+      "sha256": "6087ac394478bd08b7fdfe58d71a7e8876c6eb3c26b543873827079e0bfa8202",
+      "pages": 4
+    },
+    {
+      "file": "forms/patient_03.pdf",
+      "originalBasename": "patient_03.pdf",
+      "bytes": 340720,
+      "sha256": "e327b4a4e74f5d0f0fa4c4711164ed757424667f3d77ef8676d87cc6ccdc87b2",
+      "pages": 4
+    },
+    {
+      "file": "forms/patient_04.pdf",
+      "originalBasename": "patient_04.pdf",
+      "bytes": 365658,
+      "sha256": "fdd6d65d62b306f70707cde95e8fd62078fd879045493372e83c60238194c7aa",
+      "pages": 4
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Continue work on QwikCap
 
-The current milestone is `v1.1.0-prototype`, which improves the preview and review controls.
+The current milestone is `v1.1.1-prototype`. Detected text questions remain available for review when their answers cannot be read.
 Read [v1 status and remaining work](V1_PROTOTYPE.md) before changing the app.
 
 Start with [developer setup](GETTING_STARTED.md).
@@ -55,6 +55,8 @@ Run the source tests and the checks relevant to your change.
 Test the built worker after changing package resources.
 Open the real app after changing its interface.
 Use fictional data only.
+The owner confirmed that the currently supplied packets and reviewed example exports are synthetic, including the four [original patient intake PDFs](../datasets/sih-variants-synthetic/README.md).
+Their repeated synthetic-data confirmation is not needed. See [field coverage](FIELD_COVERAGE.md) before interpreting blank export cells.
 
 The [test summary](TESTING.md) links the exact results and commands.
 The supplied test set has already been used.
