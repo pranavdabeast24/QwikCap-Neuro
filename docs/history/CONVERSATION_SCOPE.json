@@ -12,7 +12,8 @@
     "Internal reasoning, system/developer instructions, tool calls/results and raw execution logs",
     "Operating-policy content, credentials and private workstation paths",
     "Other chats and the contents of the earlier shared ChatGPT link",
-    "Research documents, source-bearing projects, datasets and train/test evaluation files"
+    "Research documents, source-bearing projects, datasets and train/test evaluation files",
+    "Former company-name references redacted from the repository copy on 2026-11-19"
   ],
   "limitations": [
     "Snapshot taken during the current turn, after the user selected QuickCap (CV); later publication results are recorded in HANDOFF.md.",

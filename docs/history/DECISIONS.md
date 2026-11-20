@@ -13,8 +13,8 @@ This record summarizes the available project conversation. It is not a legal ass
 | Spreadsheet output | Match selected fields to a blank XLSX/CSV template and confirm assignments. Live study REDCap import remains unvalidated. |
 | Geometry | Normalized rectangles survive display zoom/scroll. Page-count/shape mismatches block review. Matching dimensions do not prove matching content. |
 | Accessibility | Coordinate entry provides a native keyboard path to define masks. Mouse drawing remains implemented but unverified by prior desktop automation. |
-| Data scope | Supplied train examples were confirmed fictional. The held-out test split stays unused unless the user later authorizes it. Generated fixtures are the only included data. |
-| Branding | Capitolinus Ventures ownership notice. Formbridge was the original working name. The latest user-selected display label is QuickCap (CV), with known name-collision and clearance questions. |
+| Data scope | The owner authorized both supplied synthetic packets for the private repository. Their test sets have now been used. Use new held-out material for a new independent accuracy claim. |
+| Branding | The current name is QwikCap. Company branding has been removed. Earlier working names and build records remain historical. |
 | Repository | Private repository under `pranavdabeast24/capitolinus-form-extraction`. The earlier `pmukund24` connector identity is not the selected destination. |
 | Collaborator | Developer and potential customer. Contribution/IP and institutional authority must be settled separately from pilot purchase terms. No access invitation has been sent. |
 | Future assistance | Evaluate vision-capable handwriting/context assistance later on synthetic material. Local, institution-hosted and contracted-cloud choices require different privacy review. No LLM integration is delivered now. |
