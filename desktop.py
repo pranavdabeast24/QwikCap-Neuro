@@ -24,6 +24,7 @@ from desktop_model import DesktopSession, InputError, Cancelled
 from extraction_profiles import is_patient_profile
 from server import ROOT, validate_values, strict_json_loads
 from form_types import normalized_drag, percentage_region, validate_region
+from preview_viewport import PreviewViewport
 
 
 class DesktopApp:
@@ -52,8 +53,8 @@ class DesktopApp:
         self.selected_field = None
         self.page = 1
         self.photo = None
-        self.zoom = 1.0
-        self.fit_width = True
+        self.viewport = PreviewViewport()
+        self._preview_key = None
         self._resize_after = None
         self._rendering = False
         self.editor_dirty = False
@@ -137,6 +138,7 @@ class DesktopApp:
         self.style.configure("StagingQueue.Treeview", rowheight=48)
         self.style.configure("Treeview.Heading", font=(font, 11, "bold"))
         self.style.configure("TButton", padding=(9, 5))
+        self.style.configure("Compact.TButton", padding=(4, 3))
         self.style.configure("TNotebook.Tab", padding=(16, 8))
 
     @staticmethod
@@ -176,12 +178,14 @@ class DesktopApp:
         self.add_documents_button.grid(row=0, column=0, sticky="w")
         self.setup_fields_button = ttk.Button(top, text="Set up fields…", command=self.start_design)
         self.setup_fields_button.grid(row=0, column=1, sticky="w", padx=(6, 0))
-        self.save_layout_button = ttk.Button(top, text="Save form layout…", command=self.save_pace_loadout)
-        self.save_layout_button.grid(row=0, column=2, padx=(6, 0))
-        self.load_layout_button = ttk.Button(top, text="Load form layout…", command=self.load_pace_loadout)
-        self.load_layout_button.grid(row=0, column=3, padx=(6, 0))
         self.check_groups_button = ttk.Button(top, text="Check patient groups…", command=self.show_pace_groups)
-        self.check_groups_button.grid(row=0, column=4, padx=(6, 0))
+        self.check_groups_button.grid(row=0, column=2, padx=(6, 0))
+        self.layouts_button = ttk.Menubutton(top, text="Layouts…")
+        self.layouts_button.grid(row=0, column=3, padx=(6, 0))
+        layouts_menu = tk.Menu(self.layouts_button, tearoff=False)
+        layouts_menu.add_command(label="Load form layout…", command=self.load_pace_loadout)
+        layouts_menu.add_command(label="Save form layout…", command=self.save_pace_loadout)
+        self.layouts_button.configure(menu=layouts_menu)
         self.notebook = ttk.Notebook(shell)
         self.notebook.grid(row=2, column=0, sticky="nsew")
         review_tab = ttk.Frame(self.notebook, padding=12)
@@ -233,23 +237,23 @@ class DesktopApp:
         panes = ttk.Panedwindow(parent, orient="horizontal")
         panes.pack(fill="both", expand=True)
         left, center, right = (ttk.Frame(panes, padding=(4, 4)) for _ in range(3))
-        panes.add(left, weight=2)
-        panes.add(center, weight=5)
-        panes.add(right, weight=3)
+        panes.add(left, weight=0)
+        panes.add(center, weight=1)
+        panes.add(right, weight=0)
         positioned = False
         def position_panes(_event):
             nonlocal positioned
             if not positioned and panes.winfo_width() >= 860:
                 positioned = True
-                panes.sashpos(0, 240)
-                panes.sashpos(1, panes.winfo_width() - 360)
-            self._constrain_panes(panes, 220, 300, 330)
+                panes.sashpos(0, 164)
+                panes.sashpos(1, panes.winfo_width() - 316)
+            self._constrain_panes(panes, 150, 300, 290)
         panes.bind("<Configure>", position_panes)
         for pane in (left, center, right):
             pane.columnconfigure(0, weight=1)
         left.rowconfigure(2, weight=1)
         center.rowconfigure(3, weight=1)
-        right.rowconfigure(1, weight=1)
+        right.rowconfigure(2, weight=1)
         self.queue_heading = ttk.Label(left, text="Patient queue", style="Heading.TLabel")
         self.queue_heading.grid(row=0, column=0, sticky="w", pady=(0, 5))
         ttk.Label(left, textvariable=self.queue_label, style="Small.TLabel").grid(row=1, column=0, sticky="w", pady=(0, 8))
@@ -258,7 +262,9 @@ class DesktopApp:
         self.queue_tree.bind("<<TreeviewSelect>>", self._queue_selected)
         self.remove_document_button = ttk.Button(left, text="Remove selected", command=self.remove_document)
         self.remove_document_button.grid(row=3, column=0, sticky="w", pady=(8, 0))
-        ttk.Label(left, textvariable=self.task_hint, style="Small.TLabel", wraplength=210).grid(row=4, column=0, sticky="w", pady=(8, 0))
+        task_hint = ttk.Label(left, textvariable=self.task_hint, style="Small.TLabel", width=1)
+        task_hint.grid(row=4, column=0, sticky="ew", pady=(8, 0))
+        task_hint.bind("<Configure>", lambda event: task_hint.configure(wraplength=max(130, event.width)))
         source_header = ttk.Frame(center)
         source_header.grid(row=0, column=0, sticky="ew", pady=(0, 5))
         source_header.columnconfigure(0, weight=1)
@@ -276,11 +282,15 @@ class DesktopApp:
         ttk.Button(tools, text="‹", width=3, command=lambda: self.change_page(-1)).grid(row=0, column=0)
         ttk.Button(tools, text="›", width=3, command=lambda: self.change_page(1)).grid(row=0, column=1, padx=3)
         ttk.Label(tools, textvariable=self.page_label, style="Small.TLabel").grid(row=0, column=2, sticky="w", padx=5)
-        ttk.Button(tools, text="Fit width", command=self.fit_page).grid(row=0, column=3, padx=3)
-        self.zoom_in_button = ttk.Button(tools, text="＋", width=3, command=lambda: self.change_zoom(1.25))
-        self.zoom_in_button.grid(row=0, column=4, padx=3)
-        self.zoom_out_button = ttk.Button(tools, text="−", width=3, command=lambda: self.change_zoom(.8))
-        self.zoom_out_button.grid(row=0, column=5)
+        view_tools = ttk.Frame(tools)
+        view_tools.grid(row=1, column=0, columnspan=3, sticky="w", pady=(4, 0))
+        ttk.Button(view_tools, text="Fit width", style="Compact.TButton", command=self.fit_page).grid(row=0, column=0)
+        self.zoom_in_button = ttk.Button(view_tools, text="＋", width=2, style="Compact.TButton", command=lambda: self.change_zoom(1.25))
+        self.zoom_in_button.grid(row=0, column=1, padx=3)
+        self.zoom_out_button = ttk.Button(view_tools, text="−", width=2, style="Compact.TButton", command=lambda: self.change_zoom(.8))
+        self.zoom_out_button.grid(row=0, column=2)
+        self.larger_view_button = ttk.Button(view_tools, text="Larger view…", style="Compact.TButton", command=self.enlarge_source)
+        self.larger_view_button.grid(row=0, column=3, padx=(6, 0))
         self.preview_frame = ttk.Frame(center)
         self.preview_frame.grid(row=3, column=0, sticky="nsew")
         self.canvas = tk.Canvas(self.preview_frame, width=1, height=1, background="#dce2e9", highlightthickness=0)
@@ -294,21 +304,28 @@ class DesktopApp:
         self.preview_frame.columnconfigure(0, weight=1)
         self.canvas.bind("<Configure>", self._preview_resize)
         self.canvas.bind("<MouseWheel>", self._wheel)
-        self.canvas.bind("<Button-4>", lambda e: self.canvas.yview_scroll(-3, "units"))
-        self.canvas.bind("<Button-5>", lambda e: self.canvas.yview_scroll(3, "units"))
+        self.canvas.bind("<Button-4>", self._wheel)
+        self.canvas.bind("<Button-5>", self._wheel)
+        self.canvas.bind("<Double-Button-1>", self._preview_double_click)
+        self.canvas.bind("<Enter>", self._preview_hint)
         self.canvas.bind("<ButtonPress-1>", self._mask_start)
         self.canvas.bind("<B1-Motion>", self._mask_motion)
         self.canvas.bind("<ButtonRelease-1>", self._mask_end)
         self.source_text = tk.Text(self.preview_frame, width=1, height=1, wrap="word", background="white", foreground="#253448", padx=18, pady=18, relief="flat", state="disabled", yscrollcommand=yscroll.set, xscrollcommand=xscroll.set)
         self._messages(center, self.source_issues).grid(row=4, column=0, sticky="ew", pady=(8, 0))
-        self.review_heading = ttk.Label(right, text="Review answers", style="Heading.TLabel")
-        self.review_heading.grid(row=0, column=0, sticky="w", pady=(0, 5))
+        review_header = ttk.Frame(right)
+        review_header.grid(row=0, column=0, sticky="ew", pady=(0, 6))
+        review_header.columnconfigure(1, weight=1)
+        self.review_heading = ttk.Label(review_header, text="Answers", style="Heading.TLabel")
+        self.review_heading.grid(row=0, column=0, sticky="w")
+        self.check_patient_button = ttk.Button(review_header, text="Check patient group", style="Compact.TButton", command=self.check_pace_identity)
+        self.check_patient_button.grid(row=0, column=1, sticky="e", padx=(4, 0))
         frame, self.field_tree = self._tree(right, ("field", "value", "check"), ("Field", "Answer", "✓"), (125, 120, 38), 1)
         self.review_field_frame = frame
-        frame.grid(row=1, column=0, sticky="nsew")
+        frame.grid(row=2, column=0, sticky="nsew")
         self.field_tree.bind("<<TreeviewSelect>>", self._field_selected)
         editor = self.review_editor = ttk.Frame(right)
-        editor.grid(row=2, column=0, sticky="ew")
+        editor.grid(row=3, column=0, sticky="ew")
         ttk.Label(editor, textvariable=self.field_title, style="Heading.TLabel", width=1).pack(fill="x", pady=(6, 2))
         self.entry = ttk.Entry(editor, textvariable=self.value_var)
         self.entry.pack(fill="x", pady=4)
@@ -316,38 +333,46 @@ class DesktopApp:
         self.value_var.trace_add("write", self._value_changed)
         self.entry.bind("<Return>", lambda e: self.save_review())
         self.choice.bind("<<ComboboxSelected>>", lambda e: None)
-        ttk.Label(editor, textvariable=self.field_detail, style="Error.TLabel", wraplength=310).pack(fill="x", pady=(2, 4))
+        detail_label = ttk.Label(editor, textvariable=self.field_detail, style="Error.TLabel", width=1)
+        detail_label.pack(fill="x", pady=(2, 4))
+        detail_label.bind("<Configure>", lambda event: detail_label.configure(wraplength=max(240, event.width)))
         self.confirm_check = ttk.Checkbutton(editor, text="Confirmed against source", variable=self.confirm_var, command=self.confirm_field)
         self.confirm_check.pack(anchor="w", pady=2)
         review_actions = ttk.Frame(editor)
         review_actions.pack(fill="x", pady=2)
         review_actions.columnconfigure(0, weight=1)
-        self.confirm_next_button = ttk.Button(review_actions, text="Confirm & next", command=self.confirm_and_next)
-        self.confirm_next_button.grid(row=0, column=0, sticky="ew")
+        self.redraw_answer_button = ttk.Button(review_actions, text="Redraw answer area", style="Compact.TButton", command=self.redraw_pace_answer)
+        self.redraw_answer_button.grid(row=0, column=0, sticky="ew", pady=(0, 4))
+        self.answer_tools_button = ttk.Menubutton(review_actions, text="Answer tools…")
+        self.answer_tools_button.grid(row=0, column=1, sticky="ew", padx=(4, 0), pady=(0, 4))
+        answer_menu = tk.Menu(self.answer_tools_button, tearoff=False)
+        answer_menu.add_command(label="Redraw answer area", command=self.redraw_pace_answer)
+        answer_menu.add_command(label="Add PACE field…", command=self.show_study_fields)
+        self.answer_tools_button.configure(menu=answer_menu)
+        self.confirm_next_button = ttk.Button(review_actions, text="Confirm & next", style="Compact.TButton", command=self.confirm_and_next)
+        self.confirm_next_button.grid(row=1, column=0, sticky="ew")
         self.save_review_button = ttk.Button(review_actions, text="Save draft", command=self.save_review)
-        self.save_review_button.grid(row=1, column=0, sticky="ew", pady=(4, 0))
-        self.redraw_answer_button = ttk.Button(review_actions, text="Redraw answer area", command=self.redraw_pace_answer)
-        self.redraw_answer_button.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(4, 0))
-        self.add_pace_field_button = ttk.Button(review_actions, text="Add PACE field…", command=self.show_study_fields)
-        self.add_pace_field_button.grid(row=3, column=0, columnspan=2, sticky="ew", pady=(4, 0))
-        self.check_patient_button = ttk.Button(review_actions, text="Check patient group", command=self.check_pace_identity)
-        self.check_patient_button.grid(row=4, column=0, columnspan=2, sticky="ew", pady=(4, 0))
-        self.expand_answer_button = ttk.Button(review_actions, text="Expand…", command=self.expand_answer)
-        self.expand_answer_button.grid(row=0, column=1, padx=(6, 0))
-        ttk.Separator(editor).pack(fill="x", pady=6)
-        ttk.Label(editor, text="Reviewer", style="Small.TLabel").pack(anchor="w")
-        self.reviewer_entry = ttk.Entry(editor, textvariable=self.reviewer_var)
-        self.reviewer_entry.pack(fill="x", pady=4)
-        self.approve_button = ttk.Button(editor, text="Approve document", command=self.approve_record)
+        self.save_review_button.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(4, 0))
+        self.expand_answer_button = ttk.Button(review_actions, text="Expand…", style="Compact.TButton", command=self.expand_answer)
+        self.expand_answer_button.grid(row=1, column=1, padx=(6, 0))
+        ttk.Separator(editor).pack(fill="x", pady=3)
+        reviewer_row = ttk.Frame(editor)
+        reviewer_row.pack(fill="x")
+        ttk.Label(reviewer_row, text="Reviewer", style="Small.TLabel").pack(side="left", padx=(0, 6))
+        self.reviewer_entry = ttk.Entry(reviewer_row, textvariable=self.reviewer_var, width=1)
+        self.reviewer_entry.pack(side="left", fill="x", expand=True, pady=4)
+        self.approve_button = ttk.Button(editor, text="Approve document", style="Compact.TButton", command=self.approve_record)
         self.approve_button.pack(fill="x", pady=(4, 2))
-        ttk.Label(editor, text="Approval requires valid values, every field confirmed and your reviewer name.", style="Small.TLabel", wraplength=310).pack(fill="x", pady=(4, 0))
+        approval_hint = ttk.Label(editor, text="Confirm each answer. Enter reviewer name.", style="Small.TLabel", width=1)
+        approval_hint.pack(fill="x", pady=(4, 0))
+        approval_hint.bind("<Configure>", lambda event: approval_hint.configure(wraplength=max(240, event.width)))
         self.empty_design_hint = ttk.Label(right, text="Set up fields to name the answers you need. Draw their answer areas, then apply the type to begin review.", style="Small.TLabel", wraplength=310)
-        self.empty_design_hint.grid(row=0, column=0, rowspan=3, sticky="nw", pady=(4, 0))
+        self.empty_design_hint.grid(row=0, column=0, rowspan=4, sticky="nw", pady=(4, 0))
         self._build_designer(right)
 
     def _build_designer(self, parent):
         panel = self.design_panel = ttk.Frame(parent)
-        panel.grid(row=0, column=0, rowspan=3, sticky="nsew")
+        panel.grid(row=0, column=0, rowspan=4, sticky="nsew")
         panel.columnconfigure(0, weight=1)
         panel.rowconfigure(1, weight=1)
         ttk.Label(panel, text="Design extraction type", style="Heading.TLabel").grid(row=0, column=0, sticky="w")
@@ -1341,11 +1366,11 @@ class DesktopApp:
                 widget.grid_remove()
 
         show(self.setup_fields_button, not draft and not review)
-        for widget in (self.save_layout_button, self.load_layout_button):
-            show(widget, auto)
+        show(self.layouts_button, auto)
         show(self.check_groups_button, auto and bool(state.get("pendingPatientGroups")))
-        for widget in (self.redraw_answer_button, self.add_pace_field_button, self.check_patient_button):
+        for widget in (self.redraw_answer_button, self.answer_tools_button, self.check_patient_button):
             show(widget, auto and record is not None)
+        self.check_patient_button.configure(text="Group checked · recheck…" if record and record.get("paceIdentityConfirmed") else "Check patient group")
         self.approve_button.configure(text="Approve patient" if auto else "Approve document")
         self.queue_heading.configure(text="Patient queue" if auto else "Document queue")
         show(self.design_panel, not review and draft)
@@ -1364,8 +1389,6 @@ class DesktopApp:
         show(self.remove_document_button, advanced and record is not None)
         show(self.source_tools, bool(record and record.get("pages")))
         show(self.bundle_sources_button, bool(record and record.get("bundleSources")))
-        for widget in (self.zoom_in_button, self.zoom_out_button):
-            show(widget, advanced)
         for widget in self.advanced_mask_buttons + [self.coordinates_button]:
             show(widget, advanced)
         self.draw_field_button.grid_configure(columnspan=1 if advanced else 3)
@@ -1765,7 +1788,40 @@ class DesktopApp:
         self._resize_after = self.root.after(130, self._render_page)
 
     def _wheel(self, event):
-        self.canvas.yview_scroll(-1 if event.delta > 0 else 1, "units")
+        return self._source_wheel(event, self.canvas,
+                                  lambda factor, anchor: self.change_zoom(factor, anchor, mouse=True))
+
+    def _source_wheel(self, event, canvas, zoom):
+        if getattr(event, "num", None) not in (4, 5) and not getattr(event, "delta", 0):
+            return "break"
+        direction = -1 if getattr(event, "num", None) == 4 or getattr(event, "delta", 0) > 0 else 1
+        aqua = self.root.tk.call("tk", "windowingsystem") == "aqua"
+        modifier = 8 if aqua else 4
+        if event.state & modifier:
+            zoom(1.25 if direction < 0 else .8, (event.x, event.y))
+        elif event.state & 1:
+            canvas.xview_scroll(direction * (1 if aqua else 3), "units")
+        else:
+            canvas.yview_scroll(direction * (1 if aqua else 3), "units")
+        return "break"
+
+    def _preview_double_click(self, event):
+        self.change_zoom(.8 if event.state & 1 else 1.25, (event.x, event.y), mouse=True)
+        return "break"
+
+    def _preview_hint(self, _event):
+        if not self.design_tool and not self.busy:
+            self.status.set("Double-click to zoom; Shift-double-click to zoom out. Command-wheel (Mac) or Ctrl-wheel (Windows) zooms at the pointer. Scroll to move; Shift-scroll moves sideways.")
+
+    @staticmethod
+    def _view_origin(canvas):
+        return canvas.canvasx(0), canvas.canvasy(0)
+
+    @staticmethod
+    def _position_view(canvas, viewport, origin):
+        width, height = viewport.content_size
+        canvas.xview_moveto(max(0, origin[0]) / width)
+        canvas.yview_moveto(max(0, origin[1]) / height)
 
     def change_page(self, delta):
         self._reset_gesture()
@@ -1780,19 +1836,33 @@ class DesktopApp:
             source = self.canvas if record.get("pages") else self.source_text
             source.yview_scroll(delta, "pages")
 
-    def change_zoom(self, factor):
+    def change_zoom(self, factor, anchor=None, *, mouse=False):
+        if mouse and (self.design_tool or self.design_start):
+            return
+        if not self.display_size:
+            return
         self._reset_gesture()
-        self.fit_width = False
-        self.zoom = max(.15, min(3, self.zoom * factor))
-        self._render_page()
+        origin = self.viewport.resize((self.canvas.winfo_width(), self.canvas.winfo_height()), self._view_origin(self.canvas))
+        anchor = anchor or tuple(value / 2 for value in self.viewport.viewport_size)
+        self._render_page(origin=self.viewport.zoom(factor, anchor, origin))
 
     def fit_page(self):
         self._reset_gesture()
-        self.fit_width = True
-        self._render_page()
+        if self.display_size:
+            origin = self.viewport.resize((self.canvas.winfo_width(), self.canvas.winfo_height()), self._view_origin(self.canvas))
+            self._render_page(origin=self.viewport.fit(origin))
 
-    def _render_page(self):
+    def enlarge_source(self):
+        record = self._record()
+        path = record.get("pagePaths", {}).get(str(self.page)) if record else None
+        if path:
+            self._show_pace_source_page(path, f'{record["filename"]} · page {self.page}', self.root)
+
+    def _render_page(self, *, origin=None):
+        if self._resize_after:
+            self.root.after_cancel(self._resize_after)
         self._resize_after = None
+        previous_origin = self._view_origin(self.canvas)
         self.canvas.delete("all")
         self._reset_gesture()
         self.display_size = None
@@ -1821,7 +1891,7 @@ class DesktopApp:
                 detail = "Page 1 contains the temporary export row ID. Check the stickers on the original source pages." if source is None else detail
                 identity = record["values"]
                 checked = "Patient group checked" if record.get("paceIdentityConfirmed") else "Check patient group before approval"
-                self.record_context.set(f'MRN {identity.get("mrn", "")} · {identity.get("patient_first", "")} {identity.get("patient_last", "")} · DOB {identity.get("patient_dob", "")}\nTemporary export ID {identity.get("record_id", "")} · {checked}\n{detail}')
+                self.record_context.set(f'MRN {identity.get("mrn", "")} · {identity.get("patient_first", "")} {identity.get("patient_last", "")} · DOB {identity.get("patient_dob", "")}\n{checked} · Export ID {identity.get("record_id", "")} · {detail}')
             else:
                 self.record_context.set(f'Study record ID {record.get("bundleRecordId", "")} · {len(sources)} source PDFs · one patient row\n{detail}')
             self.record_context_label.grid()
@@ -1852,31 +1922,35 @@ class DesktopApp:
             return
         try:
             with Image.open(path) as source:
-                width, height = source.size
-                if self.fit_width:
-                    self.zoom = max(.1, min(2, (max(200, self.canvas.winfo_width()) - 28) / width))
-                display = source.resize((max(1, round(width * self.zoom)), max(1, round(height * self.zoom))), Image.Resampling.LANCZOS)
+                key = (record["id"], self.page, path)
+                changed_page = key != self._preview_key
+                if self._preview_key is None or key[0] != self._preview_key[0]:
+                    self.viewport.fit_width = True
+                self.viewport.source_size = source.size
+                resized_origin = self.viewport.resize((self.canvas.winfo_width(), self.canvas.winfo_height()), previous_origin)
+                if origin is None:
+                    origin = (0, 0) if changed_page else resized_origin
+                self._preview_key = key
+                display = source.resize(self.viewport.image_size, Image.Resampling.LANCZOS)
             self.photo = ImageTk.PhotoImage(display, master=self.root)
             self.display_size = (display.width, display.height)
-            self.canvas.create_image(12, 12, image=self.photo, anchor="nw")
-            self.canvas.configure(scrollregion=(0, 0, display.width + 24, display.height + 24))
-            self.page_label.set(f"Page {self.page} / {len(pages)} · {round(self.zoom * 100)}%")
+            self.canvas.create_image(self.viewport.margin, self.viewport.margin, image=self.photo, anchor="nw")
+            self.canvas.configure(scrollregion=(0, 0, *self.viewport.content_size))
+            self._position_view(self.canvas, self.viewport, origin)
+            self.page_label.set(f"Page {self.page} / {len(pages)} · {round(self.viewport.scale * 100)}%")
             if self.design_draft is not None:
                 for field in self.design_draft["fields"]:
                     region = field.get("region")
                     if region and region["page"] == self.page:
                         selected = field["id"] == self.design_selected
-                        x1, y1 = 12 + region["x"] * display.width, 12 + region["y"] * display.height
-                        self.canvas.create_rectangle(x1, y1, x1 + region["width"] * display.width, y1 + region["height"] * display.height, outline="#d16a18" if selected else "#147d9b", width=3 if selected else 2)
+                        self.canvas.create_rectangle(*self.viewport.rectangle(region), outline="#d16a18" if selected else "#147d9b", width=3 if selected else 2)
                 return
             field = next((f for f in self.snapshot["schema"] if f["name"] == self.selected_field), {})
             evidence = record.get("evidence", {}).get(self.selected_field, {})
             region = evidence.get("region") or field.get("region")
             page = evidence.get("page") or (region or {}).get("page")
             if region and page == self.page:
-                x1, y1 = 12 + region["x"] * display.width, 12 + region["y"] * display.height
-                x2, y2 = x1 + region["width"] * display.width, y1 + region["height"] * display.height
-                self.canvas.create_rectangle(x1, y1, x2, y2, outline="#147d9b", width=3)
+                self.canvas.create_rectangle(*self.viewport.rectangle(region), outline="#147d9b", width=3)
         except (OSError, ValueError, tk.TclError):
             self.page_label.set("Page preview unavailable")
 
@@ -2211,7 +2285,9 @@ class DesktopApp:
         dialog = tk.Toplevel(parent)
         dialog.title(title)
         dialog.geometry("1020x800")
+        dialog.minsize(560, 420)
         dialog.transient(parent)
+        previous_grab = parent.grab_current()
         dialog.grab_set()
         frame = ttk.Frame(dialog, padding=10)
         frame.pack(fill="both", expand=True)
@@ -2226,27 +2302,69 @@ class DesktopApp:
         xscroll = ttk.Scrollbar(frame, orient="horizontal", command=canvas.xview)
         xscroll.grid(row=2, column=0, sticky="ew")
         canvas.configure(yscrollcommand=yscroll.set, xscrollcommand=xscroll.set)
-        state = {"zoom": 1.0, "photo": None}
-        def render(factor=1):
-            state["zoom"] = max(.25, min(3, state["zoom"] * factor))
-            resized = image.resize((max(1, round(image.width * state["zoom"])), max(1, round(image.height * state["zoom"]))), Image.Resampling.LANCZOS)
+        viewport = PreviewViewport(source_size=image.size)
+        state = {"photo": None, "after": None, "closed": False}
+        percent = tk.StringVar()
+        def render(origin=None):
+            if state["closed"]:
+                return
+            if canvas.winfo_width() <= 1 or canvas.winfo_height() <= 1:
+                return
+            if state["after"]:
+                dialog.after_cancel(state["after"])
+            state["after"] = None
+            resized_origin = viewport.resize((canvas.winfo_width(), canvas.winfo_height()), self._view_origin(canvas))
+            resized = image.resize(viewport.image_size, Image.Resampling.LANCZOS)
             state["photo"] = ImageTk.PhotoImage(resized, master=self.root)
             canvas.delete("all")
-            canvas.create_image(4, 4, anchor="nw", image=state["photo"])
-            canvas.configure(scrollregion=(0, 0, resized.width + 8, resized.height + 8))
-        def close():
+            canvas.create_image(viewport.margin, viewport.margin, anchor="nw", image=state["photo"])
+            canvas.configure(scrollregion=(0, 0, *viewport.content_size))
+            self._position_view(canvas, viewport, resized_origin if origin is None else origin)
+            percent.set(f"{round(viewport.scale * 100)}%")
+        def zoom(factor, anchor=None):
+            origin = viewport.resize((canvas.winfo_width(), canvas.winfo_height()), self._view_origin(canvas))
+            anchor = anchor or tuple(value / 2 for value in viewport.viewport_size)
+            render(viewport.zoom(factor, anchor, origin))
+        def fit():
+            origin = viewport.resize((canvas.winfo_width(), canvas.winfo_height()), self._view_origin(canvas))
+            render(viewport.fit(origin))
+        def resized(_event):
+            if state["photo"] is None:
+                render((0, 0))
+                return
+            if state["after"]:
+                dialog.after_cancel(state["after"])
+            state["after"] = dialog.after(130, render)
+        def close(_event=None):
+            if state["closed"]:
+                return
+            state["closed"] = True
+            if state["after"]:
+                dialog.after_cancel(state["after"])
             state["photo"] = None
             image.close()
-            dialog.destroy()
-            if parent.winfo_exists():
-                parent.grab_set()
-        ttk.Button(toolbar, text="Zoom in", command=lambda: render(1.25)).pack(side="left")
-        ttk.Button(toolbar, text="Zoom out", command=lambda: render(.8)).pack(side="left", padx=5)
+            if _event is None or _event.type != tk.EventType.Destroy:
+                dialog.grab_release()
+                dialog.destroy()
+            if previous_grab is not None and previous_grab.winfo_exists():
+                previous_grab.grab_set()
+        ttk.Button(toolbar, text="Fit width", command=fit).pack(side="left")
+        ttk.Button(toolbar, text="＋", width=3, command=lambda: zoom(1.25)).pack(side="left", padx=5)
+        ttk.Button(toolbar, text="−", width=3, command=lambda: zoom(.8)).pack(side="left")
+        ttk.Label(toolbar, textvariable=percent, style="Small.TLabel").pack(side="left", padx=8)
         ttk.Button(toolbar, text="Close preview", command=close).pack(side="right")
+        ttk.Label(frame, text="View only · Double-click to zoom in; Shift-double-click to zoom out. Command-wheel (Mac) or Ctrl-wheel (Windows) zooms at the pointer.",
+                  style="Small.TLabel", wraplength=900).grid(row=3, column=0, columnspan=2, sticky="w", pady=(6, 0))
         dialog.protocol("WM_DELETE_WINDOW", close)
-        dialog.bind("<Escape>", lambda _event: close())
-        canvas.bind("<MouseWheel>", lambda event: canvas.yview_scroll(-1 if event.delta > 0 else 1, "units"))
-        render()
+        dialog.bind("<Escape>", close)
+        canvas.bind("<MouseWheel>", lambda event: self._source_wheel(event, canvas, zoom))
+        canvas.bind("<Button-4>", lambda event: self._source_wheel(event, canvas, zoom))
+        canvas.bind("<Button-5>", lambda event: self._source_wheel(event, canvas, zoom))
+        canvas.bind("<Double-Button-1>", lambda event: zoom(.8 if event.state & 1 else 1.25, (event.x, event.y)))
+        canvas.bind("<Configure>", resized)
+        dialog.bind("<Destroy>", lambda event: close(event) if event.widget is dialog else None)
+        dialog.after_idle(lambda: render((0, 0)))
+        return dialog
 
     def check_pace_identity(self):
         if self.busy or self.snapshot.get("profile") != "pace-auto-v1" or not self._record():

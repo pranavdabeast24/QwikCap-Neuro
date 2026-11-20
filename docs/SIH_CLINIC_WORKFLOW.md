@@ -25,8 +25,10 @@ To add a missing form later, remove that patient's row and import the complete s
 
 ## Check the answers
 
-1. Select the patient, then select a field in **Review answers**.
+1. Select the patient, then select a field in **Answers**.
    Read the suggested answer beside its source page.
+   Use **＋** or double-click to enlarge small text. **Fit width** resets the view.
+   Click **Larger view…** for a separate source window. Close it before drawing a correction.
 2. Correct the answer if needed. For a choice field, select an option from the fixed PACE list.
    The app shows each allowed label and code. Enter dates as `YYYY-MM-DD`.
 3. If the answer box covers the wrong area, click **Redraw answer area**.
@@ -34,7 +36,7 @@ To add a missing form later, remove that patient's row and import the complete s
 4. Click **Confirm & next** for every answer in the review list.
    For a required source blank, the button reads **Confirm blank & next**.
    Leave a source blank empty. A blank does not mean zero or No.
-5. If a supported form is missing a field, click **Add PACE field…**.
+5. If a supported form is missing a field, choose **Answer tools… > Add PACE field…**.
    Choose the exact PACE field, draw its answer area on the correct page, and review the suggestion.
 6. Enter your name in **Reviewer**, then click **Approve patient**.
 
@@ -43,9 +45,9 @@ Resolve identity conflicts against the original documents. Editing the MRN does 
 
 ## Save your work
 
-Click **Save form layout…** to reuse corrected answer boxes on matching forms.
+Choose **Layouts… > Save form layout…** to reuse corrected answer boxes on matching forms.
 The layout contains rules and form anchors, without patient answers or documents.
-In the next project, click **Load form layout…** before adding the forms.
+In the next project, choose **Layouts… > Load form layout…** before adding the forms.
 The app applies a saved box only when the form anchors match. Review every new answer.
 
 Choose **File > Save project as…** to keep the original PDFs, answers, layouts, and unfinished review.

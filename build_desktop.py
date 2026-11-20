@@ -34,7 +34,7 @@ STATIC_RESOURCES = (
     "spreadsheets/pace-import-template.csv", "study_profiles/pace.json",
 )
 REQUIRED_FILES = (
-    "desktop.py", "branding.py", "desktop_model.py", "desktop_worker.py", "runtime_paths.py", "form_types.py",
+    "desktop.py", "preview_viewport.py", "branding.py", "desktop_model.py", "desktop_worker.py", "runtime_paths.py", "form_types.py",
     "pipeline.py", "worker.py", "templates.py", "template_worker.py", "server.py", "neurology_profile.py", "pace_profile.py", "pace_auto.py", "clinic_profile.py", "clinic_narratives.py", "extraction_profiles.py", "field_catalog.py", "limits.py",
     "study_profiles/pace.json", "spreadsheets/pace-import-template.csv", "source_bundle.py", "bundle_worker.py",
     "requirements.txt", "requirements-build.txt",
