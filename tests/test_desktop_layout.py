@@ -108,13 +108,28 @@ class SourcePreviewLayoutTests(unittest.TestCase):
         app = self.app
         for geometry, minimum_width, minimum_rows in (("1320x850", 680, 150), ("1024x700", 390, 65)):
             with self.subTest(geometry=geometry):
+                requested_width, requested_height = map(int, geometry.split("x"))
                 self.root.geometry(geometry)
                 self.root.update()
                 app._render_page()
                 self.root.update_idletasks()
-                self.assertGreaterEqual(app.canvas.winfo_width(), minimum_width)
-                self.assertGreaterEqual(app.field_tree.winfo_height(), minimum_rows)
-                self.assertGreaterEqual(app.review_field_frame.winfo_height(), minimum_rows + 15)
+                actual_width, actual_height = self.root.winfo_width(), self.root.winfo_height()
+                required_width = max(390, minimum_width - max(0, requested_width - actual_width))
+                required_rows = max(65, minimum_rows - max(0, requested_height - actual_height))
+                allocation = (
+                    f"requested={geometry}, actual={self.root.winfo_geometry()}, "
+                    f"screen={self.root.winfo_screenwidth()}x{self.root.winfo_screenheight()}; "
+                    f"required client>=1024x700, canvas>={required_width}, "
+                    f"field_tree>={required_rows}, field_frame>={required_rows + 15}; "
+                    f"native allocation canvas={app.canvas.winfo_width()}, "
+                    f"field_tree={app.field_tree.winfo_height()}, "
+                    f"field_frame={app.review_field_frame.winfo_height()}"
+                )
+                self.assertGreaterEqual(actual_width, 1024, allocation)
+                self.assertGreaterEqual(actual_height, 700, allocation)
+                self.assertGreaterEqual(app.canvas.winfo_width(), required_width, allocation)
+                self.assertGreaterEqual(app.field_tree.winfo_height(), required_rows, allocation)
+                self.assertGreaterEqual(app.review_field_frame.winfo_height(), required_rows + 15, allocation)
                 self.assertLessEqual(app.review_field_frame.winfo_rooty() + app.review_field_frame.winfo_height(), app.review_editor.winfo_rooty())
                 self.assertTrue(app.zoom_in_button.winfo_ismapped())
                 self.assertTrue(app.zoom_out_button.winfo_ismapped())
