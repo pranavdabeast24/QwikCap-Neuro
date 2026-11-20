@@ -1,5 +1,7 @@
 # What has been tested
 
+The [four-patient export coverage audit](testing/FIELD_COVERAGE_2026-11-20.md) explains the supplied one-patient CSV and the detected-field visibility correction.
+
 The owner accepted the basic v1 workflow on November 20, 2026. [Prototype status](V1_PROTOTYPE.md) distinguishes that feedback from measured accuracy and the incomplete four-document audit.
 
 The later [preview and review update](testing/PREVIEW_REVIEW_2026-11-20.md) records zoom, window layout, and interface regression checks.

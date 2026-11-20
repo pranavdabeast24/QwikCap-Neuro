@@ -6,7 +6,7 @@ Files are processed on your computer.
 
 ## Open the app
 
-1. Open the [updated prototype release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/v1.1.0-prototype). Sign in to GitHub with access to this private repository.
+1. Open the [updated prototype release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/v1.1.1-prototype). Sign in to GitHub with access to this private repository.
 2. Download the ZIP for your computer and extract it.
 3. On an Apple Silicon Mac, open **QwikCap.app**. On 64-bit Windows, open **QwikCap/QwikCap.exe**. Keep the whole extracted folder together.
 
@@ -24,10 +24,12 @@ To run a clone or edit the software, follow [Run from source](docs/GETTING_START
 7. Use **File > Save project as…** to keep the documents, answers and unfinished review.
 
 PACE is the only preset. The output has 512 columns and one row per approved patient.
+The answer list covers the uploaded forms. Empty columns for other forms stay empty.
+Use **Answer tools… > Add PACE field…**, clear Search, and choose **All instruments** to browse the full field catalog.
 A saved layout contains rules. A saved project also contains source documents and answers.
 Reopened projects require fresh review and approval.
 
-[Try one supplied patient](docs/SIH_CLINIC_WORKFLOW.md) · [Correct and reuse a layout](docs/CUSTOM_FORMS.md)
+[Try one supplied patient](docs/SIH_CLINIC_WORKFLOW.md) · [Four original intake PDFs](datasets/sih-variants-synthetic/README.md) · [Find fields and understand blanks](docs/FIELD_COVERAGE.md) · [Correct and reuse a layout](docs/CUSTOM_FORMS.md)
 
 ## Read small fields
 

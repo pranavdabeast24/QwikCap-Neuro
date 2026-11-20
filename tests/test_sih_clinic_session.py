@@ -71,6 +71,24 @@ def clinician_questionnaire(*, visible_options=True, declared_pages=1):
     return output.getvalue()
 
 
+def clinician_text_questionnaire(answer="", font="Helvetica", *,
+                                prompt="4. Briefly describe your current headache"):
+    output = io.BytesIO()
+    pdf = canvas.Canvas(output, pagesize=(612, 792), invariant=1)
+    pdf.drawString(400, 740, "EXAMPLE, ADA")
+    pdf.drawString(400, 725, "DOB 02/03/1980 Sex F")
+    pdf.drawString(400, 710, "MRN 00001234")
+    pdf.drawString(40, 660, "Headache History - Clinician Intake")
+    pdf.drawString(40, 610, prompt)
+    pdf.setFont(font, 12)
+    pdf.drawString(40, 585, answer)
+    pdf.setFont("Helvetica", 12)
+    pdf.drawString(40, 550, "Section 2: Next section")
+    pdf.drawString(40, 50, "HA-210C Rev 02/2026 Page 1 of 1")
+    pdf.save()
+    return output.getvalue()
+
+
 class SihClinicSessionTests(unittest.TestCase):
     def setUp(self):
         self.session = DesktopSession()
@@ -226,6 +244,83 @@ class SihClinicSessionTests(unittest.TestCase):
             self.write("visible-unmarked.pdf", clinician_questionnaire()),
         ], "SYNTH-001", True)
         self.assertIn("headaches_yn", record["sourceContext"]["unansweredFields"])
+
+    def test_located_blank_or_unreadable_text_remains_available_for_review(self):
+        for answer in ("", "Fictional response"):
+            with self.subTest(answer=answer):
+                session = DesktopSession()
+                self.addCleanup(session.close)
+                session.use_sih_clinic_profile()
+                record = session.add_patient_bundle([
+                    self.write("registration.pdf", registration()),
+                    self.write("questionnaire.pdf", clinician_text_questionnaire(answer)),
+                ], "SYNTH-001", True)
+                self.assertIn("headaches_description", record["applicableFields"])
+                self.assertEqual(record["values"]["headaches_description"], "")
+                self.assertTrue(any("headaches_description" in issue and "manual" in issue.casefold()
+                                    for issue in record["issues"]))
+                self.assertNotIn("headaches_description", record["sourceContext"]["unansweredFields"])
+                evidence = record["evidence"]["headaches_description"]
+                self.assertEqual(evidence["page"], 3)
+                self.assertEqual(evidence["text"], "")
+                self.assertIn("review", evidence["mapping"])
+                self.assertLess(evidence["region"]["height"], .2)
+                self.assertEqual(len(record["values"]), 512)
+
+    def test_permitted_text_answer_is_still_extracted(self):
+        self.choose_reader()
+        record = self.session.add_patient_bundle([
+            self.write("registration.pdf", registration()),
+            self.write("questionnaire.pdf", clinician_text_questionnaire("Fictional response", "Courier")),
+        ], "SYNTH-001", True)
+        self.assertIn("headaches_description", record["applicableFields"])
+        self.assertEqual(record["values"]["headaches_description"], "Fictional response")
+        self.assertEqual(record["evidence"]["headaches_description"]["text"], "Fictional response")
+        self.assertFalse(any("headaches_description" in issue for issue in record["issues"]))
+
+    def test_malformed_date_and_number_remain_active_without_invented_values(self):
+        examples = (
+            ("headache_start", "3. When did your current headaches first start?", "Unsure"),
+            ("standing_up_time", "17. If better lying down: how many minutes?", "Several minutes"),
+        )
+        for name, prompt, answer in examples:
+            with self.subTest(name=name):
+                session = DesktopSession()
+                self.addCleanup(session.close)
+                session.use_sih_clinic_profile()
+                record = session.add_patient_bundle([
+                    self.write("registration.pdf", registration()),
+                    self.write("questionnaire.pdf", clinician_text_questionnaire(answer, "Courier", prompt=prompt)),
+                ], "SYNTH-001", True)
+                self.assertIn(name, record["applicableFields"])
+                self.assertEqual(record["values"][name], "")
+                self.assertTrue(any(name in issue and "manual" in issue.casefold() for issue in record["issues"]))
+                self.assertNotIn(name, record["sourceContext"]["unansweredFields"])
+
+    def test_unlocated_text_prompt_is_not_added_to_review(self):
+        self.choose_reader()
+        record = self.session.add_patient_bundle([
+            self.write("registration.pdf", registration()),
+            self.write("questionnaire.pdf", clinician_questionnaire()),
+        ], "SYNTH-001", True)
+        self.assertIn("headaches_yn", record["applicableFields"])
+        self.assertNotIn("headaches_description", record["applicableFields"])
+
+    def test_unreadable_text_can_be_recovered_and_confirmed_manually(self):
+        self.choose_reader()
+        record = self.session.add_patient_bundle([
+            self.write("registration.pdf", registration()),
+            self.write("questionnaire.pdf", clinician_text_questionnaire("Fictional response")),
+        ], "SYNTH-001", True)
+        self.assertIn("headaches_description", record["applicableFields"])
+        values = {**record["values"], "headaches_description": "Fictional response"}
+        saved = self.session.review_record(record["id"], values, record["applicableFields"], "Fictional reviewer")
+        self.assertEqual(saved["values"]["headaches_description"], "Fictional response")
+        self.assertNotIn("headaches_description", saved["confirmed"])
+        approved = self.session.review_record(saved["id"], saved["values"], saved["applicableFields"],
+                                              "Fictional reviewer", True)
+        self.assertEqual(approved["status"], "approved")
+        self.assertIn("headaches_description", approved["confirmed"])
 
     def test_malformed_hit6_table_cannot_omit_required_answers_or_guess_columns(self):
         self.choose_reader()
