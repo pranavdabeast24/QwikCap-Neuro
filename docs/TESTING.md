@@ -1,5 +1,7 @@
 # What has been tested
 
+The owner accepted the basic v1 workflow on November 20, 2026. [Prototype status](V1_PROTOTYPE.md) distinguishes that feedback from measured accuracy and the incomplete four-document audit.
+
 The new PACE automatic workflow has a [separate verification record](testing/PACE_AUTO_2026-11-20.md).
 The measurements below preserve the earlier explicit-reader trial.
 

@@ -1,5 +1,7 @@
 # Continue work on QwikCap
 
+The current milestone is `v1.0.0-prototype`. Read [v1 status and remaining work](V1_PROTOTYPE.md) before changing the app.
+
 Start with [developer setup](GETTING_STARTED.md).
 Use a branch and a pull request for changes.
 Commit as Pranav Mukund when working on the owner's behalf.

@@ -1,97 +1,70 @@
 # Run QwikCap from source
 
-Use [Windows setup](WINDOWS.md) to run the packaged app without Python.
-These steps are for developers.
+To open the ready-made app, use the [download instructions](../README.md) or the [Windows guide](WINDOWS.md).
+Use the steps below to run the Python source.
 
-Run commands from the repository root.
-Use Python 3.12 with Tcl/Tk support.
-The launchers use `.venv` and do not install dependencies.
+## Get the source
+
+Install Git and Python 3.12 with Tcl/Tk support first.
+Run these commands in Terminal on Mac or PowerShell on Windows.
+
+```sh
+git clone https://github.com/pranavdabeast24/capitolinus-form-extraction.git qwikcap
+cd qwikcap
+```
+
+Run the remaining commands from this `qwikcap` folder.
 
 ## Set up macOS
 
-Run the first three commands.
-Close the Tk demonstration window.
-Run the last command.
-QwikCap opens with PACE automatic review ready.
+Create the environment, install the requirements, and check Tk.
 
 ```sh
 python3.12 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python -m tkinter
+```
+
+Close the Tk demonstration window, then open QwikCap.
+
+```sh
 .venv/bin/python desktop.py
 ```
 
-For later runs, use `./start-desktop-macos.command` or the last command above.
-Text-layer PDFs need no OCR.
-Scans need an existing Swift toolchain for Apple Vision or an existing Tesseract installation.
+For later runs, use the same launch command or double-click `start-desktop-macos.command`.
 
 ## Set up Windows
 
-Use PowerShell.
-Run the first three commands.
-Close the Tk demonstration window.
-Run the last command.
-QwikCap opens with PACE automatic review ready.
+In PowerShell, create the environment, install the requirements, and check Tk.
 
 ```powershell
 py -3.12 -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt
 .venv\Scripts\python.exe -m tkinter
+```
+
+Close the Tk demonstration window, then open QwikCap.
+
+```powershell
 .venv\Scripts\python.exe desktop.py
 ```
 
-For later runs, use `start-desktop-windows.bat`.
-Scans need an existing Tesseract installation with English language data.
-Set `FORMBRIDGE_TESSERACT` to its executable path before launch, or add it to `PATH`.
-The project does not install or bundle Tesseract.
-Without OCR, read the source and enter answers manually.
+For later runs, use the same launch command or double-click `start-desktop-windows.bat`.
+The launchers use `.venv`. They do not install Python or dependencies.
 
 ## Try a form
 
-Follow [the clinic walkthrough](SIH_CLINIC_WORKFLOW.md) for the supplied clinic PDFs.
-Follow [Correct a layout](CUSTOM_FORMS.md) to redraw suggested answer boxes and save them for reuse.
+QwikCap opens with PACE automatic review ready.
+Follow the [one-patient walkthrough](SIH_CLINIC_WORKFLOW.md) to add the supplied PDFs, review answers, and export.
 
-A saved extraction type contains reusable rules and masks.
-A saved project also contains source documents and values.
-Keep local types, projects, and exports outside Git.
-A new clone does not restore them.
-Reopened projects require fresh review and approval.
-
-## Build on the target operating system
-
-Use the source environment above.
-On macOS, the Swift compiler and Apple developer tools must already be installed.
-
-Run these commands on macOS:
-
-```sh
-.venv/bin/python -m pip install -r requirements-build.txt
-.venv/bin/python -m unittest discover -s tests -v
-.venv/bin/python build_desktop.py --work-dir work/desktop-build --dist-dir dist/macos
-.venv/bin/python verify_desktop_bundle.py dist/macos/QwikCap.app --output verification/bundle
-.venv/bin/python tools/verify_custom_masks.py --bundle dist/macos/QwikCap.app --output verification/custom-masks-bundle
-.venv/bin/python tools/verify_sih_clinic.py --bundle dist/macos/QwikCap.app --output verification/sih-clinic-bundle
-```
-
-Run these commands in Windows PowerShell:
-
-```powershell
-.venv\Scripts\python.exe -m pip install -r requirements-build.txt
-.venv\Scripts\python.exe -m unittest discover -s tests -v
-.venv\Scripts\python.exe build_desktop.py --work-dir work\desktop-build --dist-dir dist\windows
-.venv\Scripts\python.exe verify_desktop_bundle.py dist\windows\QwikCap --output verification\bundle
-.venv\Scripts\python.exe tools\verify_custom_masks.py --bundle dist\windows\QwikCap --output verification\custom-masks-bundle
-.venv\Scripts\python.exe tools\verify_sih_clinic.py --bundle dist\windows\QwikCap --output verification\sih-clinic-bundle
-```
-
-Expect `dist/macos/QwikCap.app` or `dist\windows\QwikCap\QwikCap.exe`.
-Keep the complete application folder, including its companion worker.
-The builder preserves existing output and requests a new destination.
-Mac development builds use ad hoc signing and are not notarized.
-
-Read [Testing](TESTING.md) for check coverage and recorded platform limits.
-The automated checks do not cover the complete mouse-driven workflow.
-Read [the handoff](HANDOFF.md) before continuing development.
+The supplied clinic PDFs have text layers and need no OCR.
+For scans, macOS source runs need an existing Swift toolchain for Apple Vision or an existing Tesseract installation.
+Windows scans need an existing Tesseract installation with English language data.
+Set `FORMBRIDGE_TESSERACT` to its executable path before launch, or add Tesseract to `PATH`.
+QwikCap does not install or bundle Tesseract.
+Automatic grouping must read each patient sticker. For a scan-only sticker, configure OCR or use a searchable PDF before import.
 
 Extraction uses local PDF text, masks, and optional OCR.
 LLM extraction, camera capture, and direct REDCap submission are not implemented.
+
+Use [Build the desktop app](BUILDING.md) for packaging commands and [the handoff](HANDOFF.md) before continuing development.
