@@ -1,6 +1,7 @@
 # Continue work on QwikCap
 
-The current milestone is `v1.0.0-prototype`. Read [v1 status and remaining work](V1_PROTOTYPE.md) before changing the app.
+The current milestone is `v1.1.0-prototype`, which improves the preview and review controls.
+Read [v1 status and remaining work](V1_PROTOTYPE.md) before changing the app.
 
 Start with [developer setup](GETTING_STARTED.md).
 Use a branch and a pull request for changes.
@@ -17,6 +18,7 @@ It has no LLM, cloud extraction service, camera capture, or live REDCap connecti
 | File | What it does |
 | --- | --- |
 | `desktop.py` | Shows the windows, menus, review controls, and export preview. |
+| `preview_viewport.py` | Keeps page zoom, scroll anchors, and displayed rectangle coordinates consistent. |
 | `desktop_model.py` | Manages documents, saved projects, review, and export. |
 | `pipeline.py` | Reads PDF text, page regions, marks, and local OCR results. |
 | `clinic_profile.py` and `clinic_narratives.py` | Read the supplied clinic forms and reports. |

@@ -6,7 +6,7 @@ Files are processed on your computer.
 
 ## Open the app
 
-1. Open the [v1 prototype release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/v1.0.0-prototype). Sign in to GitHub with access to this private repository.
+1. Open the [updated prototype release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/v1.1.0-prototype). Sign in to GitHub with access to this private repository.
 2. Download the ZIP for your computer and extract it.
 3. On an Apple Silicon Mac, open **QwikCap.app**. On 64-bit Windows, open **QwikCap/QwikCap.exe**. Keep the whole extracted folder together.
 
@@ -18,7 +18,7 @@ To run a clone or edit the software, follow [Run from source](docs/GETTING_START
 1. Click **Add documents…**. Select all PDFs for a patient, or a small batch of patients.
 2. Check every source sticker. MRN links the forms; name and birth date must agree. Select the verification checkbox and click **Check patient group**. Then click **Add checked patients**.
 3. Select a patient and a field. Compare its suggested answer with the source. Correct the answer or use **Redraw answer area**, then click **Confirm & next**.
-4. Click **Save form layout…** to reuse corrected boxes on matching forms. Load that layout for the next batch.
+4. Choose **Layouts… > Save form layout…** to reuse corrected boxes on matching forms. Load that layout for the next batch.
 5. Enter your name in **Reviewer**, then click **Approve patient**.
 6. Open **Map & export**. For Excel, click **Use fields as columns**. Check the preview, click **Confirm column mapping**, then **Export XLSX…**. The supplied CSV template exports CSV instead.
 7. Use **File > Save project as…** to keep the documents, answers and unfinished review.
@@ -28,6 +28,15 @@ A saved layout contains rules. A saved project also contains source documents an
 Reopened projects require fresh review and approval.
 
 [Try one supplied patient](docs/SIH_CLINIC_WORKFLOW.md) · [Correct and reuse a layout](docs/CUSTOM_FORMS.md)
+
+## Read small fields
+
+Use **＋** and **−** above the page, or double-click the area you want to read.
+Shift-double-click zooms out. Hold Command on Mac or Ctrl on Windows while scrolling to zoom at the cursor.
+Scroll normally to move down the page. Use **Fit width** to reset the view.
+Click **Larger view…** for a separate, resizable source window.
+Close that window to return to answer review or draw a correction.
+Zoom does not confirm or change an answer.
 
 ## Know the v1 limits
 

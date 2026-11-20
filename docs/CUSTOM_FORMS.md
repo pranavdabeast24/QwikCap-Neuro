@@ -12,19 +12,20 @@ This changes that patient's answer. It does not teach the app to reuse that valu
 ## Correct an answer box
 
 1. Select the field and open the source page with its answer.
+   Zoom in with **＋** or double-click before you start to draw.
 2. Click **Redraw answer area**.
 3. Drag a rectangle around the answer. A box tells the app where to read; it does not hide or redact information.
 4. Check the new suggestion and correct it if necessary.
 5. Click **Confirm & next**.
 
-If a supported source has a missing field, use **Add PACE field…** to select the exact variable from its instrument. Draw that answer area and review it.
+If a supported source has a missing field, choose **Answer tools… > Add PACE field…** to select the exact variable from its instrument. Draw that answer area and review it.
 The app does not infer a different visit or questionnaire version from a similar label.
 
 ## Reuse the boxes
 
-Click **Save form layout…** and save the JSON file outside the repository.
+Choose **Layouts… > Save form layout…** and save the JSON file outside the repository.
 It contains field rules and form anchors, without patient answers, documents, filenames or identifiers.
-In another project, click **Load form layout…**, then add the next patient's forms.
+In another project, choose **Layouts… > Load form layout…**, then add the next patient's forms.
 The app checks the form anchors before using a saved box. Matching paper sizes alone are not enough.
 The sticker is found again on each source; it is not copied from the previous patient.
 

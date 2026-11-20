@@ -33,6 +33,7 @@ class ReaderPresentationTests(unittest.TestCase):
         app._record = lambda: record
         app._refresh_presentation = Mock()
         app._reset_gesture = Mock()
+        app._resize_after = None
         for name in ("field_title", "value_var", "confirm_var", "field_detail", "record_title",
                      "record_context", "page_label", "source_issues"):
             setattr(app, name, Value())
