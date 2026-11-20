@@ -4,7 +4,7 @@ QwikCap helps you copy information from PDF forms into a spreadsheet.
 You check the suggested answers beside the original document before you export.
 The app processes files on your computer.
 
-[Download the app](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-plain-language-2026-11-19) · [Try one patient](docs/SIH_CLINIC_WORKFLOW.md) · [Edit the software](docs/GETTING_STARTED.md)
+[Download the app](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-clean-outlines-2026-11-20) · [Try one patient](docs/SIH_CLINIC_WORKFLOW.md) · [Edit the software](docs/GETTING_STARTED.md)
 
 ## Use the app
 

@@ -1725,7 +1725,6 @@ class DesktopApp:
                         selected = field["id"] == self.design_selected
                         x1, y1 = 12 + region["x"] * display.width, 12 + region["y"] * display.height
                         self.canvas.create_rectangle(x1, y1, x1 + region["width"] * display.width, y1 + region["height"] * display.height, outline="#d16a18" if selected else "#147d9b", width=3 if selected else 2)
-                        self.canvas.create_text(x1 + 3, y1 + 2, text=field.get("name", ""), anchor="nw", fill="#9b460c" if selected else "#08617a", font=("Helvetica Neue", 10, "bold"))
                 return
             field = next((f for f in self.snapshot["schema"] if f["name"] == self.selected_field), {})
             evidence = record.get("evidence", {}).get(self.selected_field, {})

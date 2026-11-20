@@ -2,7 +2,7 @@
 
 Create one reviewed patient row from five synthetic clinic PDFs.
 
-Use the [current QwikCap release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-plain-language-2026-11-19).
+Use the [current QwikCap release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-clean-outlines-2026-11-20).
 On Windows, extract the whole application folder before opening `QwikCap.exe`.
 Keep `_internal` beside it.
 On Mac, open `QwikCap.app`.
