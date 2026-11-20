@@ -26,7 +26,7 @@ from typing import Any
 from PIL import Image, ImageOps, UnidentifiedImageError
 from neurology_profile import extract as extract_neurology
 from extraction_profiles import (PROFILES, profile_id, is_profile, is_patient_profile,
-                                 is_clinic_profile, applicable_fields)
+                                 is_clinic_profile, is_auto_profile, applicable_fields)
 from limits import MAX_FIELDS, MAX_SCHEMA_BYTES, MAX_PAGES, MAX_RENDER_PIXELS, MAX_ASSET_BYTES
 
 try:
@@ -988,7 +988,7 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
         pipeline.append({"stage": "Read document", "status": "complete", "detail": "UTF-8 text read locally; no document preview is generated."})
     else:
         pdf_options = {"capture_geometry": is_patient_profile(schema)}
-        if is_clinic_profile(schema):
+        if is_clinic_profile(schema) or is_auto_profile(schema):
             pdf_options["capture_clinic"] = True
         pages = (_make_pdf_pages(data, folder, **pdf_options)
                  if kind == "pdf" else _make_image_pages(data, folder))
@@ -1070,6 +1070,8 @@ def process_document(data: bytes, filename: str, schema: list, asset_dir: Path, 
         result["applicableFields"] = sorted(applicable_fields(schema, values, extracted))
         result["sourceContext"] = extracted["sourceContext"]
         result["profileBlockingIssues"] = list(extracted["sourceContext"]["blockingIssues"])
+        if is_auto_profile(schema):
+            result["pacePages"] = [{key: value for key, value in page.items() if key not in {"path", "image"}} for page in mapping_pages]
     elif is_profile(schema):
         result["applicableFields"] = sorted(applicable_fields(schema, values))
         result["sourceInstrumentFamily"] = values.get("instrument_family", "")

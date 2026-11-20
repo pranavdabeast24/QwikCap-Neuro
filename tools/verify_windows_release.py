@@ -39,12 +39,15 @@ def read_report(path):
     return result
 
 
-def retain_acceptance_summary(source, target, expected_groups=None):
+def retain_acceptance_summary(source, target, expected_groups=None, required_checks=None):
     result = read_report(source)
     if expected_groups is not None:
         require(len(result.get("checks", [])) == expected_groups
                 and all(item.get("status") == "passed" for item in result["checks"]),
                 "Acceptance group totals changed")
+    if required_checks is not None:
+        require(tuple(item.get("check") for item in result.get("checks", [])) == tuple(required_checks),
+                "Required acceptance checks changed or are incomplete")
     summary = {key: result[key] for key in
                ("status", "documents", "extractedMatches", "destinationColumns", "patientRows", "originalForms",
                 "mappedFields", "exportedCellsMatched") if key in result}
@@ -169,6 +172,11 @@ def verify(output, dist, report):
         result_name = "pace-results.json" if name == "pace" else "custom-mask-results.json"
         retain_acceptance_summary(output / ("source-" + name) / result_name,
                                   output / "reports" / ("source-" + result_name), 9 if name == "pace" else 10)
+    from tools.verify_pace_auto import CHECKS as AUTO_CHECKS
+    run_check("source-pace-auto", [python, "-B", str(APP / "tools/verify_pace_auto.py"),
+              "--output", str(output / "source-pace-auto")], report, environment, APP, 180)
+    retain_acceptance_summary(output / "source-pace-auto/pace-auto-results.json",
+                              output / "reports/source-pace-auto-results.json", 9, AUTO_CHECKS)
     run_check("build-native-bundle", [python, "-B", str(APP / "build_desktop.py"),
               "--work-dir", str(output / "build"), "--dist-dir", str(dist)], report, environment, APP, 600)
     bundle = dist / APP_BASENAME
@@ -205,7 +213,7 @@ def verify(output, dist, report):
               report, isolated, relocation, 60)
     gui = read_report(startup)
     require(gui.get("frozen") is True and gui.get("catalogFields") == 512
-            and gui.get("records") == gui.get("activeFields") == 0, "Frozen GUI startup proof is incomplete")
+            and gui.get("records") == 0 and gui.get("activeFields") == 512, "Frozen GUI startup proof is incomplete")
     report["currentStage"] = "extracted-companion-unicode-json-and-no-ocr-without-python-path"
     helper_check = {"check": report["currentStage"], "status": "failed"}
     report["checks"].append(helper_check)
@@ -221,6 +229,11 @@ def verify(output, dist, report):
               report, isolated, relocation, 180)
     retain_acceptance_summary(output / "packaged-sih-clinic/sih-clinic-results.json",
                               output / "reports/packaged-sih-clinic-results.json", 7)
+    run_check("packaged-pace-auto", [python, "-B", str(APP / "tools/verify_pace_auto.py"),
+              "--bundle", str(extracted), "--output", str(output / "packaged-pace-auto")],
+              report, isolated, relocation, 180)
+    retain_acceptance_summary(output / "packaged-pace-auto/pace-auto-results.json",
+                              output / "reports/packaged-pace-auto-results.json", 9, AUTO_CHECKS)
     run_check("packaged-fictional-scans-and-exports", [python, "-B", str(APP / "verify_desktop_bundle.py"),
               str(extracted), "--output", str(output / "packaged-fixtures")], report, isolated, relocation)
     fixtures = read_report(output / "packaged-fixtures/desktop-bundle-results.json")

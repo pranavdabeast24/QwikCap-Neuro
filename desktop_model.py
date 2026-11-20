@@ -26,7 +26,8 @@ from server import (Workspace, InputError, ConflictError, MAX_BODY, MAX_FILE,
                     strict_json_loads, validate_values, now, ROOT, source_bytes, public_record, project_record)
 from neurology_profile import is_profile as is_neurology_profile, profile_schema, patient_groups
 from extraction_profiles import (is_profile, is_patient_profile, is_clinic_profile, profile_id, canonical_schema,
-                                 applicable_fields, source_blocking_issues, bundle_identity_issues)
+                                 applicable_fields, source_blocking_issues, bundle_identity_issues, is_auto_profile)
+import pace_auto
 from pace_profile import PROFILE as PACE_PROFILE
 from clinic_profile import PROFILE as CLINIC_PROFILE
 from form_types import (new_draft, validate_draft, compile_draft, parse_form_type,
@@ -85,6 +86,23 @@ def _new_workspace():
     return temporary, workspace
 
 
+def _pace_rule_key(rule):
+    return json.dumps({key: value for key, value in rule.items() if key != "region"}, sort_keys=True)
+
+
+def _pace_rules(*collections):
+    rules = {}
+    for collection in collections:
+        for rule in collection:
+            rules[_pace_rule_key(rule)] = rule
+    return list(rules.values())
+
+
+def _pace_mrns(record):
+    return {identity["mrn"] for identity in record.get("sourceContext", {}).get("identities", [])
+            if isinstance(identity, dict) and isinstance(identity.get("mrn"), str) and identity["mrn"]}
+
+
 class DesktopSession:
     """Canonical synchronous API. Do not call mutations concurrently.
 
@@ -103,6 +121,9 @@ class DesktopSession:
         self.closed = False
         self.form_type = None
         self.draft = None
+        self.pace_loadout = {"format": "qwikcap-pace-loadout-v1", "name": "PACE layouts", "rules": []}
+        self._pace_pending = None
+        self._pace_groups = []
 
     @property
     def phase(self):
@@ -199,8 +220,9 @@ class DesktopSession:
         state = {"schema": ws.schema, "records": [public_record(r) for r in ws.records],
                  "reviewer": ws.reviewer, "schemaWarnings": ws.schema_warnings,
                  "template": ws.template, "templatePreview": ws.template_preview(),
-                 "generation": self.generation, "dirty": self.dirty, "projectPath": self.project_path}
+                 "generation": self.generation, "dirty": self.dirty or bool(self._pace_groups), "projectPath": self.project_path}
         state.update(phase=self.phase, draft=self.draft, formType=self.form_type)
+        state.update(paceLoadout=self.pace_loadout, pendingPatientGroups=self._pace_groups)
         catalog = self._expected_catalog()
         selected = {field.get("name") for field in (self.draft["fields"] if self.draft is not None else ws.schema)}
         repeatable = {instrument["name"] for instrument in catalog["instruments"] if instrument["repeatable"]}
@@ -310,10 +332,17 @@ class DesktopSession:
             draft = copy.deepcopy(self.draft)
             if pace_mode:
                 issues = bundle_identity_issues(record, record_id, manifest)
-                if record["values"].get("record_id") != record_id:
+                if not is_auto_profile(ws.schema) and record["values"].get("record_id") != record_id:
                     issues.append("The source record ID differs from the operator-confirmed study record ID.")
                 if issues:
                     raise InputError(" ".join(issues))
+                if is_auto_profile(ws.schema):
+                    if any(_pace_mrns(record) & _pace_mrns(other) for other in ws.records):
+                        raise InputError("This MRN already has a patient row. Remove that row and import all of this patient's sources together.")
+                    record["values"]["record_id"] = record_id
+                    record["paceIdentityConfirmed"] = True
+                    record["paceExportMode"] = "new"
+                    pace_auto.apply_rules(record, self.pace_loadout["rules"])
                 draft = None
             elif self.form_type is not None:
                 if self.form_type["identifierField"] != "record_id" or ws.schema[0].get("region") != cover_rule["region"]:
@@ -357,6 +386,253 @@ class DesktopSession:
             self._active_workspace = ws
             staged.stop_jobs()
             temporary.cleanup()
+
+    def use_pace_auto_profile(self):
+        fresh = not self.workspace.schema and not self.workspace.records and not self.dirty
+        self.cancel_pace_import()
+        self.set_schema(canonical_schema(pace_auto.PROFILE))
+        self.use_pace_template()
+        self.set_mapping({field["name"]: field["name"] for field in self.workspace.schema}, False)
+        if fresh:
+            self.dirty = False
+        return self.snapshot()
+
+    def cancel_pace_import(self):
+        if self._pace_pending is not None:
+            temporary, workspace = self._pace_pending
+            workspace.stop_jobs()
+            temporary.cleanup()
+        self._pace_pending, self._pace_groups = None, []
+
+    def _pending_groups(self, workspace):
+        grouped = {}
+        for record in workspace.records:
+            identities = record.get("sourceContext", {}).get("identities", [])
+            mrns = {identity.get("mrn", "") for identity in identities if identity.get("mrn")}
+            key = next(iter(mrns)) if len(mrns) == 1 else "unresolved-" + record["id"]
+            group = grouped.setdefault(key, {"id": uuid.uuid4().hex, "mrn": next(iter(mrns)) if len(mrns) == 1 else "",
+                "firstName": "", "lastName": "", "dob": "", "filenames": [], "instruments": [], "issues": [], "sourceCount": 0, "sources": []})
+            group["filenames"].append(record["filename"])
+            group["sourceCount"] += 1
+            group["sources"].append({"id": record["id"], "filename": record["filename"],
+                "pages": [{"page": page["page"], "previewPath": str(workspace.assets / record["id"] / f"page-{page['page']}.png")} for page in record["pages"]],
+                "identityPages": copy.deepcopy(identities)})
+        for group in grouped.values():
+            records = [record for record in workspace.records if record["id"] in {source["id"] for source in group["sources"]}]
+            identities = [identity for record in records for identity in record.get("sourceContext", {}).get("identities", [])]
+            context = {"sourceContext": {"identities": identities}}
+            group["issues"].extend(pace_auto.identity_issues(context))
+            for key, label in (("firstName", "first name"), ("lastName", "last name"), ("dob", "birth date")):
+                values = {" ".join(identity.get(key, "").split()).casefold() for identity in identities if identity.get(key)}
+                if len(values) == 1:
+                    group[key] = next(identity[key] for identity in identities if identity.get(key))
+                elif len(values) > 1:
+                    group["issues"].append(f"The same MRN has conflicting patient {label} values.")
+            starts = []
+            source_ids = set()
+            for record in records:
+                ctx = record.get("sourceContext", {})
+                group["issues"].extend(ctx.get("blockingIssues", []))
+                starts.extend(start["instrument"] for start in ctx.get("instrumentStarts", []))
+                source_ids.update(ctx.get("recordIds", []))
+            if len(starts) != len(set(starts)):
+                group["issues"].append("Repeated instrument assessments cannot be combined into one patient row. Import one assessment at a time.")
+            if len(source_ids) > 1:
+                group["issues"].append("Printed source study IDs conflict. Resolve the original sources before grouping.")
+            if any(group["mrn"] in _pace_mrns(record) for record in self.workspace.records):
+                group["issues"].append("This MRN already has a patient row. Remove that row and import all of this patient's sources together.")
+            if group["sourceCount"] > MAX_BUNDLE_DOCUMENTS:
+                group["issues"].append(f"A patient supports at most {MAX_BUNDLE_DOCUMENTS} source PDFs.")
+            if sum(len(record["pages"]) for record in records) >= MAX_PAGES:
+                group["issues"].append("A patient supports at most 31 source pages plus its review cover.")
+            group["instruments"] = list(dict.fromkeys(starts))
+            group["issues"] = list(dict.fromkeys(group["issues"]))
+        return list(grouped.values())
+
+    def import_pace_documents(self, paths):
+        if not is_auto_profile(self.workspace.schema):
+            raise InputError("Use PACE automatic review before proposing patient groups.")
+        if self._pace_pending is not None:
+            raise InputError("Finish or cancel the current patient group check before adding more documents.")
+        paths = list(paths)
+        if not 1 <= len(paths) <= MAX_RECORDS:
+            raise InputError("Choose a small batch of 1 to 60 PDFs. Process larger collections in separate saved projects.")
+        temporary, staged = _new_workspace()
+        staged.schema = copy.deepcopy(self.workspace.schema)
+        failed = []
+        self._active_workspace = staged
+        try:
+            for path in paths:
+                self._check_cancel()
+                before_ids = {record["id"] for record in staged.records}
+                try:
+                    if Path(path).suffix.lower() != ".pdf":
+                        raise InputError("PACE patient grouping accepts PDFs only.")
+                    data = bounded_read(path, MAX_FILE)
+                    if source_bytes(self.workspace.records) + source_bytes(staged.records) + len(data) > MAX_SESSION_BYTES:
+                        raise InputError("Keep each small batch within the 20 MiB session source limit.")
+                    record = staged.add(data, Path(path).name)
+                    identities = record.get("sourceContext", {}).get("identities", [])
+                    mrns = {identity.get("mrn") for identity in identities if identity.get("mrn")}
+                    if len(mrns) > 1:
+                        from pypdf import PdfReader, PdfWriter
+                        reader = PdfReader(io.BytesIO(data), strict=True)
+                        page_groups = {}
+                        for page in record["pages"]:
+                            page_mrns = {identity.get("mrn") for identity in identities if identity.get("page") == page["page"] and identity.get("mrn")}
+                            key = next(iter(page_mrns)) if len(page_mrns) == 1 else "unresolved"
+                            page_groups.setdefault(key, []).append(page["page"])
+                        staged.records.remove(record)
+                        staged.prune_assets()
+                        for index, page_numbers in enumerate(page_groups.values(), 1):
+                            writer = PdfWriter()
+                            for page_number in page_numbers:
+                                writer.add_page(reader.pages[page_number - 1])
+                            output = io.BytesIO()
+                            writer.write(output)
+                            staged.add(output.getvalue(), f"{Path(path).stem[:165]}-part-{index}.pdf")
+                except Cancelled:
+                    raise
+                except (InputError, ValueError, OSError) as exc:
+                    staged.records = [record for record in staged.records if record["id"] in before_ids]
+                    staged.prune_assets()
+                    failed.append({"filename": Path(path).name, "error": str(exc)[:350]})
+            self._check_cancel()
+            groups = self._pending_groups(staged)
+            if len(groups) + len(self.workspace.records) > MAX_RECORDS:
+                raise InputError("This small batch would exceed 60 patient rows. Save the current project and start another batch.")
+            self._pace_pending, self._pace_groups = (temporary, staged), groups
+            return {"added": [], "failed": failed, "groups": copy.deepcopy(groups)}
+        except BaseException:
+            staged.stop_jobs()
+            temporary.cleanup()
+            raise
+        finally:
+            self._active_workspace = self.workspace
+
+    def confirm_pace_groups(self, group_ids, confirmed_identity=False):
+        if not is_auto_profile(self.workspace.schema):
+            raise InputError("Use PACE automatic review before confirming these patient groups.")
+        if confirmed_identity is not True:
+            raise InputError("Check the sticker and source pages for each patient, then explicitly confirm their identity and grouping.")
+        if (self._pace_pending is None or not isinstance(group_ids, list) or not group_ids
+                or any(not isinstance(group_id, str) for group_id in group_ids) or len(group_ids) != len(set(group_ids))):
+            raise InputError("Select proposed patient groups to confirm.")
+        groups = [group for group in self._pace_groups if group["id"] in group_ids]
+        if len(groups) != len(group_ids):
+            raise InputError("A proposed patient group is no longer available.")
+        if any(group["issues"] for group in groups):
+            raise InputError("Resolve the patient group's identity, layout or repeated assessment issues before combining sources.")
+        pending = self._pace_pending[1]
+        added = []
+        for group in groups:
+            self._check_cancel()
+            paths = []
+            with tempfile.TemporaryDirectory(prefix="qwikcap-confirmed-sources-") as folder:
+                for index, source in enumerate(group["sources"], 1):
+                    record = next(record for record in pending.records if record["id"] == source["id"])
+                    path = Path(folder) / f"{index:02d}-{record['filename']}"
+                    path.write_bytes(base64.b64decode(record["sourceData"], validate=True))
+                    paths.append(path)
+                used = {record.get("bundleRecordId") for record in self.workspace.records}
+                number = 1
+                while f"NEW{number:06d}" in used:
+                    number += 1
+                record = self.add_patient_bundle(paths, f"NEW{number:06d}", confirmed_same_patient=True)
+                added.append(record["id"])
+            remove_ids = {source["id"] for source in group["sources"]}
+            pending.records = [record for record in pending.records if record["id"] not in remove_ids]
+            self._pace_groups = [item for item in self._pace_groups if item["id"] != group["id"]]
+            pending.prune_assets()
+        if not self._pace_groups:
+            self.cancel_pace_import()
+        return {"added": added, "failed": []}
+
+    def confirm_pace_identity(self, record_id, confirmed=True, existing_record_id=None):
+        record = self._record(record_id)
+        if not is_auto_profile(self.workspace.schema) or confirmed is not True:
+            raise InputError("Explicitly confirm this PACE patient's identity and source pages.")
+        if existing_record_id is not None:
+            if not isinstance(existing_record_id, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,79}", existing_record_id):
+                raise InputError("Enter the existing REDCap record ID exactly.")
+            if any(other["id"] != record_id and other.get("bundleRecordId") == existing_record_id for other in self.workspace.records):
+                raise InputError("That REDCap record ID already has a patient row.")
+            raise InputError("Existing-record updates require a new confirmed bundle with the real REDCap ID. New automatic rows use temporary IDs.")
+        record.update(paceIdentityConfirmed=True, confirmed=[], status="review", reviewedBy="", revision=record["revision"] + 1)
+        record["validationErrors"] = validate_values(self.workspace.schema, record["values"], record)
+        self.workspace.touch_template_preview()
+        self.dirty = True
+        return copy.deepcopy(public_record(record))
+
+    def correct_pace_field(self, record_id, field_name, region, expected_revision=None):
+        record = self._record(record_id)
+        if not is_auto_profile(self.workspace.schema):
+            raise InputError("Answer-area correction requires PACE automatic review.")
+        if expected_revision is not None and (type(expected_revision) is not int or expected_revision != record["revision"]):
+            raise ConflictError("This patient changed. Reload before redrawing the answer area.")
+        try:
+            rule = pace_auto.make_rule(record, field_name, region)
+            changed = copy.deepcopy(record)
+            applied = pace_auto.apply_rules(changed, [rule])
+            if field_name not in applied:
+                raise ValueError("The answer area did not match one recognized source page.")
+        except ValueError as exc:
+            raise InputError(str(exc)) from exc
+        changed["paceCorrections"] = _pace_rules(record.get("paceCorrections", []), [rule])
+        changed.update(confirmed=[name for name in record["confirmed"] if name != field_name], status="review", reviewedBy="", revision=record["revision"] + 1)
+        changed["validationErrors"] = validate_values(self.workspace.schema, changed["values"], changed)
+        record.clear()
+        record.update(changed)
+        self.pace_loadout["rules"] = _pace_rules(self.pace_loadout["rules"], [rule])
+        self.workspace.touch_template_preview()
+        self.dirty = True
+        return copy.deepcopy(public_record(record))
+
+    def add_pace_field(self, record_id, field_name, page):
+        record = self._record(record_id)
+        if not is_auto_profile(self.workspace.schema):
+            raise InputError("Choose a PACE automatic patient row first.")
+        try:
+            pace_auto.make_rule(record, field_name, {"page": page, "x": .01, "y": .01, "width": .98, "height": .98})
+        except ValueError as exc:
+            raise InputError(str(exc)) from exc
+        record["applicableFields"] = sorted(set(record["applicableFields"]) | {field_name})
+        record.update(confirmed=[name for name in record["confirmed"] if name != field_name], status="review", reviewedBy="", revision=record["revision"] + 1)
+        record["validationErrors"] = validate_values(self.workspace.schema, record["values"], record)
+        self.dirty = True
+        return copy.deepcopy(public_record(record))
+
+    def save_pace_loadout(self, path, name="PACE layouts"):
+        try:
+            loadout = pace_auto.parse_loadout({**self.pace_loadout, "name": name})
+        except ValueError as exc:
+            raise InputError(str(exc)) from exc
+        data = json.dumps(loadout, ensure_ascii=True, indent=2).encode()
+        if len(data) > MAX_SCHEMA_BYTES:
+            raise InputError("The saved form layouts exceed the 1 MiB limit.")
+        atomic_write(path, data)
+
+    def load_pace_loadout(self, path):
+        if not is_auto_profile(self.workspace.schema):
+            raise InputError("Use PACE automatic review before loading form layouts.")
+        try:
+            loadout = pace_auto.parse_loadout(strict_json_loads(bounded_read(path, MAX_SCHEMA_BYTES)))
+        except (ValueError, UnicodeError) as exc:
+            raise InputError(str(exc)) from exc
+        staged = copy.deepcopy(self.workspace.records)
+        for record in staged:
+            applied = pace_auto.apply_rules(record, loadout["rules"])
+            if not applied:
+                continue
+            replacement_keys = {_pace_rule_key(rule) for rule in loadout["rules"]}
+            record["paceCorrections"] = [rule for rule in record.get("paceCorrections", []) if _pace_rule_key(rule) not in replacement_keys]
+            record.update(status="review", reviewedBy="", revision=record["revision"] + 1)
+            record["validationErrors"] = validate_values(self.workspace.schema, record["values"], record)
+        self.workspace.records = staged
+        self.pace_loadout = loadout
+        self.workspace.touch_template_preview()
+        self.dirty = True
+        return self.snapshot()
 
     def import_documents(self, paths, progress: Callable[[int, int], None] | None = None) -> dict:
         added, failed = [], []
@@ -605,11 +881,15 @@ class DesktopSession:
         return path if path.is_file() else None
 
     def project_bytes(self) -> bytes:
+        if self._pace_groups:
+            raise InputError("Check or discard the proposed patient groups before saving this project. Unconfirmed source proposals are temporary.")
         ws = self.workspace
         project = {"format": "formbridge-project-v2", "schema": ws.schema,
                    "formType": self.form_type, "draft": self.draft,
                    "records": [project_record(r) for r in ws.records],
                    "exportedAt": now()}
+        if is_auto_profile(ws.schema):
+            project["paceLoadout"] = self.pace_loadout
         if ws.template:
             project["template"] = {"filename": ws.template["name"], "sourceData": base64.b64encode(ws.template_data).decode(),
                                    "sheet": ws.template["sheet"], "headerRow": ws.template["headerRow"], "mappings": ws.template["mappings"]}
@@ -630,6 +910,10 @@ class DesktopSession:
         if not isinstance(body, dict) or body.get("format") not in {"formbridge-project-v1", "formbridge-project-v2"}:
             raise InputError(f"Choose a {PRODUCT_NAME} project (v1 or v2).")
         schema = [] if body.get("schema") == [] else parse_schema(body.get("schema"))
+        try:
+            loadout = pace_auto.parse_loadout(body.get("paceLoadout", {"format": "qwikcap-pace-loadout-v1", "name": "PACE layouts", "rules": []}))
+        except ValueError as exc:
+            raise InputError(str(exc)) from exc
         definition, draft = None, None
         if body["format"] == "formbridge-project-v2":
             definition = parse_form_type(body["formType"]) if body.get("formType") is not None else None
@@ -664,6 +948,14 @@ class DesktopSession:
                         issues = bundle_identity_issues(added, bundle[1], bundle[0])
                         if issues:
                             raise InputError(" ".join(issues))
+                if is_auto_profile(schema):
+                    if bundle is None:
+                        raise InputError("An automatic PACE patient row requires its original source bundle.")
+                    if any(other["id"] != added["id"] and _pace_mrns(added) & _pace_mrns(other) for other in staged.records):
+                        raise InputError("This project has more than one row for the same source MRN. Reimport that patient's sources together.")
+                    corrections = pace_auto.parse_loadout({"format": "qwikcap-pace-loadout-v1", "name": "Patient corrections", "rules": record.get("paceCorrections", [])})["rules"]
+                    added.update(paceIdentityConfirmed=False, paceExportMode="new", paceCorrections=corrections)
+                    pace_auto.apply_rules(added, _pace_rules(loadout["rules"], corrections))
                 added.update(values=dict(values), validationErrors=validate_values(schema, values, added), confirmed=[], status="review", reviewedBy="")
                 if len(json.dumps([r["values"] for r in staged.records], ensure_ascii=True).encode()) > MAX_VALUE_BYTES:
                     raise InputError("Project review text exceeds the 4 MB session limit.")
@@ -686,8 +978,10 @@ class DesktopSession:
         finally:
             self._active_workspace = self.workspace
         old_temporary = self._temporary
+        self.cancel_pace_import()
         self._temporary, self.workspace = temporary, staged
         self.form_type, self.draft = definition, draft
+        self.pace_loadout = loadout
         self._check_layouts()
         self._active_workspace = staged
         self.generation += 1
@@ -695,16 +989,19 @@ class DesktopSession:
         old_temporary.cleanup()
 
     def reset(self):
+        self.cancel_pace_import()
         temporary, workspace = _new_workspace()
         old_temporary = self._temporary
         self._temporary, self.workspace, self._active_workspace = temporary, workspace, workspace
         self.generation += 1
         self.project_path, self.dirty = None, False
         self.form_type, self.draft = None, None
+        self.pace_loadout = {"format": "qwikcap-pace-loadout-v1", "name": "PACE layouts", "rules": []}
         old_temporary.cleanup()
 
     def close(self):
         if not self.closed:
+            self.cancel_pace_import()
             self.workspace.stop_jobs()
             self._temporary.cleanup()
             self.closed = True

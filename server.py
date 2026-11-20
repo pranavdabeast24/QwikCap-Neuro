@@ -64,7 +64,7 @@ def source_bytes(records):
 
 
 def public_record(record):
-    result = {key: value for key, value in record.items() if key != "sourceData"}
+    result = {key: value for key, value in record.items() if key not in {"sourceData", "pacePages"}}
     if "bundleSources" in record:
         result["bundleSources"] = [{key: value for key, value in source.items() if key != "sourceData"} for source in record["bundleSources"]]
     return result
@@ -72,7 +72,7 @@ def public_record(record):
 
 def project_record(record):
     result = {key: record[key] for key in ("filename", "sourceData", "sourceHash", "values")}
-    for key in ("bundleSources", "bundleRecordId"):
+    for key in ("bundleSources", "bundleRecordId", "paceExportMode", "paceCorrections"):
         if key in record:
             result[key] = record[key]
     return result

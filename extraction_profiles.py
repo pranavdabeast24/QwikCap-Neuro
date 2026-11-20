@@ -8,12 +8,13 @@ from pathlib import Path
 import neurology_profile as neurology
 import pace_profile as pace
 import clinic_profile as clinic
+import pace_auto as auto
 from field_catalog import load_catalog
 from limits import MAX_PAGES
 
 
-PROFILES = {neurology.PROFILE: neurology, pace.PROFILE: pace, clinic.PROFILE: clinic}
-PATIENT_PROFILES = frozenset({pace.PROFILE, clinic.PROFILE})
+PROFILES = {neurology.PROFILE: neurology, pace.PROFILE: pace, clinic.PROFILE: clinic, auto.PROFILE: auto}
+PATIENT_PROFILES = frozenset({pace.PROFILE, clinic.PROFILE, auto.PROFILE})
 
 
 def profile_id(schema):
@@ -33,6 +34,10 @@ def is_pace_profile(schema):
 
 def is_clinic_profile(schema):
     return profile_id(schema) == clinic.PROFILE
+
+
+def is_auto_profile(schema):
+    return profile_id(schema) == auto.PROFILE
 
 
 def is_patient_profile(schema):
@@ -115,8 +120,8 @@ def _source_context(record, expected_profile=None):
         if not isinstance(name, str) or name not in active or _pace_field_types().get(name) != "choice":
             return None
         proof = evidence.get(name) if isinstance(evidence, dict) else None
-        mapping = "clinic-unmarked-radio" if context["profile"] == clinic.PROFILE else "pace-unmarked-radio"
-        if not isinstance(proof, dict) or proof.get("mapping") != mapping:
+        mappings = {"clinic-unmarked-radio", "pace-unmarked-radio"} if context["profile"] == auto.PROFILE else {"clinic-unmarked-radio" if context["profile"] == clinic.PROFILE else "pace-unmarked-radio"}
+        if not isinstance(proof, dict) or proof.get("mapping") not in mappings:
             return None
     if len(context["unansweredFields"]) != len(set(context["unansweredFields"])):
         return None
@@ -178,6 +183,10 @@ def _clinic_identity_issues(context, identities=None, expected_id=None):
 def source_blocking_issues(schema, record, values=None):
     if not is_patient_profile(schema):
         return []
+    if is_auto_profile(schema):
+        if _source_context(record, auto.PROFILE) is None:
+            return ["PACE automatic source metadata is missing or invalid. Reprocess the original PDFs."]
+        return auto.source_issues(record, values)
     context = _source_context(record, profile_id(schema))
     if context is None:
         return ["PACE source identity metadata is missing or invalid. Reprocess the original PDFs."]
@@ -208,6 +217,8 @@ def source_blocking_issues(schema, record, values=None):
 
 
 def bundle_identity_issues(record, record_id, manifest):
+    if isinstance(record.get("sourceContext"), dict) and record["sourceContext"].get("profile") == auto.PROFILE:
+        return auto.bundle_issues(record, record_id, manifest)
     context = _source_context(record)
     if context is None:
         return ["The patient bundle has no valid PACE source identity metadata."]
