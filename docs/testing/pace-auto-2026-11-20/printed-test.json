@@ -1,0 +1,34 @@
+{
+  "packet": "sih-synthetic",
+  "split": "test",
+  "regressionOnly": true,
+  "sourceDocuments": 27,
+  "automatedSyntheticConfirmations": true,
+  "humanClinicalReview": false,
+  "manualValueEdits": 0,
+  "answerKeysPassedToApp": false,
+  "proposedPatients": 5,
+  "importFailures": [],
+  "groupIssues": [],
+  "commitFailures": [],
+  "expectationPolicy": "Frozen wildcard-expanded test comparator",
+  "fullGridExcludingTemporaryId": {
+    "checked": 2555,
+    "matched": 2554,
+    "differences": [
+      {
+        "patientIndex": 5,
+        "field": "personal_ctdisorder_v2",
+        "reason": "Normalized value mismatch"
+      }
+    ]
+  },
+  "expectationSHA256": "222b4863396af9a2addbf21fc3192b5cf9d531c0d720812c99a6fe1e16a887b0",
+  "approvedPatients": 5,
+  "csvSHA256": "ee3687dc5294a027d35c6c584644d88182013d68e8680e9f696f36c31644e4a3",
+  "xlsxSHA256": "3bdaf7e221205e4942e56296fb7f79ea4d854d61a3b12504fab197b60cab801c",
+  "temporaryIdsStableAfterReopen": true,
+  "exportedPatientRows": 5,
+  "headers": 512,
+  "workflowPassed": true
+}

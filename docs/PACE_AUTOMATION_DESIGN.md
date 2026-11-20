@@ -1,6 +1,6 @@
 # PACE automatic review: implementation plan
 
-Status: design agreed; implementation and verification in progress.
+Status: implemented. Source, packet and package checks pass; the complete pointer-driven walkthrough remains unverified because of desktop-control failures.
 
 ## What the user should do
 
@@ -40,10 +40,10 @@ The public desktop workflow should hide reader choice, PDF assembly and schema d
 - [x] Independent workstreams: one code owner; independent verification and human-language documentation by the lead.
 - [x] Shared mutable state: the code owner coordinates coupled modules; no parallel edits to those modules.
 - [x] Smallest safe decomposition: reader/identity, session/loadout, UI, then integration checks. Preserve old profile contracts internally.
-- [ ] Test movable stickers, leading-zero MRNs, conflicts, missing identity, unknown layouts, restricted choices and layout reuse without answer carryover.
-- [ ] Exercise imports, confirmation/correction/redraw, save/reload and CSV/XLSX output on synthetic forms through the desktop.
-- [ ] Re-run the supplied train packet and already-used test packet as regression checks. Report current results separately from historical accuracy scores.
-- [ ] Build and check Mac and Windows packages, update plain-language guides and publish a reviewable GitHub change.
+- [x] Test movable stickers, leading-zero MRNs, conflicts, missing identity, unknown layouts, restricted choices and layout reuse without answer carryover.
+- [ ] Complete the pointer-driven desktop workflow. Import, patient proposal and full source preview were observed; the control tool could not reliably activate the Tk confirmation controls. Session and packaged-worker workflows pass.
+- [x] Re-run both supplied train packets and already-used test packets as regression checks. Report current results separately from historical accuracy scores.
+- [x] Build and check Mac and Windows packages and update plain-language guides. Release packaging retains the original runtime source revision.
 
 ## Limits to keep visible
 
@@ -56,3 +56,5 @@ Existing memory/file limits stay in force. This change does not validate a 500-p
 - Existing masks are fixed whole-document rules. Corrections must be scoped to a recognized layout and remain separate from the canonical codebook.
 - REDCap supports renumbering new imported records, but still requires a populated identifier column. See [BIDMC's import guide](https://research.bidmc.org/redcap-core/faq/importing-data).
 - Baseline `9aa7bec` passed all 316 source tests on Mac (seven Windows-only skips). The run used a frozen source copy; sandbox-only failures for loopback and process inspection were resolved by running the same suite with those local permissions.
+- Runtime `5870a52` passed 354 source tests. Windows passed 14 source/build/package stages. Both 55-document packets completed automatic grouping and CSV/XLSX export; these are regression checks with automated synthetic confirmations.
+- Independent review found a source-blank correction that could suppress identity validation. Invalid metadata now blocks approval, obsolete blank proof is removed, and the independent reproduction no longer permits any of the four identity edits.
