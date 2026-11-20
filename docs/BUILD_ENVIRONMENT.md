@@ -1,5 +1,7 @@
 # Recorded environments and distribution work
 
+This page records earlier builds. Read [the test summary](TESTING.md) for current checks and [licensing](LICENSING.md) for distribution questions.
+
 The [2026-11-18 Windows record](testing/WINDOWS_BUILD.json) describes the portable
 x64 ZIP built at `f9eb862` on Windows Server 2022 with Python 3.12.10 and Tk
 8.6.15. All 219 source tests ran successfully with one POSIX-only skip. Source
@@ -33,4 +35,4 @@ The remaining historical package versions matched their requirement pins. Those 
 
 Metadata indicates generally permissive library licenses, but it is not a clearance conclusion. Before customer distribution, create and review a release-specific inventory and required notices for Python, Tcl/Tk, PDFium and its dependencies, Pillow native codecs, other bundled libraries, the macOS OCR integration, and PyInstaller's applicable distribution exception. Check actual package contents and license texts for the exact shipped build. Tesseract is optional and not bundled; evaluate its terms if a future distribution includes it.
 
-Legacy instrument names and scoring rights remain unresolved. This repository includes no questionnaire assets or authorized-train sources. Do not add or distribute those materials without the necessary rights review. The proprietary source notice does not replace third-party licenses or establish ownership of institution or contributor materials.
+Instrument names and scoring rights still need review. The earlier source snapshot had no supplied questionnaire packet. The owner has since authorized the two synthetic packets for this private repository. That authorization does not settle third-party instrument rights. The proprietary source notice does not replace third-party licenses or establish ownership of institution or contributor materials.

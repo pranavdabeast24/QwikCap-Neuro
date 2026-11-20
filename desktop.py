@@ -19,7 +19,7 @@ from tkinter import ttk, filedialog, messagebox
 
 from PIL import Image, ImageTk
 
-from branding import COMPANY_NAME, COPYRIGHT_NOTICE, OWNERSHIP_NOTICE, PRODUCT_NAME
+from branding import COPYRIGHT_NOTICE, PRODUCT_NAME
 from desktop_model import DesktopSession, InputError, Cancelled
 from extraction_profiles import is_patient_profile
 from server import ROOT, validate_values, strict_json_loads
@@ -129,7 +129,6 @@ class DesktopApp:
         self.style.configure("Title.TLabel", font=(font, 20, "bold"), foreground="#18314c")
         self.style.configure("Heading.TLabel", font=(font, 14, "bold"))
         self.style.configure("Small.TLabel", foreground="#617084", font=(font, 11))
-        self.style.configure("Credit.TLabel", foreground="#7d8793", font=(font, 9))
         self.style.configure("Error.TLabel", foreground="#a13b22", font=(font, 11))
         self.style.configure("Treeview", rowheight=31, font=(font, 11))
         self.style.configure("StagingQueue.Treeview", rowheight=48)
@@ -195,7 +194,6 @@ class DesktopApp:
         ttk.Label(footer, textvariable=self.status, style="Small.TLabel").grid(row=0, column=1, sticky="ew")
         self.cancel_button = ttk.Button(footer, text="Cancel processing", command=self.cancel_processing, state="disabled")
         self.cancel_button.grid(row=0, column=2)
-        ttk.Label(footer, text=COMPANY_NAME, style="Credit.TLabel").grid(row=0, column=3, sticky="e", padx=(12, 0))
 
     def _messages(self, parent, variable, height=2):
         frame = ttk.Frame(parent)
@@ -1114,7 +1112,7 @@ class DesktopApp:
         add(sample_menu, "Friendly example", lambda: self.load_template_sample("friendly"))
         add(sample_menu, "Raw example", lambda: self.load_template_sample("raw"))
         help_menu.add_cascade(label="Fictional practice templates", menu=sample_menu)
-        help_menu.add_command(label=f"About {PRODUCT_NAME}", command=lambda: messagebox.showinfo(PRODUCT_NAME, OWNERSHIP_NOTICE + "\n" + COPYRIGHT_NOTICE + "\n\nNative local form review and spreadsheet mapping.\n\nUpload a PDF or image, draw masks around answer areas and name the fields you need. Save a reusable named extraction type containing only rules and masks.\n\nReview and confirm every answer against its source, then approve records before spreadsheet export. Matching page shapes do not establish that two documents use the same layout.\n\nProjects retain original documents, answers and unfinished type drafts; reopening requires fresh review.", parent=self.root))
+        help_menu.add_command(label=f"About {PRODUCT_NAME}", command=lambda: messagebox.showinfo(PRODUCT_NAME, "Native local form review and spreadsheet mapping.\n\nUpload a PDF or image, draw masks around answer areas and name the fields you need. Save a reusable named extraction type containing only rules and masks.\n\nReview and confirm every answer against its source, then approve records before spreadsheet export. Matching page shapes do not establish that two documents use the same layout.\n\nProjects retain original documents, answers and unfinished type drafts; reopening requires fresh review.\n\n" + COPYRIGHT_NOTICE, parent=self.root))
         menu.add_cascade(label="Help", menu=help_menu)
         self.root.configure(menu=menu)
 

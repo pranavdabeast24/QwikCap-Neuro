@@ -2,6 +2,8 @@
 
 Captured 2026-11-13 from the available project chat. This is a sanitized message record, not an export of internal instructions or tool traces. User-visible text is retained except for the exclusions listed in CONVERSATION_SCOPE.json. Question-reply wrappers are presented as readable questions and answers. Current setup and results are in ../HANDOFF.md and ../TESTING.md. The current turn was still in progress at capture time.
 
+Former company-name references were redacted from this copy on 2026-11-19. Earlier Git commits and build records are unchanged.
+
 ## Turn 1, 2026-10-25T14:58:49.000Z
 
 ### User
@@ -581,16 +583,16 @@ Built. The app now starts blank: upload your form, define masks, name your field
 
 ### User
 
-I like where this is heading. Now, lets brand it with porpoerty of Capitolinus Ventures, becuase eI intend on commercializing this software if it doens't already exist- what are yout thoughts on this? I want to push it to git and work with a collaborator. How do i navigate this? Collabvorator woudl potentially be a cutsomer on the research team that buys the software after a successful tiral run.
+I like where this is heading. Now, lets brand it with porpoerty of [former company name], becuase eI intend on commercializing this software if it doens't already exist- what are yout thoughts on this? I want to push it to git and work with a collaborator. How do i navigate this? Collabvorator woudl potentially be a cutsomer on the research team that buys the software after a successful tiral run.
 
 ### Assistant update
 
-I’ll add “Property of Capitolinus Ventures” to the app and review how to share the code for a customer pilot. I’ll also check comparable products and flag the ownership and access decisions to settle before pushing it to GitHub.
+I’ll add “Property of [former company name]” to the app and review how to share the code for a customer pilot. I’ll also check comparable products and flag the ownership and access decisions to settle before pushing it to GitHub.
 
 ### Assistant response
 
-I found the connected GitHub account `pmukund24`, with no organization visible. Where should the private source repository live? If you have a Capitolinus Ventures GitHub organization, provide its exact name.
-- Capitolinus Ventures organization
+I found the connected GitHub account `pmukund24`, with no organization visible. Where should the private source repository live? If you have a [former company name] GitHub organization, provide its exact name.
+- [Former company name] organization
 - My personal account, pmukund24
 - Prepare locally only for now
 
@@ -608,11 +610,11 @@ Similar tools already exist: [Docparser](https://docparser.com/) supports region
 
 ### Assistant update
 
-The branded Mac app is built. I verified “Property of Capitolinus Ventures” in its header and About dialog. The standalone source repository also passed all 156 tests. It contains code and documented fictional fixtures, with study datasets and processed records excluded. I’m checking the initial commit before any remote publication.
+The branded Mac app is built. I verified “Property of [former company name]” in its header and About dialog. The standalone source repository also passed all 156 tests. It contains code and documented fictional fixtures, with study datasets and processed records excluded. I’m checking the initial commit before any remote publication.
 
 ### Assistant response
 
-Added **“Property of Capitolinus Ventures”** to the app’s header and About screen.
+Added **“Property of [former company name]”** to the app’s header and About screen.
 
 - Branded Mac prototype [local artifact path omitted]
 - Clean local Git repository [local artifact path omitted], committed as `cfd0762`
@@ -630,7 +632,7 @@ For this collaborator, I recommend:
 
 I prepared a collaboration guide [local artifact path omitted] and pilot plan [local artifact path omitted]. Dependency notices, instrument permissions, Windows testing, and production security still need work before customer deployment.
 
-To push privately, I need the exact Capitolinus Ventures GitHub organization name—or confirmation to use your connected account, `pmukund24`. I recommend company-controlled ownership of the repository.
+To push privately, I need the exact [former company name] GitHub organization name—or confirmation to use your connected account, `pmukund24`. I recommend company-controlled ownership of the repository.
 
 ## Turn 14, 2026-11-13T06:36:47.000Z
 
@@ -648,7 +650,7 @@ The GitHub CLI is already signed in as `pranavdabeast24`. I’ll create `pranavd
 
 ### User
 
-Question: I found the connected GitHub account `pmukund24`, with no organization visible. Where should the private source repository live? If you have a Capitolinus Ventures GitHub organization, provide its exact name.
+Question: I found the connected GitHub account `pmukund24`, with no organization visible. Where should the private source repository live? If you have a [former company name] GitHub organization, provide its exact name.
 
 Answer: look for a diff acount pranavdabeast24
 
@@ -711,7 +713,7 @@ Just label it QuickCap (CV)
 
 ### Assistant update
 
-I’ll label it **QuickCap (CV)** and retain the Capitolinus Ventures ownership notice.
+I’ll label it **QuickCap (CV)** and retain the [former company name] ownership notice.
 
 ### Assistant update
 
