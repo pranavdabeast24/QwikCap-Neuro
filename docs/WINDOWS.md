@@ -2,7 +2,7 @@
 
 Use a 64-bit Intel or AMD Windows computer.
 
-1. Download `QwikCap-Windows-x64.zip` from the [current release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-pace-auto-2026-11-20).
+1. Download `QwikCap-Windows-x64.zip` from the [v1 prototype release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/v1.0.0-prototype).
 2. Right-click the ZIP in File Explorer.
 3. Choose **Extract All**.
 4. Open the extracted `QwikCap` folder.
@@ -32,5 +32,5 @@ Check that the ZIP is fully extracted and `_internal` is beside the executable.
 If device policy blocks the app, ask your IT team.
 If Excel has an export open, close it before replacing that file.
 
-Read [developer setup](GETTING_STARTED.md) to run or build the source.
+Read [developer setup](GETTING_STARTED.md) to run the source and [Build the app](BUILDING.md) to package it.
 Read [test results](TESTING.md) for the platform checks and limits.
