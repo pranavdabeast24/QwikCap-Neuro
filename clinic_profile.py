@@ -360,21 +360,23 @@ class _Reader:
     def text_field(self, name, page, region):
         if name not in _fields():
             return
+        self.active.add(name)
         words = [word for word in _region_words(page, region, answers=True) if word["text"] not in _MARKS]
         value = _read_words(words)
         if not value:
+            self.evidence[name] = {"text": "", "page": page["page"], "region": dict(region),
+                                   "method": page.get("method", "pdf-text"), "mapping": "clinic-answer-region-review"}
+            self.issues.append(f"{name}: The answer region could not be read; review the original page manually.")
             return
         field = _fields()[name]
         if field["type"] == "date":
             dates = re.findall(r"\b\d{1,2}/\d{1,2}/\d{4}\b", value)
             if len(set(dates)) != 1:
-                self.active.add(name)
                 self.issues.append(f"{name}: A single source date could not be identified; review manually.")
                 return
             value = _iso(dates[0])
         elif field["type"] in {"integer", "number"}:
             if not re.fullmatch(r"[+-]?\d+(?:\.\d+)?", value):
-                self.active.add(name)
                 self.issues.append(f"{name}: The source number needs manual review.")
                 return
         self.put(name, value, page, words, "clinic-answer-region")

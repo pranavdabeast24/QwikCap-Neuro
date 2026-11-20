@@ -83,6 +83,7 @@ def clinician_text_questionnaire(answer="", font="Helvetica", *,
     pdf.setFont(font, 12)
     pdf.drawString(40, 585, answer)
     pdf.setFont("Helvetica", 12)
+    pdf.drawString(40, 550, "Section 2: Next section")
     pdf.drawString(40, 50, "HA-210C Rev 02/2026 Page 1 of 1")
     pdf.save()
     return output.getvalue()
@@ -262,6 +263,7 @@ class SihClinicSessionTests(unittest.TestCase):
                 evidence = record["evidence"]["headaches_description"]
                 self.assertEqual(evidence["page"], 3)
                 self.assertEqual(evidence["text"], "")
+                self.assertIn("review", evidence["mapping"])
                 self.assertLess(evidence["region"]["height"], .2)
                 self.assertEqual(len(record["values"]), 512)
 
