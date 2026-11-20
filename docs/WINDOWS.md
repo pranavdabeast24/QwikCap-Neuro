@@ -2,7 +2,7 @@
 
 Use a 64-bit Intel or AMD Windows computer.
 
-1. Download `QwikCap-Windows-x64.zip` from the [current release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-plain-language-2026-11-19).
+1. Download `QwikCap-Windows-x64.zip` from the [current release](https://github.com/pranavdabeast24/capitolinus-form-extraction/releases/tag/qwikcap-clean-outlines-2026-11-20).
 2. Right-click the ZIP in File Explorer.
 3. Choose **Extract All**.
 4. Open the extracted `QwikCap` folder.
