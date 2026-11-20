@@ -21,21 +21,24 @@ It has no LLM, cloud extraction service, camera capture, or live REDCap connecti
 | `extraction_profiles.py` | Selects readers and enforces patient and field checks. |
 | `templates.py` and `server.py` | Validate spreadsheet input and shared application state. |
 | `form_types.py` | Stores and validates custom field selections. |
+| `pace_auto.py` | Recognizes PACE source layouts, finds stickers and validates reusable corrections. |
 | `build_desktop.py` | Builds the app on the target operating system. |
 
-The clinic reader is `sih-clinic-v1`.
-The older PACE and NEU readers remain separate.
-New projects start without preset fields.
-See [the custom form guide](CUSTOM_FORMS.md) for the reader choices.
+The desktop starts with `pace-auto-v1`, using only the 512 supplied PACE fields.
+The older readers remain internal compatibility paths.
+The automatic workflow stages sources, proposes groups by exact MRN with name/DOB checks, and creates one confirmed patient bundle per row.
+New-record IDs are temporary, distinct from MRN and source study IDs.
+See [the layout guide](CUSTOM_FORMS.md) and [the design record](PACE_AUTOMATION_DESIGN.md).
 
 ## Keep these checks
 
-- Include one registration sheet in each clinic patient group.
-- Match its study ID, full MRN, name, and birth date to the other sources.
+- Match full MRN, name and birth date across the source stickers; block ambiguity and conflicts.
+- Keep source study IDs separate from temporary export IDs. Preserve the older explicit profile contracts.
 - Keep leading zeroes in identifiers.
 - Block conflicting patients, incomplete forms, and duplicate assessments.
 - Require field checks, patient approval, and mapping confirmation before export.
 - Rebuild source checks and clear approvals when a project reopens.
+- Save layout rules separately from patient answers and require matching form anchors before reuse.
 - Leave unknown values blank. Do not fill them from answer keys.
 
 The clinic output has 512 columns and one row per patient.

@@ -1,0 +1,27 @@
+{
+  "packet": "sih-synthetic",
+  "split": "train",
+  "regressionOnly": true,
+  "sourceDocuments": 28,
+  "automatedSyntheticConfirmations": true,
+  "humanClinicalReview": false,
+  "manualValueEdits": 0,
+  "answerKeysPassedToApp": false,
+  "proposedPatients": 5,
+  "importFailures": [],
+  "groupIssues": [],
+  "commitFailures": [],
+  "fullGridExcludingTemporaryId": {
+    "checked": 2555,
+    "matched": 2555,
+    "differences": []
+  },
+  "expectationSHA256": "02cf094050c0a006b78d1beb8c26e5deecc4a0698f607d5baab12986e6e4e545",
+  "approvedPatients": 5,
+  "csvSHA256": "76e09417c39812686a5b21fbeb00ca2302d0b7294a5b823a9147cddf72cdc6c2",
+  "xlsxSHA256": "7cb6152f584666b902a8a4f87d64471c87273c4e1be41a24eefc5b339ab639ed",
+  "temporaryIdsStableAfterReopen": true,
+  "exportedPatientRows": 5,
+  "headers": 512,
+  "workflowPassed": true
+}

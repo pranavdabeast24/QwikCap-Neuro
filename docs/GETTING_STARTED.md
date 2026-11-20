@@ -12,7 +12,7 @@ The launchers use `.venv` and do not install dependencies.
 Run the first three commands.
 Close the Tk demonstration window.
 Run the last command.
-QwikCap opens with no preset fields.
+QwikCap opens with PACE automatic review ready.
 
 ```sh
 python3.12 -m venv .venv
@@ -31,7 +31,7 @@ Use PowerShell.
 Run the first three commands.
 Close the Tk demonstration window.
 Run the last command.
-QwikCap opens with no preset fields.
+QwikCap opens with PACE automatic review ready.
 
 ```powershell
 py -3.12 -m venv .venv
@@ -49,7 +49,7 @@ Without OCR, read the source and enter answers manually.
 ## Try a form
 
 Follow [the clinic walkthrough](SIH_CLINIC_WORKFLOW.md) for the supplied clinic PDFs.
-Follow [Custom forms](CUSTOM_FORMS.md) to draw answer masks for another layout.
+Follow [Correct a layout](CUSTOM_FORMS.md) to redraw suggested answer boxes and save them for reuse.
 
 A saved extraction type contains reusable rules and masks.
 A saved project also contains source documents and values.

@@ -20,9 +20,9 @@ The source-only train census covers 28 forms across 43 pages and nine instrument
 
 ## Reader and patient identity
 
-Select **Advanced > Form type > Read SIH clinic forms** in a clinic-enabled build. Follow [the operator walkthrough](../../docs/SIH_CLINIC_WORKFLOW.md) to combine source documents, review answers, and export Excel.
+PACE automatic review is ready when the current app opens. Follow [the operator walkthrough](../../docs/SIH_CLINIC_WORKFLOW.md) to add PDFs, check proposed patient groups, review answers and export Excel.
 
-Each patient bundle needs its registration sheet. That sheet prints a **Research Study ID** linked to MRN, name, and birth date. Other clinic pages identify the patient through demographics and MRN. They do not each print a REDCap record ID. The operator-entered study ID must agree with registration, and all original PDFs must belong to that patient. MRN remains a separate literal identifier, including leading zeroes.
+The registration sheet prints a **Research Study ID** linked to MRN, name and birth date. Other clinic pages identify the patient through demographics and MRN. The automatic workflow groups by MRN with name/DOB cross-checks and does not require registration when the other supported sources establish identity. It uses a separate temporary ID for new-record exports. MRN remains literal text, including leading zeroes. The historical explicit clinic reader required registration and its printed study ID; its trial results below retain that original protocol.
 
 The target retains the same 512 exact destination headers as the supplied blank import table. Several reviewed clinic documents become one patient row. This is a staging table, not a validated repeating-instrument REDCap import.
 

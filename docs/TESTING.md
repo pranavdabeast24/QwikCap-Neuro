@@ -1,5 +1,8 @@
 # What has been tested
 
+The new PACE automatic workflow has a [separate verification record](testing/PACE_AUTO_2026-11-20.md).
+The measurements below preserve the earlier explicit-reader trial.
+
 The main clinic trial used the supplied `sih_clinic_dataset` packet.
 It contains 28 train PDFs and 27 test PDFs.
 Each split produces five patient rows.
@@ -26,8 +29,8 @@ The [full clinic report](testing/SIH_CLINIC_2026-11-19.md) explains the counts a
 
 ## Software and platform checks
 
-The last extraction change passed 316 source tests on each platform, with platform-specific skips.
-Windows also passed 12 build and package checks.
+The automatic-review change passed 354 source tests on each platform, with platform-specific skips.
+Windows also passed 14 source, build and package checks.
 Those Windows checks use generated examples.
 The complete supplied-packet desktop walkthrough ran on Mac.
 
@@ -47,10 +50,12 @@ From the configured source folder:
 ```sh
 python -m unittest discover -s tests -v
 python tools/verify_sih_clinic.py --output verification/sih-clinic
+python tools/verify_pace_auto.py --output verification/pace-auto
 ```
 
-The second command creates fictional examples.
-It does not test the supplied packet or operate the desktop interface.
+The acceptance commands create separate fictional examples.
+They do not test the supplied packet or operate the desktop interface.
+Use `tools/replay_pace_packets.py` for the supplied packet, as described in the current verification record.
 Use the [walkthrough](SIH_CLINIC_WORKFLOW.md) for that workflow.
 
 [All test records](testing/README.md) include commands, file hashes, older PACE results, and package evidence.

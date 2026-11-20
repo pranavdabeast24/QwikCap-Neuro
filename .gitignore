@@ -77,6 +77,8 @@ qwikcap-project.json
 !examples/qwikcap-supplied-test-reviewed-readout.xlsx
 !examples/qwikcap-sih-clinic-train-readout.xlsx
 !examples/qwikcap-sih-clinic-test-readout.xlsx
+!examples/qwikcap-pace-auto-train.xlsx
+!examples/qwikcap-pace-auto-test.xlsx
 !/datasets/sih-synthetic/manifest.pdf
 !/datasets/sih-synthetic/train/forms/*.pdf
 !/datasets/sih-synthetic/train/answer_keys/*.pdf

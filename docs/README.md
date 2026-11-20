@@ -7,7 +7,7 @@ Start with the guide for your task.
 | Install on Windows | [Windows guide](WINDOWS.md) |
 | Try one sample patient | [Clinic walkthrough](SIH_CLINIC_WORKFLOW.md) |
 | Find every sample group | [Test patients](TEST_PATIENTS.md) |
-| Define fields for another form | [Custom forms](CUSTOM_FORMS.md) |
+| Correct and reuse answer boxes | [Form layouts](CUSTOM_FORMS.md) |
 | Check accuracy and limits | [Test summary](TESTING.md) |
 | Edit the app | [Developer setup](GETTING_STARTED.md) and [handoff](HANDOFF.md) |
 | Plan a customer pilot | [Licensing](LICENSING.md) and [data limits](../SECURITY.md) |

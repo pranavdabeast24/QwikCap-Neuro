@@ -30,6 +30,7 @@ class DesktopApp:
     def __init__(self, root: tk.Tk):
         self.root = root
         self.session = DesktopSession()
+        self.session.use_pace_auto_profile()
         self.snapshot = self.session.snapshot()
         self.design_draft = None
         self.design_selected = None
@@ -64,11 +65,13 @@ class DesktopApp:
         self.catalog_window = None
         self.catalog_selected = None
         self.bundle_dialog = None
+        self.patient_groups_dialog = None
+        self.pace_redraw_target = None
         self.drag_field = None
         self._disabled_states = []
         self.advanced_var = tk.BooleanVar(value=False)
-        self.task_hint = tk.StringVar(value="Add documents, set up fields, then review answers before mapping and export.")
-        self.status = tk.StringVar(value="Import your first PDF or image, then draw and name the fields you need.")
+        self.task_hint = tk.StringVar(value="Add PDFs, check the patient groups, then confirm each answer before export.")
+        self.status = tk.StringVar(value="Add one or several PDFs. PACE forms and patient stickers are recognized locally.")
         self.value_var = tk.StringVar()
         self.confirm_var = tk.BooleanVar()
         self.reviewer_var = tk.StringVar()
@@ -169,19 +172,21 @@ class DesktopApp:
         self.project_label.grid(row=0, column=3, sticky="e")
         top = ttk.Frame(shell)
         top.grid(row=1, column=0, sticky="ew", pady=(0, 12))
-        self.add_documents_button = ttk.Menubutton(top, text="Add documents…")
+        self.add_documents_button = ttk.Button(top, text="Add documents…", command=self.import_forms)
         self.add_documents_button.grid(row=0, column=0, sticky="w")
-        document_menu = tk.Menu(self.add_documents_button, tearoff=False)
-        document_menu.add_command(label="Import separate forms…", command=self.import_forms)
-        document_menu.add_command(label="Combine PDFs for one patient…", command=self.combine_patient_pdfs)
-        self.add_documents_button.configure(menu=document_menu)
         self.setup_fields_button = ttk.Button(top, text="Set up fields…", command=self.start_design)
         self.setup_fields_button.grid(row=0, column=1, sticky="w", padx=(6, 0))
+        self.save_layout_button = ttk.Button(top, text="Save form layout…", command=self.save_pace_loadout)
+        self.save_layout_button.grid(row=0, column=2, padx=(6, 0))
+        self.load_layout_button = ttk.Button(top, text="Load form layout…", command=self.load_pace_loadout)
+        self.load_layout_button.grid(row=0, column=3, padx=(6, 0))
+        self.check_groups_button = ttk.Button(top, text="Check patient groups…", command=self.show_pace_groups)
+        self.check_groups_button.grid(row=0, column=4, padx=(6, 0))
         self.notebook = ttk.Notebook(shell)
         self.notebook.grid(row=2, column=0, sticky="nsew")
         review_tab = ttk.Frame(self.notebook, padding=12)
         spreadsheet_tab = ttk.Frame(self.notebook, padding=12)
-        self.notebook.add(review_tab, text="1   Design & review")
+        self.notebook.add(review_tab, text="1   Review patients")
         self.notebook.add(spreadsheet_tab, text="2   Map & export")
         self.notebook.bind("<<NotebookTabChanged>>", self._refresh_presentation)
         self._build_review(review_tab)
@@ -245,7 +250,8 @@ class DesktopApp:
         left.rowconfigure(2, weight=1)
         center.rowconfigure(3, weight=1)
         right.rowconfigure(1, weight=1)
-        ttk.Label(left, text="Document queue", style="Heading.TLabel").grid(row=0, column=0, sticky="w", pady=(0, 5))
+        self.queue_heading = ttk.Label(left, text="Patient queue", style="Heading.TLabel")
+        self.queue_heading.grid(row=0, column=0, sticky="w", pady=(0, 5))
         ttk.Label(left, textvariable=self.queue_label, style="Small.TLabel").grid(row=1, column=0, sticky="w", pady=(0, 8))
         frame, self.queue_tree = self._tree(left, ("document", "state"), ("Document", "Review"), (145, 85), 1)
         frame.grid(row=2, column=0, sticky="nsew")
@@ -320,6 +326,12 @@ class DesktopApp:
         self.confirm_next_button.grid(row=0, column=0, sticky="ew")
         self.save_review_button = ttk.Button(review_actions, text="Save draft", command=self.save_review)
         self.save_review_button.grid(row=1, column=0, sticky="ew", pady=(4, 0))
+        self.redraw_answer_button = ttk.Button(review_actions, text="Redraw answer area", command=self.redraw_pace_answer)
+        self.redraw_answer_button.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(4, 0))
+        self.add_pace_field_button = ttk.Button(review_actions, text="Add PACE field…", command=self.show_study_fields)
+        self.add_pace_field_button.grid(row=3, column=0, columnspan=2, sticky="ew", pady=(4, 0))
+        self.check_patient_button = ttk.Button(review_actions, text="Check patient group", command=self.check_pace_identity)
+        self.check_patient_button.grid(row=4, column=0, columnspan=2, sticky="ew", pady=(4, 0))
         self.expand_answer_button = ttk.Button(review_actions, text="Expand…", command=self.expand_answer)
         self.expand_answer_button.grid(row=0, column=1, padx=(6, 0))
         ttk.Separator(editor).pack(fill="x", pady=6)
@@ -580,7 +592,8 @@ class DesktopApp:
         self.design_help.set("Drag around the answer area on the source page.")
 
     def _mask_start(self, event):
-        if self.busy or self.design_draft is None or not self.display_size:
+        pace_redraw = self.design_tool == "pace-redraw" and self.pace_redraw_target is not None
+        if self.busy or (self.design_draft is None and not pace_redraw) or not self.display_size:
             return
         point = (self.canvas.canvasx(event.x), self.canvas.canvasy(event.y))
         width, height = self.display_size
@@ -607,11 +620,65 @@ class DesktopApp:
         try:
             region = normalized_drag(self.design_start, (self.canvas.canvasx(event.x), self.canvas.canvasy(event.y)), *self.display_size, self.page)
         except InputError as exc:
-            self.design_help.set(str(exc))
+            (self.status if self.design_tool == "pace-redraw" else self.design_help).set(str(exc))
             self._reset_gesture()
             return
         self._reset_gesture()
+        if self.design_tool == "pace-redraw":
+            self._apply_pace_region(region)
+            return
         self._add_mask(region, redraw=self.design_tool == "redraw")
+
+    def redraw_pace_answer(self):
+        if self.busy or self.snapshot.get("profile") != "pace-auto-v1" or not self._record() or not self.selected_field:
+            return
+        if self.selected_field == "record_id":
+            self.status.set("This temporary row ID is for a new REDCap record and is separate from MRN. Check the patient group and source stickers.")
+            return
+        if self.selected_field in {"mrn", "patient_first", "patient_last", "patient_dob"}:
+            self.status.set("Check the patient sticker. If its detected identity is wrong, correct the source PDF and reimport the patient's sources before review.")
+            return
+        def start():
+            record = self._record()
+            if record is None or not record.get("pages"):
+                self.status.set("Select a patient PDF and source page before drawing its answer area.")
+                return
+            self._reset_gesture()
+            self.pace_redraw_target = (record["id"], self.selected_field, record["revision"])
+            self.design_tool = "pace-redraw"
+            self.canvas.configure(cursor="crosshair")
+            self.status.set("Draw around the answer text or selected option label. If it stays blank, choose the source answer from the fixed code list.")
+        self._with_draft(start)
+
+    def _apply_pace_region(self, region):
+        target = self.pace_redraw_target
+        self.pace_redraw_target = None
+        self.design_tool = None
+        self.canvas.configure(cursor="")
+        if target is None or target[:2] != (self.selected_record, self.selected_field):
+            self.status.set("Select the intended field and choose Redraw answer area again.")
+            return
+        record_id, field_name, revision = target
+        self._submit("Reading corrected answer area", lambda: self.session.correct_pace_field(
+            record_id, field_name, region, expected_revision=revision),
+            lambda _: self.status.set("Answer area updated. Check the typed answer, confirm it, and save the form layout for reuse."))
+
+    def save_pace_loadout(self):
+        if self.busy:
+            return
+        path = filedialog.asksaveasfilename(parent=self.root, title="Save form layout. Rules only",
+            defaultextension=".json", initialfile="pace-form-layout.json", filetypes=[("PACE form layout", "*.json")])
+        if path:
+            self._with_draft(lambda: self._submit("Saving PACE form layout", lambda: self.session.save_pace_loadout(path),
+                lambda _: self.status.set("Form layout saved. It contains field rules and layout anchors, without patient answers.")))
+
+    def load_pace_loadout(self):
+        if self.busy:
+            return
+        path = filedialog.askopenfilename(parent=self.root, title="Load form layout", filetypes=[("PACE form layout", "*.json")])
+        if path:
+            self._with_draft(lambda: self._submit("Applying matching PACE form layouts", lambda: self.session.load_pace_loadout(path),
+                lambda _: self.status.set("Layouts loaded. Only matching forms use their answer areas. Review their new suggestions.")))
 
     def _add_mask(self, region, redraw=False):
         if self.busy or self.design_draft is None:
@@ -771,8 +838,12 @@ class DesktopApp:
         toolbar = ttk.Frame(frame)
         toolbar.grid(row=0, column=0, sticky="ew")
         ttk.Label(toolbar, text="Expected study fields", style="Heading.TLabel").pack(side="left")
-        ttk.Button(toolbar, text="Load blank CSV / XLSX…", command=self.load_expected_fields).pack(side="right")
-        ttk.Label(frame, text="Choose the fields present on this source. Each selected field needs a mask; choose a text record identifier explicitly.", style="Small.TLabel", wraplength=990).grid(row=1, column=0, sticky="ew", pady=(8, 10))
+        if self.snapshot.get("profile") != "pace-auto-v1":
+            ttk.Button(toolbar, text="Load blank CSV / XLSX…", command=self.load_expected_fields).pack(side="right")
+        catalog_help = ("Choose a PACE field present in the recognized source instrument, then draw its answer area. Variable names, types and choice codes are fixed."
+                        if self.snapshot.get("profile") == "pace-auto-v1" else
+                        "Choose the fields present on this source. Each selected field needs a mask; choose a text record identifier explicitly.")
+        ttk.Label(frame, text=catalog_help, style="Small.TLabel", wraplength=990).grid(row=1, column=0, sticky="ew", pady=(8, 10))
         filters = ttk.Frame(frame)
         filters.grid(row=2, column=0, sticky="ew", pady=(0, 8))
         filters.columnconfigure(1, weight=1)
@@ -797,7 +868,8 @@ class DesktopApp:
         self.catalog_detail_text.grid(row=0, column=0, sticky="nsew")
         detail_scroll.grid(row=0, column=1, sticky="ns")
         ttk.Button(details, text="Use field", command=self.use_catalog_field).grid(row=1, column=0, columnspan=2, sticky="ew", pady=(10, 4))
-        ttk.Button(details, text="Assign selected mask to this field", command=lambda: self.use_catalog_field(replace=True)).grid(row=2, column=0, columnspan=2, sticky="ew", pady=4)
+        if self.snapshot.get("profile") != "pace-auto-v1":
+            ttk.Button(details, text="Assign selected mask to this field", command=lambda: self.use_catalog_field(replace=True)).grid(row=2, column=0, columnspan=2, sticky="ew", pady=4)
         ttk.Label(frame, textvariable=self.catalog_count, style="Small.TLabel", wraplength=990).grid(row=4, column=0, sticky="ew", pady=(10, 0))
         self.catalog_tree.bind("<<TreeviewSelect>>", self._catalog_selected)
         self.catalog_tree.bind("<Return>", lambda _event: self.use_catalog_field())
@@ -817,7 +889,8 @@ class DesktopApp:
         if self.catalog_instrument.get() not in options:
             self.catalog_instrument.set("All instruments")
         self.catalog_tree.delete(*self.catalog_tree.get_children())
-        active = {field["name"]: field for field in (self.design_draft or {}).get("fields", self.snapshot["schema"])}
+        auto = self.snapshot.get("profile") == "pace-auto-v1"
+        active = {field["name"]: field for field in (self._active_fields() if auto else (self.design_draft or {}).get("fields", self.snapshot["schema"]))}
         query = self.catalog_query.get().strip().casefold()
         selected_instrument = self.catalog_instrument.get()
         for field in entries:
@@ -828,7 +901,7 @@ class DesktopApp:
             if selected_instrument in self.catalog_instrument_names and field.get("instrument") != self.catalog_instrument_names[selected_instrument]:
                 continue
             chosen = active.get(field["name"])
-            state = "Masked" if chosen and chosen.get("region") else "Needs mask" if chosen else ""
+            state = ("On this patient" if chosen else "") if auto else "Masked" if chosen and chosen.get("region") else "Needs mask" if chosen else ""
             self.catalog_tree.insert("", "end", iid=field["name"], values=(field["name"], field.get("label", field["name"]), state))
         visible = self.catalog_tree.get_children()
         if self.catalog_selected in visible:
@@ -873,6 +946,22 @@ class DesktopApp:
         if self.busy or not self.catalog_selected:
             return
         name = self.catalog_selected
+        if self.snapshot.get("profile") == "pace-auto-v1":
+            record = self._record()
+            if record is None:
+                self.status.set("Add PDFs and check a patient group before adding a PACE field.")
+                return
+            record_id, page = record["id"], self.page
+            def added(_result):
+                self.selected_field = name
+                if self.catalog_window is not None:
+                    self.catalog_window.destroy()
+                    self.catalog_window = None
+                self.show_tab(0)
+                self._render_fields()
+                self.redraw_pace_answer()
+            self._with_draft(lambda: self._submit("Adding source PACE field", lambda: self.session.add_pace_field(record_id, name, page), added))
+            return
         field_id = self.design_selected if replace else None
         if replace and field_id is None:
             self.status.set("Select a field mask in Design masks before assigning it.")
@@ -1003,6 +1092,12 @@ class DesktopApp:
         self.export_xlsx_button.grid(row=0, column=1, padx=5)
 
     def _build_menu(self):
+        for sequence in getattr(self, "_menu_bindings", []):
+            self.root.unbind(sequence)
+        self._menu_bindings = []
+        auto = getattr(self, "snapshot", {}).get("profile") == "pace-auto-v1"
+        self._menu_profile = getattr(self, "snapshot", {}).get("profile")
+        previous_menu = getattr(self, "_menu", None)
         menu = tk.Menu(self.root)
         modifier = "Control" if os.name == "nt" else "Command"
         prefix = "Ctrl+" if os.name == "nt" else "⌘"
@@ -1016,7 +1111,9 @@ class DesktopApp:
                 def shortcut(_event, action=guarded):
                     action()
                     return "break"
-                self.root.bind(f"<{modifier}-{key}>", shortcut)
+                sequence = f"<{modifier}-{key}>"
+                self.root.bind(sequence, shortcut)
+                self._menu_bindings.append(sequence)
             target.add_command(**options)
         file_menu = tk.Menu(menu, tearoff=False)
         for label, command, key in [
@@ -1024,8 +1121,7 @@ class DesktopApp:
             ("Open project…", self.open_project, None),
             ("Save project", self.save_project, None),
             ("Save project as…", lambda: self.save_project(save_as=True), "Shift-S"),
-            ("Import separate forms…", self.import_forms, "i"),
-            ("Combine patient PDFs…", self.combine_patient_pdfs, "Shift-I"),
+            ("Add documents…", self.import_forms, "i"),
         ]:
             add(file_menu, label, command, key, "⇧" + key[-1] if key and key.startswith("Shift-") else None)
         file_menu.add_separator()
@@ -1035,34 +1131,43 @@ class DesktopApp:
         advanced_menu.add_checkbutton(label="Show advanced controls", variable=self.advanced_var, command=self._refresh_presentation)
         advanced_menu.add_separator()
         documents_menu = tk.Menu(advanced_menu, tearoff=False)
-        add(documents_menu, "Combine PDFs for one patient…", self.combine_patient_pdfs)
+        if not auto:
+            add(documents_menu, "Combine PDFs for one patient…", self.combine_patient_pdfs)
+        else:
+            add(documents_menu, "Check patient groups…", self.show_pace_groups)
         add(documents_menu, "Remove selected document", self.remove_document)
         advanced_menu.add_cascade(label="Documents", menu=documents_menu)
         type_menu = tk.Menu(advanced_menu, tearoff=False)
-        for label, action in (("Design masks", self.start_design), ("Draw new field", lambda: self._set_mask_tool("new")),
+        if not auto:
+            for label, action in (("Design masks", self.start_design), ("Draw new field", lambda: self._set_mask_tool("new")),
                               ("Add mask by coordinates…", self.add_mask_coordinates),
                               ("Redraw selected field", lambda: self._set_mask_tool("redraw")), ("Delete selected field", self.delete_mask),
                               ("Apply extraction type", self.apply_form_type), ("Save extraction type…", self.save_form_type),
                               ("Load extraction type…", self.load_form_type),
                               ("Edit type name", lambda: self._focus_editor(self.type_name_entry)),
                               ("Edit field name", lambda: self._focus_editor(self.design_name_entry))):
-            key = "Shift-L" if label == "Load extraction type…" else None
-            add(type_menu, label, action, key, "⇧L" if key else None)
-        add(type_menu, "Use selected field as record identifier", self.use_selected_identifier)
-        value_type_menu = tk.Menu(type_menu, tearoff=False)
-        for kind in ("text", "integer", "number", "date", "choice"):
-            add(value_type_menu, kind.title(), lambda selected=kind: self.set_selected_value_type(selected))
-        type_menu.add_cascade(label="Selected value type", menu=value_type_menu)
-        type_menu.add_separator()
+                key = "Shift-L" if label == "Load extraction type…" else None
+                add(type_menu, label, action, key, "⇧L" if key else None)
+            add(type_menu, "Use selected field as record identifier", self.use_selected_identifier)
+            value_type_menu = tk.Menu(type_menu, tearoff=False)
+            for kind in ("text", "integer", "number", "date", "choice"):
+                add(value_type_menu, kind.title(), lambda selected=kind: self.set_selected_value_type(selected))
+            type_menu.add_cascade(label="Selected value type", menu=value_type_menu)
+            type_menu.add_separator()
         add(type_menu, "Study fields…", self.show_study_fields)
-        add(type_menu, "Load PACE fields", self.load_pace_fields)
-        add(type_menu, "Read NEU clinic forms", self.use_neurology_profile)
-        add(type_menu, "Read SIH clinic forms", self.use_sih_clinic_profile)
-        add(type_menu, "Read PACE printed forms", self.use_pace_profile, "Shift-U", "⇧U")
-        add(type_menu, "Load expected fields from blank CSV / XLSX…", self.load_expected_fields)
+        if not auto:
+            add(type_menu, "Load PACE fields", self.load_pace_fields)
+        add(type_menu, "PACE automatic review", self.use_pace_auto_profile, "Shift-U", "⇧U")
+        add(type_menu, "Save form layout…", self.save_pace_loadout)
+        add(type_menu, "Load form layout…", self.load_pace_loadout)
+        if not auto:
+            add(type_menu, "Load expected fields from blank CSV / XLSX…", self.load_expected_fields)
         add(type_menu, "Use selected study field", self.use_catalog_field)
-        add(type_menu, "Assign selected mask to study field", lambda: self.use_catalog_field(replace=True))
-        advanced_menu.add_cascade(label="Form type", menu=type_menu)
+        if auto:
+            add(type_menu, "Redraw answer area", self.redraw_pace_answer)
+        else:
+            add(type_menu, "Assign selected mask to study field", lambda: self.use_catalog_field(replace=True))
+        advanced_menu.add_cascade(label="PACE fields and layouts" if auto else "Form type", menu=type_menu)
         review_menu = tk.Menu(advanced_menu, tearoff=False)
         add(review_menu, "Show review forms", lambda: self.show_tab(0), "1")
         review_menu.add_separator()
@@ -1075,7 +1180,7 @@ class DesktopApp:
         add(review_menu, "Edit current answer", self.focus_answer, "l", "L")
         add(review_menu, "Expand text answer…", self.expand_answer)
         add(review_menu, "Edit reviewer name", lambda: self.focus_answer(reviewer=True), "Shift-R", "⇧R")
-        add(review_menu, "Approve document", self.approve_record, "Shift-A", "⇧A")
+        add(review_menu, "Approve patient", self.approve_record, "Shift-A", "⇧A")
         review_menu.add_separator()
         add(review_menu, "Previous source page", lambda: self.change_page(-1))
         add(review_menu, "Next source page", lambda: self.change_page(1))
@@ -1092,7 +1197,8 @@ class DesktopApp:
         spreadsheet_menu = tk.Menu(advanced_menu, tearoff=False)
         add(spreadsheet_menu, "Show categories and spreadsheet", lambda: self.show_tab(1), "Shift-B", "⇧B")
         add(spreadsheet_menu, "Import XLSX / CSV…", self.import_template)
-        add(spreadsheet_menu, "Use categories as columns", lambda: self._with_draft(lambda: self._submit("Preparing category columns", self.session.use_categories_as_columns)), "Shift-C", "⇧C")
+        if not auto:
+            add(spreadsheet_menu, "Use categories as columns", lambda: self._with_draft(lambda: self._submit("Preparing category columns", self.session.use_categories_as_columns)), "Shift-C", "⇧C")
         spreadsheet_menu.add_separator()
         add(spreadsheet_menu, "Use suggested assignments", self.suggest_mapping)
         add(spreadsheet_menu, "Leave remaining columns blank…", self.leave_remaining_columns_blank)
@@ -1112,9 +1218,12 @@ class DesktopApp:
         add(sample_menu, "Friendly example", lambda: self.load_template_sample("friendly"))
         add(sample_menu, "Raw example", lambda: self.load_template_sample("raw"))
         help_menu.add_cascade(label="Fictional practice templates", menu=sample_menu)
-        help_menu.add_command(label=f"About {PRODUCT_NAME}", command=lambda: messagebox.showinfo(PRODUCT_NAME, "Native local form review and spreadsheet mapping.\n\nUpload a PDF or image, draw masks around answer areas and name the fields you need. Save a reusable named extraction type containing only rules and masks.\n\nReview and confirm every answer against its source, then approve records before spreadsheet export. Matching page shapes do not establish that two documents use the same layout.\n\nProjects retain original documents, answers and unfinished type drafts; reopening requires fresh review.\n\n" + COPYRIGHT_NOTICE, parent=self.root))
+        help_menu.add_command(label=f"About {PRODUCT_NAME}", command=lambda: messagebox.showinfo(PRODUCT_NAME, "Local PACE form review and spreadsheet export.\n\nAdd one or several PDFs. Check the proposed patient groups against MRN, name and birth date on every source sticker. Review and confirm each typed answer before approving the patient.\n\nRedraw an answer area to correct its source. Save form layouts to reuse field rules on matching recognized forms. Layouts contain rules and anchors without patient answers. Choice answers must use the supplied PACE codes; an ambiguous mark needs manual review.\n\nExports contain one row per approved patient using the 512 PACE columns. Temporary row IDs are separate from MRN and are for new REDCap records. Select automatic record numbering during REDCap import.\n\nUse small batches within the existing file and memory limits. Projects retain original PDFs and review answers. Reopening requires fresh patient and field confirmation.\n\n" + COPYRIGHT_NOTICE, parent=self.root))
         menu.add_cascade(label="Help", menu=help_menu)
         self.root.configure(menu=menu)
+        self._menu = menu
+        if previous_menu is not None:
+            previous_menu.destroy()
 
     def _domain_loop(self):
         while True:
@@ -1209,6 +1318,7 @@ class DesktopApp:
         state = self.snapshot
         phase = state.get("phase", "empty")
         review = phase == "review"
+        auto = state.get("profile") == "pace-auto-v1"
         draft = state.get("draft") is not None
         advanced = self.advanced_var.get()
         record = self._record()
@@ -1231,9 +1341,18 @@ class DesktopApp:
                 widget.grid_remove()
 
         show(self.setup_fields_button, not draft and not review)
+        for widget in (self.save_layout_button, self.load_layout_button):
+            show(widget, auto)
+        show(self.check_groups_button, auto and bool(state.get("pendingPatientGroups")))
+        for widget in (self.redraw_answer_button, self.add_pace_field_button, self.check_patient_button):
+            show(widget, auto and record is not None)
+        self.approve_button.configure(text="Approve patient" if auto else "Approve document")
+        self.queue_heading.configure(text="Patient queue" if auto else "Document queue")
         show(self.design_panel, not review and draft)
         if review and record is None:
-            hint = ("Choose Add documents > Import separate forms for NEU clinic PDFs. Review each source before export."
+            hint = ("Add one or several PDFs. Check MRN, name and birth date on each source before confirming the proposed patient groups. Use small batches within the 20 MiB session limit."
+                    if auto else
+                    "Choose Add documents for NEU clinic PDFs. Review each source before export."
                     if state.get("profile") == "neurology-training-v1" else
                     "Add documents and choose Combine PDFs for one patient. Confirm the study record ID and source group before reviewing answers.")
         else:
@@ -1274,6 +1393,10 @@ class DesktopApp:
             self.task_hint.set("Import study fields, draw their answer areas, then apply the type before mapping and export.")
         elif draft:
             self.task_hint.set("Name the fields and draw their answer areas. Choose a record identifier, then apply the type.")
+        elif auto and record is None:
+            self.task_hint.set("Add PDFs and check patient groups. Use small batches. Each patient supports 16 PDFs and 32 pages including its cover.")
+        elif auto:
+            self.task_hint.set("Check the patient group, confirm each answer, then approve the patient and export. Redraw an answer area to correct its source.")
         elif review and record is None and state.get("profile") == "neurology-training-v1":
             self.task_hint.set("Add clinic forms as separate documents, then review their answers.")
         elif review and record is None:
@@ -1286,6 +1409,8 @@ class DesktopApp:
     def _render(self, state):
         self._rendering = True
         self.snapshot = state
+        if hasattr(self, "_menu_profile") and self._menu_profile != state.get("profile"):
+            self._build_menu()
         ids = {r["id"] for r in state["records"]}
         if self.selected_record not in ids:
             self.selected_record = state["records"][0]["id"] if state["records"] else None
@@ -1300,11 +1425,12 @@ class DesktopApp:
             widths = (155, 75)
         else:
             definition = state.get("formType")
-            profile_name = {"pace-printed-v1": "PACE printed forms · review required",
+            profile_name = {"pace-auto-v1": "PACE automatic review · one row per patient",
+                            "pace-printed-v1": "PACE printed forms · review required",
                             "sih-clinic-v1": "SIH clinic forms · review required"}.get(state.get("profile"))
             type_name = definition["name"] if definition else profile_name or "Create your own extraction type"
             self.mode_label.set("LOCAL DESKTOP · " + state.get("phase", "review").upper() + "\n" + type_name)
-            columns, headings, widths = ("document", "state"), ("Document", "Review"), (145, 85)
+            columns, headings, widths = ("document", "state"), ("Patient" if state.get("profile") == "pace-auto-v1" else "Document", "Review"), (145, 85)
         self.queue_tree.configure(columns=columns)
         self.queue_tree.configure(style="StagingQueue.Treeview" if staging else "Treeview")
         for name, heading, width in zip(columns, headings, widths):
@@ -1327,14 +1453,18 @@ class DesktopApp:
                 details = " · ".join(value for value in (values.get("instrument_family", ""), values.get("form_date", "")) if value)
                 row = (concise + ("\n" + details if details else ""), review)
             else:
-                row = (f'Patient {record["bundleRecordId"]}' if record.get("bundleSources") else filename, review)
+                if state.get("profile") == "pace-auto-v1":
+                    row = (f'MRN {values.get("mrn", "")}' + "\n" + " ".join(value for value in (values.get("patient_first", ""), values.get("patient_last", "")) if value), review)
+                else:
+                    row = (f'Patient {record["bundleRecordId"]}' if record.get("bundleSources") else filename, review)
             self.queue_tree.insert("", "end", iid=record["id"], values=row)
         if staging:
             groups = state.get("patientGroups", [])
             conflicts = sum(bool(group.get("conflict")) for group in groups)
             self.queue_label.set(f'{len(ids)} documents · {len(groups)} MRN groups\n{approved} approved · {conflicts} group conflicts')
         else:
-            self.queue_label.set(f'{len(ids)} documents · {approved} approved')
+            noun = "patients" if state.get("profile") == "pace-auto-v1" else "documents"
+            self.queue_label.set(f'{len(ids)} {noun} · {approved} approved')
         if self.selected_record:
             self.queue_tree.selection_set(self.selected_record)
         self.reviewer_var.set(state.get("reviewer", self.reviewer_var.get()))
@@ -1376,6 +1506,10 @@ class DesktopApp:
         self._with_draft(lambda: self._select_record(target))
 
     def _select_record(self, record_id):
+        self.pace_redraw_target = None
+        if self.design_tool == "pace-redraw":
+            self.design_tool = None
+            self.canvas.configure(cursor="")
         self.selected_record = record_id
         self.selected_field = None
         self.page = 1
@@ -1412,6 +1546,10 @@ class DesktopApp:
             return
         selection = self.field_tree.selection()
         if selection and selection[0] in {field["name"] for field in self._active_fields()}:
+            if self.design_tool == "pace-redraw" and selection[0] != self.selected_field:
+                self.pace_redraw_target = None
+                self.design_tool = None
+                self.canvas.configure(cursor="")
             self.selected_field = selection[0]
             self._show_field()
             record = self._record()
@@ -1519,9 +1657,8 @@ class DesktopApp:
                        ("recordIds", "identities", "instruments", "instrumentStarts", "unansweredFields", "blockingIssues"))
                 or context["instruments"] or context["instrumentStarts"]):
             return None
-        return ("Unsupported PACE layout. For SIH clinic registration, questionnaires and reports, choose Read SIH clinic forms. "
-                "For Form NEU-xxx PDFs, choose Advanced > Form type > Read NEU clinic forms. "
-                "For other layouts, save this project and start a new project to draw masks. Approval is blocked.")
+        return ("Unsupported PACE layout in this older reader project. Save this project, start a new PACE automatic project, "
+                "and add the original PDFs to recognize supported clinic and HIT-6 forms. Unknown layouts remain blocked.")
 
     def _show_field(self):
         field = next((f for f in self.snapshot["schema"] if f["name"] == self.selected_field), None)
@@ -1534,7 +1671,7 @@ class DesktopApp:
         self.choice.pack_forget()
         if field["type"] == "choice":
             self._choice_codes = {f'{label} ({code})': code for code, label in field["choices"].items()}
-            self.choice.configure(values=[""] + list(self._choice_codes))
+            self.choice.configure(values=[""] + list(self._choice_codes), state="readonly" if self.snapshot.get("profile") == "pace-auto-v1" else "normal")
             self.value_var.set(next((label for label, code in self._choice_codes.items() if code == value), value))
             self.choice.pack(fill="x", pady=4, before=self.confirm_check)
         else:
@@ -1680,7 +1817,13 @@ class DesktopApp:
             detail = "Page 1 is the operator-entered ID cover. Original PDFs follow in the confirmed order."
             if source:
                 detail = f'{source["filename"]} · original page {self.page - source["firstPage"] + 1} of {source["pages"]}'
-            self.record_context.set(f'Study record ID {record.get("bundleRecordId", "")} · {len(sources)} source PDFs · one patient row\n{detail}')
+            if self.snapshot.get("profile") == "pace-auto-v1":
+                detail = "Page 1 contains the temporary export row ID. Check the stickers on the original source pages." if source is None else detail
+                identity = record["values"]
+                checked = "Patient group checked" if record.get("paceIdentityConfirmed") else "Check patient group before approval"
+                self.record_context.set(f'MRN {identity.get("mrn", "")} · {identity.get("patient_first", "")} {identity.get("patient_last", "")} · DOB {identity.get("patient_dob", "")}\nTemporary export ID {identity.get("record_id", "")} · {checked}\n{detail}')
+            else:
+                self.record_context.set(f'Study record ID {record.get("bundleRecordId", "")} · {len(sources)} source PDFs · one patient row\n{detail}')
             self.record_context_label.grid()
         elif self.snapshot.get("profile") == "neurology-training-v1":
             values = self.review_values
@@ -1740,12 +1883,16 @@ class DesktopApp:
     def import_forms(self):
         if self.busy:
             return
-        paths = filedialog.askopenfilenames(parent=self.root, title="Import forms", filetypes=[("Forms", "*.pdf *.png *.jpg *.jpeg *.tif *.tiff *.txt"), ("All files", "*")])
+        auto = self.snapshot.get("profile") == "pace-auto-v1"
+        paths = filedialog.askopenfilenames(parent=self.root, title="Add patient PDFs" if auto else "Import forms", filetypes=[("PDF documents", "*.pdf")] if auto else [("Forms", "*.pdf *.png *.jpg *.jpeg *.tif *.tiff *.txt"), ("All files", "*")])
         if paths:
             self._with_draft(lambda: self._import_paths(paths))
 
     def combine_patient_pdfs(self):
         if self.busy:
+            return
+        if self.snapshot.get("profile") == "pace-auto-v1":
+            self.import_forms()
             return
         if self.bundle_dialog is not None and self.bundle_dialog.winfo_exists():
             self.bundle_dialog.lift()
@@ -1854,12 +2001,26 @@ class DesktopApp:
         if not sources:
             self.status.set("Select a combined patient PDF bundle to inspect its original sources.")
             return
-        lines = [f'Study record_id: {record.get("bundleRecordId", "")}', "Page 1 is the operator-entered ID cover.", "The operator confirmed these PDFs belong to one patient, in this order.", ""]
+        if self.snapshot.get("profile") == "pace-auto-v1":
+            lines = [f'Temporary export record_id: {record.get("bundleRecordId", "")}', "Page 1 is the temporary row-ID cover for a new REDCap record.", "MRN and source stickers establish the patient group. The export ID is separate.", ""]
+        else:
+            lines = [f'Study record_id: {record.get("bundleRecordId", "")}', "Page 1 is the operator-entered ID cover.", "The operator confirmed these PDFs belong to one patient, in this order.", ""]
         for index, source in enumerate(sources, 1):
             lines.extend([f'{index}. {source["filename"]}', f'Bundle pages {source["firstPage"]} through {source["lastPage"]} · {source["pages"]} original pages', "SHA-256: " + source["sha256"], ""])
         messagebox.showinfo("Patient bundle sources", "\n".join(lines), parent=self.root)
 
     def _import_paths(self, paths):
+        if self.snapshot.get("profile") == "pace-auto-v1":
+            def complete_pace(result):
+                if result.get("failed"):
+                    lines = [f'{failure["filename"]}: {failure["error"]}' for failure in result["failed"]]
+                    messagebox.showwarning("PDF import summary", "\n".join(lines), parent=self.root)
+                if self.snapshot.get("pendingPatientGroups"):
+                    self.show_pace_groups()
+                else:
+                    self.status.set("No patient groups are ready. Check the PDF import summary and use a smaller batch if needed.")
+            self._submit("Reading PDFs and proposing patient groups", lambda: self.session.import_pace_documents(paths), complete_pace)
+            return
         operation_id = self._operation_id + 1
         def progress(current, total):
             self.events.put(("progress", operation_id, current, total))
@@ -1873,6 +2034,252 @@ class DesktopApp:
 
     def import_example(self):
         self._with_draft(lambda: self._import_paths([ROOT / "samples/practice-01-text.pdf"]))
+
+    def use_pace_auto_profile(self):
+        if self.busy or self.closing:
+            return
+        if self._confirm_schema_change():
+            self._with_draft(lambda: self._submit("Preparing automatic PACE review", self.session.use_pace_auto_profile))
+
+    def show_pace_groups(self):
+        groups = self.snapshot.get("pendingPatientGroups", [])
+        if self.busy or not groups:
+            return
+        if self.patient_groups_dialog is not None and self.patient_groups_dialog.winfo_exists():
+            self.patient_groups_dialog.lift()
+            return
+        dialog = self.patient_groups_dialog = tk.Toplevel(self.root)
+        dialog.title("Check patient groups")
+        dialog.geometry("1120x800")
+        dialog.minsize(900, 660)
+        dialog.transient(self.root)
+        dialog.grab_set()
+        frame = ttk.Frame(dialog, padding=16)
+        frame.pack(fill="both", expand=True)
+        frame.columnconfigure(0, weight=1)
+        frame.rowconfigure(3, weight=1)
+        ttk.Label(frame, text="Check patient groups", style="Heading.TLabel").grid(row=0, column=0, sticky="w")
+        ttk.Label(frame, text="MRN groups these PDFs. Check the sticker on every source. Names and birth dates must agree. Conflicts and repeated assessments stay blocked.",
+                  style="Small.TLabel", wraplength=1040).grid(row=1, column=0, sticky="ew", pady=(6, 10))
+        listing, tree = self._tree(frame, ("mrn", "name", "dob", "sources", "state"),
+            ("Exact MRN", "Patient name", "Birth date", "PDFs", "Check"), (160, 245, 120, 65, 150), 4)
+        listing.grid(row=2, column=0, sticky="ew", pady=(0, 10))
+        for group in groups:
+            tree.insert("", "end", iid=group["id"], values=(group.get("mrn", ""),
+                " ".join(value for value in (group.get("firstName", ""), group.get("lastName", "")) if value),
+                group.get("dob", ""), group.get("sourceCount", len(group.get("filenames", []))),
+                "Blocked" if group.get("issues") else "Needs check"))
+        body = ttk.Panedwindow(frame, orient="horizontal")
+        body.grid(row=3, column=0, sticky="nsew")
+        detail = ttk.Frame(body, padding=(0, 0, 12, 0))
+        preview = ttk.Frame(body)
+        body.add(detail, weight=2)
+        body.add(preview, weight=3)
+        detail.columnconfigure(0, weight=1)
+        detail.rowconfigure(0, weight=1)
+        text = tk.Text(detail, width=34, height=8, wrap="word", relief="flat", state="disabled")
+        text.grid(row=0, column=0, sticky="nsew")
+        details_scroll = ttk.Scrollbar(detail, orient="vertical", command=text.yview)
+        details_scroll.grid(row=0, column=1, sticky="ns")
+        text.configure(yscrollcommand=details_scroll.set)
+        preview.columnconfigure(0, weight=1)
+        preview.rowconfigure(1, weight=1)
+        page_label = tk.StringVar(value="Select a patient group")
+        controls = ttk.Frame(preview)
+        controls.grid(row=0, column=0, sticky="ew", pady=(0, 5))
+        canvas = tk.Canvas(preview, background="#dce2e9", width=480, height=350, highlightthickness=0)
+        canvas.grid(row=1, column=0, sticky="nsew")
+        preview_state = {"pages": [], "index": 0, "photo": None}
+        checked, selected = set(), {"id": None}
+        confirmed = tk.BooleanVar(value=False)
+        error = tk.StringVar()
+
+        def render_preview(delta=0):
+            pages = preview_state["pages"]
+            canvas.delete("all")
+            if not pages:
+                page_label.set("No source preview available")
+                canvas.create_text(230, 100, text="Source preview unavailable. Do not confirm a group until its original PDFs have been checked.", width=380)
+                return
+            preview_state["index"] = max(0, min(len(pages) - 1, preview_state["index"] + delta))
+            filename, page = pages[preview_state["index"]]
+            page_label.set(f'{filename} · page {page.get("page", "")} · {preview_state["index"] + 1}/{len(pages)}')
+            path = page.get("previewPath")
+            try:
+                with Image.open(path) as image:
+                    image.thumbnail((max(280, canvas.winfo_width() - 12), max(280, canvas.winfo_height() - 12)), Image.Resampling.LANCZOS)
+                    preview_state["photo"] = ImageTk.PhotoImage(image.copy(), master=self.root)
+                canvas.create_image(6, 6, anchor="nw", image=preview_state["photo"])
+            except (OSError, TypeError, ValueError, tk.TclError):
+                canvas.create_text(230, 100, text="This source page could not be previewed. Check its original PDF before confirming.", width=380)
+
+        ttk.Button(controls, text="‹", width=3, command=lambda: render_preview(-1)).pack(side="left")
+        ttk.Button(controls, text="›", width=3, command=lambda: render_preview(1)).pack(side="left", padx=4)
+        def enlarge_preview():
+            pages = preview_state["pages"]
+            if pages:
+                filename, page = pages[preview_state["index"]]
+                self._show_pace_source_page(page.get("previewPath"), filename, dialog)
+        ttk.Button(controls, text="Enlarge page…", command=enlarge_preview).pack(side="right")
+        ttk.Label(controls, textvariable=page_label, style="Small.TLabel", wraplength=380).pack(side="left", fill="x", expand=True)
+        check = ttk.Checkbutton(frame, text="I checked every source sticker and verified that these PDFs belong to this patient.", variable=confirmed)
+        check.grid(row=4, column=0, sticky="w", pady=(10, 5))
+        ttk.Label(frame, textvariable=error, style="Error.TLabel", wraplength=1030).grid(row=5, column=0, sticky="ew")
+        ttk.Label(frame, text="Each checked group becomes one patient row. New records receive a temporary export ID separate from MRN. REDCap can renumber new records during import. Process large collections in small batches within the 20 MiB session limit.",
+                  style="Small.TLabel", wraplength=1040).grid(row=6, column=0, sticky="ew", pady=(7, 10))
+        actions = ttk.Frame(frame)
+        actions.grid(row=7, column=0, sticky="ew")
+
+        def close(cancel=False):
+            self.patient_groups_dialog = None
+            preview_state["photo"] = None
+            dialog.destroy()
+            if cancel:
+                self._submit("Discarding proposed patient groups", self.session.cancel_pace_import)
+
+        def selected_group(_event=None):
+            selection = tree.selection()
+            group = next((item for item in groups if selection and item["id"] == selection[0]), None)
+            if group is None:
+                return
+            selected["id"] = group["id"]
+            confirmed.set(group["id"] in checked)
+            check.state(["disabled"] if group.get("issues") else ["!disabled"])
+            lines = [f'MRN {group.get("mrn", "")}',
+                " ".join(value for value in (group.get("firstName", ""), group.get("lastName", "")) if value),
+                f'Birth date {group.get("dob", "")}', "", "Sources:", *group.get("filenames", []),
+                "", "Recognized instruments:", *group.get("instruments", []), "", *group.get("issues", [])]
+            text.configure(state="normal")
+            text.delete("1.0", "end")
+            text.insert("1.0", "\n".join(lines))
+            text.configure(state="disabled")
+            preview_state["pages"] = [(source.get("filename", "Source"), page) for source in group.get("sources", []) for page in source.get("pages", [])]
+            preview_state["index"] = 0
+            render_preview()
+            error.set("Resolve the reported source issues before this group can be added." if group.get("issues") else "")
+
+        def mark_checked():
+            group = next((item for item in groups if item["id"] == selected["id"]), None)
+            if group is None or group.get("issues"):
+                return
+            if not confirmed.get():
+                error.set("Check every source sticker, then select the verification checkbox.")
+                return
+            checked.add(group["id"])
+            tree.set(group["id"], "state", "Checked")
+            error.set(f"{len(checked)} patient group(s) checked. Check the next group or add the checked patients.")
+
+        def verification_changed():
+            if not confirmed.get() and selected["id"] in checked:
+                checked.remove(selected["id"])
+                tree.set(selected["id"], "state", "Needs check")
+
+        check.configure(command=verification_changed)
+
+        def add_checked():
+            if not checked:
+                error.set("Check at least one patient group before continuing.")
+                return
+            group_ids = [group["id"] for group in groups if group["id"] in checked]
+            close()
+            def complete(result):
+                failures = result.get("failed", [])
+                if failures:
+                    messagebox.showwarning("Patient group summary", "\n".join(str(item.get("error", item)) for item in failures), parent=self.root)
+                self.status.set(f'{len(result.get("added", []))} patient row(s) added. Confirm each answer against its source before approval.')
+                if self.snapshot.get("pendingPatientGroups"):
+                    self.show_pace_groups()
+            self._submit("Preparing checked patient rows", lambda: self.session.confirm_pace_groups(group_ids, confirmed_identity=True), complete)
+
+        ttk.Button(actions, text="Discard proposed groups", command=lambda: close(True)).pack(side="left")
+        ttk.Button(actions, text="Check patient group", command=mark_checked).pack(side="left", padx=6)
+        ttk.Button(actions, text="Add checked patients", command=add_checked).pack(side="right")
+        dialog.protocol("WM_DELETE_WINDOW", lambda: close())
+        dialog.bind("<Escape>", lambda _event: close())
+        tree.bind("<<TreeviewSelect>>", selected_group)
+        canvas.bind("<Configure>", lambda _event: render_preview())
+        tree.selection_set(groups[0]["id"])
+        selected_group()
+
+    def _show_pace_source_page(self, path, title, parent):
+        try:
+            with Image.open(path) as source:
+                image = source.copy()
+        except (OSError, TypeError, ValueError):
+            messagebox.showerror("Source preview", "This source page could not be previewed. Check its original PDF before confirming.", parent=parent)
+            return
+        dialog = tk.Toplevel(parent)
+        dialog.title(title)
+        dialog.geometry("1020x800")
+        dialog.transient(parent)
+        dialog.grab_set()
+        frame = ttk.Frame(dialog, padding=10)
+        frame.pack(fill="both", expand=True)
+        frame.columnconfigure(0, weight=1)
+        frame.rowconfigure(1, weight=1)
+        toolbar = ttk.Frame(frame)
+        toolbar.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 6))
+        canvas = tk.Canvas(frame, highlightthickness=0, background="#dce2e9")
+        canvas.grid(row=1, column=0, sticky="nsew")
+        yscroll = ttk.Scrollbar(frame, orient="vertical", command=canvas.yview)
+        yscroll.grid(row=1, column=1, sticky="ns")
+        xscroll = ttk.Scrollbar(frame, orient="horizontal", command=canvas.xview)
+        xscroll.grid(row=2, column=0, sticky="ew")
+        canvas.configure(yscrollcommand=yscroll.set, xscrollcommand=xscroll.set)
+        state = {"zoom": 1.0, "photo": None}
+        def render(factor=1):
+            state["zoom"] = max(.25, min(3, state["zoom"] * factor))
+            resized = image.resize((max(1, round(image.width * state["zoom"])), max(1, round(image.height * state["zoom"]))), Image.Resampling.LANCZOS)
+            state["photo"] = ImageTk.PhotoImage(resized, master=self.root)
+            canvas.delete("all")
+            canvas.create_image(4, 4, anchor="nw", image=state["photo"])
+            canvas.configure(scrollregion=(0, 0, resized.width + 8, resized.height + 8))
+        def close():
+            state["photo"] = None
+            image.close()
+            dialog.destroy()
+            if parent.winfo_exists():
+                parent.grab_set()
+        ttk.Button(toolbar, text="Zoom in", command=lambda: render(1.25)).pack(side="left")
+        ttk.Button(toolbar, text="Zoom out", command=lambda: render(.8)).pack(side="left", padx=5)
+        ttk.Button(toolbar, text="Close preview", command=close).pack(side="right")
+        dialog.protocol("WM_DELETE_WINDOW", close)
+        dialog.bind("<Escape>", lambda _event: close())
+        canvas.bind("<MouseWheel>", lambda event: canvas.yview_scroll(-1 if event.delta > 0 else 1, "units"))
+        render()
+
+    def check_pace_identity(self):
+        if self.busy or self.snapshot.get("profile") != "pace-auto-v1" or not self._record():
+            return
+        def open_dialog():
+            record = self._record()
+            record_id = record["id"]
+            values = record["values"]
+            dialog = tk.Toplevel(self.root)
+            dialog.title("Check patient group")
+            dialog.geometry("640x390")
+            dialog.transient(self.root)
+            dialog.grab_set()
+            frame = ttk.Frame(dialog, padding=18)
+            frame.pack(fill="both", expand=True)
+            details = f'MRN {values.get("mrn", "")}\n{values.get("patient_first", "")} {values.get("patient_last", "")}\nBirth date {values.get("patient_dob", "")}\n\n' + "\n".join(item["filename"] for item in record.get("bundleSources", []))
+            ttk.Label(frame, text=details, wraplength=590).pack(anchor="w", pady=(0, 12))
+            ttk.Label(frame, text=f'Temporary export row ID {values.get("record_id", "")}\nThis ID is separate from MRN. This workflow creates new REDCap records. Select automatic record numbering during REDCap import. Existing-record updates need a separate import using real REDCap IDs.', wraplength=590).pack(anchor="w")
+            verified = tk.BooleanVar(value=False)
+            ttk.Checkbutton(frame, text="I checked the source stickers and the intended export record ID.", variable=verified).pack(anchor="w", pady=12)
+            error = tk.StringVar()
+            ttk.Label(frame, textvariable=error, style="Error.TLabel", wraplength=590).pack(anchor="w")
+            def apply():
+                if not verified.get():
+                    error.set("Check the source identity and export ID, then select the verification checkbox.")
+                    return
+                dialog.destroy()
+                self._submit("Confirming patient identity", lambda: self.session.confirm_pace_identity(record_id, confirmed=True))
+            buttons = ttk.Frame(frame)
+            buttons.pack(fill="x", pady=(10, 0))
+            ttk.Button(buttons, text="Cancel", command=dialog.destroy).pack(side="left")
+            ttk.Button(buttons, text="Check patient group", command=apply).pack(side="right")
+        self._with_draft(open_dialog)
 
     def use_neurology_profile(self):
         if self.busy or self.closing:
@@ -2010,6 +2417,8 @@ class DesktopApp:
         self.export_help.set("Staging export • source MRN groups assessments; study REDCap mapping pending. Exports include approved records." if self.snapshot.get("profile") == "neurology-training-v1" else "XLSX retains supported blank-template layout. CSV contains values only. Exports include approved records.")
         if any(record.get("bundleSources") for record in self.snapshot["records"]):
             self.export_help.set("One patient review row per confirmed source bundle. " + self.export_help.get())
+        if self.snapshot.get("profile") == "pace-auto-v1":
+            self.export_help.set("One row per approved patient using the 512 PACE columns. Temporary record_id values identify new rows and are separate from MRN. Choose automatic record numbering for new REDCap records during import. Confirm the column mapping before export.")
         if self.snapshot.get("patientRowExportWarning"):
             self.export_help.set(self.export_help.get() + " " + self.snapshot["patientRowExportWarning"])
         self.source_tree.delete(*self.source_tree.get_children())
@@ -2243,7 +2652,10 @@ class DesktopApp:
             self._guard_unsaved(lambda: self._submit("Opening and reprocessing project", lambda: self.session.open_project(path), lambda _: self.status.set("Project opened. All confirmations and approvals require fresh review.")))
 
     def new_project(self):
-        self._guard_unsaved(lambda: self._submit("Starting new project", self.session.reset))
+        def reset_pace():
+            self.session.reset()
+            return self.session.use_pace_auto_profile()
+        self._guard_unsaved(lambda: self._submit("Starting new PACE project", reset_pace))
 
     def cancel_processing(self):
         if self.busy:
@@ -2292,25 +2704,24 @@ def verify_startup(output):
         def check_window():
             nonlocal stage
             try:
-                stage = "mapped-empty-window"
+                stage = "mapped-pace-window"
                 root.update_idletasks()
                 checked(root.winfo_exists() and root.winfo_viewable())
                 checked(PRODUCT_NAME in root.title())
                 state = app.session.snapshot()
-                checked(state["records"] == [] and state["schema"] == [])
+                checked(state["records"] == [] and len(state["schema"]) == 512 and state["profile"] == "pace-auto-v1")
                 checked(not state["dirty"] and not state["projectPath"])
                 checked(app.notebook.winfo_ismapped() and not app.cancel_button.winfo_ismapped())
                 checked(len(app.notebook.tabs()) == 2 and app.thread.is_alive())
                 report["checks"].append(stage)
                 stage = "bundled-pace-catalog"
-                app.session.use_pace_template()
                 state = app.session.snapshot()
                 checked(len(state["expectedFields"]) == len(state["template"]["columns"]) == 512)
                 fields = {field["name"]: field for field in state["expectedFields"]}
                 label = "Taken, no change in symptoms"
                 checked(fields["med_caf"]["choices"]["2"] == label)
                 checked(fields["med_caf_v2"]["choices"]["3"] == label)
-                checked(state["records"] == [] and state["schema"] == [])
+                checked(state["records"] == [] and len(state["schema"]) == 512)
                 app._render(state)
                 app.show_study_fields()
                 root.update_idletasks()
@@ -2318,7 +2729,7 @@ def verify_startup(output):
                 checked(len(app.catalog_tree.get_children()) == 512)
                 checked(app.catalog_tree.exists("med_caf") and app.catalog_tree.exists("med_caf_v2"))
                 report["checks"].append(stage)
-                report.update(status="passed", catalogFields=512, records=0, activeFields=0,
+                report.update(status="passed", catalogFields=512, records=0, activeFields=512,
                               title=root.title(), windowSystem=root.tk.call("tk", "windowingsystem"),
                               tkVersion=str(root.tk.call("info", "patchlevel")))
             except Exception:

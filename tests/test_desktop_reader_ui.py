@@ -50,7 +50,7 @@ class ReaderPresentationTests(unittest.TestCase):
         app = self.app_for(record)
         app._show_field()
         self.assertIn("Unsupported PACE layout", app.field_detail.get())
-        self.assertIn("Read NEU clinic forms", app.field_detail.get())
+        self.assertIn("new PACE automatic project", app.field_detail.get())
         self.assertNotIn("first name is missing", app.field_detail.get())
         app._render_page()
         self.assertEqual(app.source_issues.get(), app.field_detail.get())
@@ -71,7 +71,7 @@ class ReaderPresentationTests(unittest.TestCase):
         app._render_page()
         self.assertIn("Printed sources", app.source_issues.get())
 
-    def test_neu_clinic_reader_is_explicitly_selectable_from_the_menu(self):
+    def test_only_automatic_pace_reader_is_selectable_from_the_menu(self):
         session = DesktopSession()
         self.addCleanup(session.close)
         app = DesktopApp.__new__(DesktopApp)
@@ -89,10 +89,17 @@ class ReaderPresentationTests(unittest.TestCase):
         with patch("desktop.tk.Menu", side_effect=menu):
             app._build_menu()
         self.assertIsNone(session.snapshot()["profile"])
+        labels = [call.kwargs.get("label") for item in menus for call in item.add_command.call_args_list]
+        self.assertNotIn("Read NEU clinic forms", labels)
+        self.assertNotIn("Read SIH clinic forms", labels)
+        self.assertNotIn("Read PACE printed forms", labels)
         choices = [call.kwargs["command"] for item in menus for call in item.add_command.call_args_list
-                   if call.kwargs.get("label") == "Read NEU clinic forms"]
-        self.assertEqual(len(choices), 1, "The NEU clinic reader must be reachable from the menu")
+                   if call.kwargs.get("label") == "PACE automatic review"]
+        self.assertEqual(len(choices), 1)
         choices[0]()
+        self.assertEqual(session.snapshot()["profile"], "pace-auto-v1")
+        self.assertEqual(len(session.snapshot()["schema"]), 512)
+        session.use_neurology_profile()
         self.assertEqual(session.snapshot()["profile"], "neurology-training-v1")
         self.assertEqual(len(session.snapshot()["schema"]), 45)
 

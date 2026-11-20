@@ -1,0 +1,933 @@
+{
+  "packet": "sih-clinic-synthetic",
+  "split": "train",
+  "regressionOnly": true,
+  "sourceDocuments": 28,
+  "automatedSyntheticConfirmations": true,
+  "humanClinicalReview": false,
+  "manualValueEdits": 0,
+  "answerKeysPassedToApp": false,
+  "proposedPatients": 5,
+  "importFailures": [],
+  "groupIssues": [],
+  "commitFailures": [],
+  "fullGridExcludingTemporaryId": {
+    "checked": 2555,
+    "matched": 2374,
+    "differences": [
+      {
+        "patientIndex": 1,
+        "field": "brain_reader",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 1,
+        "field": "scan_findings___10",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 1,
+        "field": "scan_findings___11",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 1,
+        "field": "scan_findings___12",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 1,
+        "field": "scan_findings___13",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 1,
+        "field": "scan_findings___14",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 1,
+        "field": "scan_findings___15",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 1,
+        "field": "scan_findings___16",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 1,
+        "field": "spine_reader",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 1,
+        "field": "dsm_reader",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 1,
+        "field": "scan_findings_dsm___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 1,
+        "field": "scan_findings_dsm___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 1,
+        "field": "scan_findings_dsm___6",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 1,
+        "field": "scan_findings_other_v2_v2_dsm",
+        "reason": "Normalized value mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization___1",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization___2",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization___4",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization___9",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization___10",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization___11",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization___12",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization___13",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization___14",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization___15",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality___1",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality___4",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_2___1",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_2___2",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_2___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_2___4",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_2___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_2___9",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_2___10",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_2___11",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_2___12",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_2___13",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_2___14",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_2___15",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality_2___1",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality_2___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality_2___4",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality_2___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "prov_associated_symptoms___1",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "prov_associated_symptoms___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "prov_associated_symptoms___4",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "prov_associated_symptoms___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_3___1",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_3___2",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_3___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_3___4",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_3___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_3___9",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_3___10",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_3___11",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_3___12",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_3___13",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_3___14",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_3___15",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality_3___1",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality_3___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality_3___4",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality_3___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_4___1",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_4___2",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_4___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_4___4",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_4___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_4___9",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_4___10",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_4___11",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_4___12",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_4___13",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_4___14",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_localization_4___15",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality_4___1",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality_4___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality_4___4",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "baseline_pain_quality_4___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "brain_reader",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "scan_findings___10",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "scan_findings___11",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "scan_findings___12",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "scan_findings___13",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "scan_findings___14",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "scan_findings___15",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "scan_findings___16",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "dsm_reader",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "scan_findings_dsm___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "scan_findings_dsm___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "scan_findings_dsm___6",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 2,
+        "field": "scan_findings_other_v2_v2_dsm",
+        "reason": "Normalized value mismatch"
+      },
+      {
+        "patientIndex": 3,
+        "field": "brain_reader",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 3,
+        "field": "scan_findings___10",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 3,
+        "field": "scan_findings___11",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 3,
+        "field": "scan_findings___12",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 3,
+        "field": "scan_findings___13",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 3,
+        "field": "scan_findings___14",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 3,
+        "field": "scan_findings___15",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 3,
+        "field": "scan_findings___16",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 3,
+        "field": "spine_reader",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 4,
+        "field": "brain_reader",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 4,
+        "field": "scan_findings___10",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 4,
+        "field": "scan_findings___11",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 4,
+        "field": "scan_findings___12",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 4,
+        "field": "scan_findings___13",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 4,
+        "field": "scan_findings___14",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 4,
+        "field": "scan_findings___15",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 4,
+        "field": "scan_findings___16",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 4,
+        "field": "spine_reader",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 4,
+        "field": "myelogram",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 4,
+        "field": "scan_findings_v2_v2___2",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 4,
+        "field": "scan_findings_v2_v2___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 4,
+        "field": "scan_findings_v2_v2___4",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 4,
+        "field": "scan_findings_v2_v2___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization___1",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization___2",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization___6",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization___7",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization___8",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization___9",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization___10",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization___11",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization___12",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization___13",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization___14",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization___15",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_quality___2",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_quality___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_quality___4",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_quality___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_2___1",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_2___2",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_2___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_2___6",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_2___7",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_2___8",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_2___9",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_2___10",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_2___11",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_2___12",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_2___13",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_2___14",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_2___15",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_quality_2___2",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_quality_2___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_quality_2___4",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_quality_2___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_3___1",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_3___2",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_3___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_3___6",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_3___7",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_3___8",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_3___9",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_3___10",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_3___11",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_3___12",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_3___13",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_3___14",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_localization_3___15",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_quality_3___2",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_quality_3___3",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_quality_3___4",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "baseline_pain_quality_3___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "brain_reader",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "scan_findings___5",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "scan_findings___6",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "scan_findings___7",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "scan_findings___9",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "scan_findings___10",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "scan_findings___11",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "scan_findings___12",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "scan_findings___13",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "scan_findings___14",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "scan_findings___15",
+        "reason": "Literal choice code mismatch"
+      },
+      {
+        "patientIndex": 5,
+        "field": "scan_findings_other",
+        "reason": "Normalized value mismatch"
+      }
+    ]
+  },
+  "expectationSHA256": "68bb280ddd065b7963bf2cb9908c1503089f081fcbe9c6e00bdb5c08d9240d2d",
+  "approvedPatients": 5,
+  "csvSHA256": "52c209e5651243319bc296d7b70717abe4e8f9cfd3e770ee0e643ead8159103d",
+  "xlsxSHA256": "7849ed60f3a25eac7d435388ef593e242a5765c8ddf0f7fb7c4f66ea4cee3308",
+  "temporaryIdsStableAfterReopen": true,
+  "exportedPatientRows": 5,
+  "headers": 512,
+  "workflowPassed": true
+}
